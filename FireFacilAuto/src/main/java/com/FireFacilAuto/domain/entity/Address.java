@@ -1,4 +1,4 @@
-package com.FireFacilAuto.domain;
+package com.FireFacilAuto.domain.entity;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.FireFacilAuto.domain.installation;
+package com.FireFacilAuto.domain.entity.installation;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

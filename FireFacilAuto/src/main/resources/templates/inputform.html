@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:inline="javascript">
+        /* Function to toggle the dropdown */
+        function toggleDropdown(button) {
+            var options = button.nextElementSibling;
+            options.style.display = (options.style.display === 'block') ? 'none' : 'block';
+        }
+
+        /* Function to select an option */
+        function selectOption(option) {
+            var selectedText = option.innerText;
+            var selectedValue = option.getAttribute('data-value');
+
+            document.getElementById('selected-classification').innerText = selectedText;
+            document.getElementById('classification').value = selectedValue;
+
+            // Close the dropdown after selection
+            option.parentElement.style.display = 'none';
+        }
+    </script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Input Form</title>
+</head>
+<body>
+
+<form th:action="@{/submit}" th:object="${input}" method="post">
+    <label for="city">시도:</label>
+    <input type="text" id="city" th:field="*{juso.city}" />
+
+    <label for="gu">구:</label>
+    <input type="text" id="gu" th:field="*{juso.Gu}" />
+
+    <label for="jibun">지번주소:</label>
+    <input type="text" id="jibun" th:field="*{juso.jibun}" />
+
+    <label for="doro">도로명주소:</label>
+    <input type="text" id="doro" th:field="*{juso.doro}" />
+
+    <label for="floor">층수:</label>
+    <input type="number" id="floor" th:field="*{floor}" />
+
+    <label for="gfa">연면적 (M^2):</label>
+    <input type="number" id="gfa" th:field="*{GFA}" />
+
+    <div class="select-container" th:classappend="${#fields.hasErrors('classification')} ? 'error' : ''">
+        <label for="classification">용도:</label>
+        <div class="select-button" onclick="toggleDropdown(this)">
+            <span th:text="${#fields.hasErrors('classification')} ? '*' : ''"></span>
+            <span id="selected-classification"></span>
+            <span>&#9662;</span>
+        </div>
+        <ul id="classification-options" class="select-options">
+            <li th:each="classification : ${T(com.FireFacilAuto.domain.entity.ClassificationEnum).values()}"
+                th:attr="data-value=${classification.number}"
+                th:text="${#strings.capitalize(classification.name())}"
+                onclick="selectOption(this)">
+            </li>
+        </ul>
+        <input type="hidden" id="classification" name="classification" th:field="*{classification}" />
+    </div>
+
+
+    <label for="dateOfConstruction">시공연월일:</label>
+    <input type="datetime-local" id="dateOfConstruction" th:field="*{dateOfConstruction}" />
+
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

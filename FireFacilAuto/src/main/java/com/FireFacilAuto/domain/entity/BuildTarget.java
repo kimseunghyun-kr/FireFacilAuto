@@ -1,9 +1,6 @@
-package com.FireFacilAuto.domain;
+package com.FireFacilAuto.domain.entity;
 
-import com.FireFacilAuto.domain.installation.AlarmDeviceInstallation;
-import com.FireFacilAuto.domain.installation.EscapeRescueInstallation;
-import com.FireFacilAuto.domain.installation.ExtinguisherInstallation;
-import com.FireFacilAuto.domain.installation.FireServiceSupportDeviceInstallation;
+import com.FireFacilAuto.domain.entity.installation.*;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -38,6 +35,9 @@ public class BuildTarget {
 
     @OneToOne
     public ExtinguisherInstallation extinguisherInstallation;
+
+    @OneToOne
+    public WaterSupplyInstallation waterSupplyInstallation;
 
     @OneToOne
     public FireServiceSupportDeviceInstallation fireServiceSupportInstallation;
