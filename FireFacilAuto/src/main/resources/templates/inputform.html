@@ -14,17 +14,40 @@
             var selectedValue = option.getAttribute('data-value');
 
             document.getElementById('selected-classification').innerText = selectedText;
-            document.getElementById('classification').value = selectedValue;
+            document.getElementById('classification').value = parseInt(selectedValue);
 
             // Close the dropdown after selection
             option.parentElement.style.display = 'none';
         }
+
+
+        // /*<![CDATA[*/
+        // function populateSpecificationDropdown() {
+        //     var classificationValue = $('#classification').val();
+        //     $.get('/yourControllerPath/getSecondDropdownOptions', {classificationValue: classificationValue}, function(data) {
+        //         // Clear existing options
+        //         $('#specification-dropdown').empty();
+        //
+        //         // Populate options
+        //         $.each(data, function(index, option) {
+        //             $('#specification-dropdown').append($('<option>', {
+        //                 value: option.value,
+        //                 text: option.text
+        //             }));
+        //         });
+        //
+        //         // Optionally, show the second dropdown container
+        //         $('#specification-container').show();
+        //     });
+        // }
+        // /*]]>*/
+
     </script>
 
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" th:href="@{/styles.css}" />
     <title>Input Form</title>
 </head>
 <body>
@@ -56,14 +79,23 @@
             <span>&#9662;</span>
         </div>
         <ul id="classification-options" class="select-options">
-            <li th:each="classification : ${T(com.FireFacilAuto.domain.entity.ClassificationEnum).values()}"
+            <li th:each="classification : ${ClassificationConfig.classifications}"
                 th:attr="data-value=${classification.number}"
-                th:text="${#strings.capitalize(classification.name())}"
+                th:text="${#strings.replace(classification.name, '_', ' ')}"
                 onclick="selectOption(this)">
             </li>
         </ul>
+
+        <!--        ajax call      -->
         <input type="hidden" id="classification" name="classification" th:field="*{classification}" />
+<!--        <input type="hidden" id="classification" name="classification" th:field="*{classification}" onchange="populateSpecificationDropdown()" />-->
+
     </div>
+
+<!--    <div id="specification-container" style="display: none;">-->
+<!--        <label for="specification-dropdown">Specification:</label>-->
+<!--        <select id="specification-dropdown" name="specificationDropdown"></select>-->
+<!--    </div>-->
 
 
     <label for="dateOfConstruction">시공연월일:</label>

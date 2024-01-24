@@ -1,0 +1,218 @@
+classifications:
+  - name: "공동주택"
+    number: 1
+    specifications:
+      - name: "아파트동"
+        number: 1
+      - name: "연립주택"
+        number: 2
+      - name: "다세대주택"
+        number: 3
+      - name: "기숙사"
+        number: 4
+  - name: "근린생활시설"
+    number: 2
+    specifications:
+      - name: "슈퍼마켓"
+        number: 5
+      - name: "소매점"
+        number: 6
+      - name: "휴게음식점"
+        number: 7
+      - name: "제과점"
+        number: 8
+      - name: "일반음식점"
+        number: 9
+      - name: "기원"
+        number: 10
+      - name: "노래연습장"
+        number: 11
+      - name: "단란주점"
+        number: 12
+      - name: "이용원"
+        number: 13
+      - name: "미용원"
+        number: 14
+      - name: "목욕장"
+        number: 15
+      - name: "세탁소"
+        number: 16
+      - name: "의원"
+        number: 17
+      - name: "치과의원"
+        number: 18
+      - name: "한의원"
+        number: 19
+      - name: "침술원"
+        number: 20
+      - name: "접골원"
+        number: 21
+      - name: "조산원"
+        number: 22
+      - name: "산후조리원"
+        number: 23
+      - name: "안마원"
+        number: 24
+      - name: "탁구장"
+        number: 25
+      - name: "테니스장"
+        number: 26
+      - name: "체육도장"
+        number: 27
+      - name: "체력단련장"
+        number: 28
+      - name: "에어로빅장"
+        number: 29
+      - name: "볼링장"
+        number: 30
+      - name: "당구장"
+        number: 31
+      - name: "실내낚시터"
+        number: 32
+      - name: "물놀이형_시설"
+        number: 33
+  - name: "문화및집회"
+    number: 3
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "종교시설"
+    number: 4
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "판매시설"
+    number: 5
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "운수시설"
+    number: 6
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "의료시설"
+    number: 7
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "교육연구시설"
+    number: 8
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "노유자시설"
+    number: 9
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "수련시설"
+    number: 10
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "운동시설"
+    number: 11
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "업무시설"
+    number: 12
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "숙박시설"
+    number: 13
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "위락시설"
+    number: 14
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "공장"
+    number: 15
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "창고시설"
+    number: 16
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "위험물시설"
+    number: 17
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "항공기_및_자동차관련시설"
+    number: 18
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "동식물관련시설"
+    number: 19
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "자원순환관련시설"
+    number: 20
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "교정_및_군사시설"
+    number: 21
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "방송통신시설"
+    number: 22
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "발전시설"
+    number: 23
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "묘지관련시설"
+    number: 24
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "관광휴게시설"
+    number: 25
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "장례시설"
+    number: 26
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "지하가"
+    number: 27
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "지하구"
+    number: 28
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "문화재"
+    number: 29
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "복합건축물"
+    number: 30
+    specifications:
+      - name: "임시"
+        number: 33
+  - name: "특수가연물"
+    number: 31
+    specifications:
+      - name: "임시"
+        number: 33

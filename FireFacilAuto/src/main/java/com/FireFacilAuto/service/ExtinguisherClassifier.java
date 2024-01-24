@@ -31,8 +31,8 @@ public class ExtinguisherClassifier {
         return false;
     }
 
-    public Boolean indoorFireHydrantApparatusCheck(BuildTarget bt){
-
-    }
+//    public Boolean indoorFireHydrantApparatusCheck(BuildTarget bt){
+//
+//    }
 
 }

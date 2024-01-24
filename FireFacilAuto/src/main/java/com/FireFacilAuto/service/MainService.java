@@ -36,7 +36,7 @@ public class MainService {
         buildTarget.juso = inputDTO.juso;
         buildTarget.GFA = inputDTO.GFA;
         buildTarget.floor = inputDTO.floor;
-        buildTarget.classification = inputDTO.classification.getNumber();
+        buildTarget.classification = inputDTO.classification;
         buildTarget.dateOfConstruction = inputDTO.dateOfConstruction;
         return buildTarget;
     }

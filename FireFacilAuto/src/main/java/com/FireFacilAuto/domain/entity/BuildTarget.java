@@ -25,6 +25,8 @@ public class BuildTarget {
 
     public Integer classification;
 
+    public Integer specification;
+
     public LocalDateTime dateOfConstruction;
 
     @OneToOne

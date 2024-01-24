@@ -1,7 +1,6 @@
 package com.FireFacilAuto.domain.DTO;
 
 import com.FireFacilAuto.domain.entity.Address;
-import com.FireFacilAuto.domain.entity.ClassificationEnum;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +18,7 @@ public class InputDTO {
 
     public Long GFA;
 
-    public ClassificationEnum classification;
+    public Integer classification;
 
     public LocalDateTime dateOfConstruction;
 }
