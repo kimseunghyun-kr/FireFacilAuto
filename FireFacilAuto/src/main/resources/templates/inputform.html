@@ -16,31 +16,71 @@
             document.getElementById('selected-classification').innerText = selectedText;
             document.getElementById('classification').value = parseInt(selectedValue);
 
+
+            // Reset the selected specification when the classification changes
+            resetSelectedSpecification();
+
+            // Call the function to populate the specification dropdown
+            populateSpecificationDropdown(selectedValue);
+
             // Close the dropdown after selection
             option.parentElement.style.display = 'none';
         }
 
+        function populateSpecificationDropdown(classificationValue) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/main/getSpecificationOptions?classificationValue=' + classificationValue, true);
 
-        // /*<![CDATA[*/
-        // function populateSpecificationDropdown() {
-        //     var classificationValue = $('#classification').val();
-        //     $.get('/yourControllerPath/getSecondDropdownOptions', {classificationValue: classificationValue}, function(data) {
-        //         // Clear existing options
-        //         $('#specification-dropdown').empty();
-        //
-        //         // Populate options
-        //         $.each(data, function(index, option) {
-        //             $('#specification-dropdown').append($('<option>', {
-        //                 value: option.value,
-        //                 text: option.text
-        //             }));
-        //         });
-        //
-        //         // Optionally, show the second dropdown container
-        //         $('#specification-container').show();
-        //     });
-        // }
-        // /*]]>*/
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var specificationOptions = JSON.parse(xhr.responseText);
+                    updateSpecificationDropdown(specificationOptions);
+                } else {
+                    console.error('Error fetching specification options');
+                    // Handle error gracefully, e.g., display a message to the user
+                }
+            };
+
+            xhr.send();
+        }
+
+
+        function updateSpecificationDropdown(options) {
+            var specificationDropdown = document.getElementById('specification-options');
+            specificationDropdown.innerHTML = '';
+
+            options.forEach(function (spec) {
+                var li = document.createElement('li');
+                li.setAttribute('data-value', spec.number);
+                li.innerText = spec.name.replace('_', ' ');
+                li.onclick = function () {
+                    selectSpecificationOption(this);
+                };
+
+                specificationDropdown.appendChild(li);
+            });
+        }
+
+        function selectSpecificationOption(option) {
+            var selectedText = option.innerText;
+            var selectedValue = option.getAttribute('data-value');
+
+            document.getElementById('selected-specification').innerText = selectedText;
+            document.getElementById('specification').value = parseInt(selectedValue);
+
+            // Close the specification dropdown after selection
+            option.parentElement.style.display = 'none';
+        }
+
+
+
+        function resetSelectedSpecification() {
+            // Reset the selected specification to blank
+            document.getElementById('selected-specification').innerText = '';
+            document.getElementById('specification').value = '';
+        }
+
+
 
     </script>
 
@@ -88,14 +128,24 @@
 
         <!--        ajax call      -->
         <input type="hidden" id="classification" name="classification" th:field="*{classification}" />
-<!--        <input type="hidden" id="classification" name="classification" th:field="*{classification}" onchange="populateSpecificationDropdown()" />-->
 
     </div>
 
-<!--    <div id="specification-container" style="display: none;">-->
-<!--        <label for="specification-dropdown">Specification:</label>-->
-<!--        <select id="specification-dropdown" name="specificationDropdown"></select>-->
-<!--    </div>-->
+
+
+    <!-- Specification Dropdown -->
+    <div class="select-container" th:classappend="${#fields.hasErrors('specification')} ? 'error' : ''">
+        <label for="specification">세부용도:</label>
+        <div class="select-button" onclick="toggleDropdown(this)">
+            <span th:text="${#fields.hasErrors('specification')} ? '*' : ''"></span>
+            <span id="selected-specification"></span>
+            <span>&#9662;</span>
+        </div>
+        <ul id="specification-options" class="select-options">
+            <!-- Options will be dynamically populated using JavaScript -->
+        </ul>
+        <input type="hidden" id="specification" name="specification" th:field="*{specification}" />
+    </div>
 
 
     <label for="dateOfConstruction">시공연월일:</label>
