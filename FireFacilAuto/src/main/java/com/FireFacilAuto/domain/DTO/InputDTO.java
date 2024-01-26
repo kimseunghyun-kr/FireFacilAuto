@@ -22,5 +22,7 @@ public class InputDTO {
 
     public Integer specification;
 
+    public Long length;
+
     public LocalDateTime dateOfConstruction;
 }

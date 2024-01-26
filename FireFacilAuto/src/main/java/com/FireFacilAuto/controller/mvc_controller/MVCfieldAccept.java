@@ -48,7 +48,7 @@ public class MVCfieldAccept {
         BuildTarget buildTarget = mainService.execute(inputDTO);
         model.addAttribute ("result", buildTarget);
         // Redirect or show success page
-        return "redirect:/success";
+        return "redirect:/result";
     }
 
 

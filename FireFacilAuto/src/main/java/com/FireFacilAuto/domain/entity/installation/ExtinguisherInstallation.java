@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 @Entity
 public class ExtinguisherInstallation extends BaseInstallation {
     public Boolean extinguisherApparatus;
+    public Boolean HUAutomaticFireExtinguisherApparatus;
+    public Boolean CEAutomaticFireExtinguisherApparatus;
     public Boolean IndoorFireHydrantApparatus;
     public Boolean OutdoorFireHydrantApparatus;
     public Boolean SprinklerApparatus;
