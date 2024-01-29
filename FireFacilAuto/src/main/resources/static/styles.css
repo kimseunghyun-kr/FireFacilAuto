@@ -1,85 +1,65 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    margin: 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow: hidden;
 }
 
 form {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: grid;
+    gap: 20px;
+}
+
+.input-group {
+    text-align: left;
 }
 
 label {
-    display: block;
-    margin-bottom: 8px;
     font-weight: bold;
+    color: #333;
 }
 
 input {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s, color 0.3s;
 }
 
+input:focus,
+input:not(:placeholder-shown) {
+    background-color: #f0f0f0; /* Change background color when input is not empty */
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Center the submit button */
 button {
-    background-color: #4caf50;
+    background-color: #007bff;
     color: #fff;
-    padding: 10px 15px;
+    padding: 12px 25px; /* Slightly longer padding */
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    border-radius: 5px;
     font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 0 auto; /* Center the button */
+    display: block; /* Make the button a block element for centering */
 }
 
 button:hover {
-    background-color: #45a049;
-}
-
-/* Style the dropdown container */
-.select-container {
-    position: relative;
-    display: inline-block;
-}
-
-/* Style the dropdown button */
-.select-button {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 8px;
-    cursor: pointer;
-    min-width: 120px;
-}
-
-/* Style the dropdown options */
-.select-options {
-    display: none;
-    position: absolute;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ccc;
-    min-width: 150px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1;
-    list-style: none
-}
-
-/* Style the dropdown options when hovered */
-.select-options li:hover {
-    background-color: #f0f0f0;
-}
-
-/* Show the options when the button is clicked */
-.select-container.open .select-options {
-    display: block;
+    background-color: #0056b3;
 }

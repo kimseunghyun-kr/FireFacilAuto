@@ -1,7 +1,5 @@
 package com.FireFacilAuto.service;
 
-import com.FireFacilAuto.domain.DTO.InputDTO;
-import com.FireFacilAuto.domain.entity.BuildTarget;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,22 +22,6 @@ public class MainService {
         this.generalBuildUsageClassifier = generalBuildUsageClassifier;
     }
 
-    public BuildTarget execute(InputDTO inputDTO) {
-        BuildTarget buildTarget = this.inputMapper(inputDTO);
-        buildTarget.extinguisherInstallation = extinguisherClassifier.classify(buildTarget);
-
-        return buildTarget;
-    }
-
-    public BuildTarget inputMapper (InputDTO inputDTO) {
-        BuildTarget buildTarget = new BuildTarget();
-        buildTarget.juso = inputDTO.juso;
-        buildTarget.GFA = inputDTO.GFA;
-        buildTarget.floor = inputDTO.floor;
-        buildTarget.classification = inputDTO.classification;
-        buildTarget.dateOfConstruction = inputDTO.dateOfConstruction;
-        return buildTarget;
-    }
 
 
 

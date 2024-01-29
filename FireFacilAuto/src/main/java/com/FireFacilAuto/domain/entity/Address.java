@@ -1,17 +1,18 @@
 package com.FireFacilAuto.domain.entity;
 
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 
 @Data
+@Embeddable
 public class Address {
 
-    public String city;
+    private String detailAdr;
+    private String streetAdr;
+    private String zipCode;
+    private String extraAdr;
+    private String sigunguCode;
+    private String bcode;
+    // getters and setters
 
-    public String Gu;
-
-    public String doro;
-
-    public String jibun;
-
-    public String etc;
 }
