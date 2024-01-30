@@ -1,17 +1,21 @@
 package com.FireFacilAuto.service.WebClient;
 
-import com.FireFacilAuto.domain.DTO.api.ApiResponse;
-import com.FireFacilAuto.domain.DTO.api.ApiResponseItem;
-import com.FireFacilAuto.domain.DTO.api.ResponseBody;
+import com.FireFacilAuto.domain.DTO.api.*;
+import com.FireFacilAuto.domain.entity.Address;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class WebClientApiService {
+    private final Integer MAX_QUERY = 100;
+    private final Integer SAFE_QUERY = 80;
 
     @Value("${webclient.api.key}")
     private String apiKey;
@@ -22,26 +26,79 @@ public class WebClientApiService {
         this.webClient = webClient;
     }
 
-    public ResponseBody fetchData() {
+    public List<ApiResponseItem> fetchAllData(Address address) {
+        log.info("Address: {}", address);
+        int pageNo = 1;
+        int totalCount;
+
+        WebClient.RequestHeadersSpec<?> request = getRequestHeadersSpec(address, pageNo);
+        String response = request.retrieve().bodyToMono(String.class).block();
+        log.info("response {}", response);
+        ApiResponse apiResponse = request.retrieve().bodyToMono(ApiResponse.class).block();
+
+        assert apiResponse != null;
+        totalCount = apiResponse.getResponse().getBody().getTotalCount();
+        log.info("total counts {}" ,totalCount);
+
+        List<ApiResponseItem> resultList = new LinkedList<>(apiResponse.getResponse().getBody().getItems().getItem());
+
+        int totalRepeats = (int) Math.ceil((double) totalCount / SAFE_QUERY);
+        log.info("totalrepeats {}" , totalRepeats);
+        pageNo += 1;
+
+        while(pageNo <= totalRepeats) {
+            log.info("pageNo {}", pageNo);
+            request = getRequestHeadersSpec(address, pageNo);
+            apiResponse = request.retrieve().bodyToMono(ApiResponse.class).block();
+            assert apiResponse != null;
+            resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
+            pageNo += 1;
+
+        }
+
+        return resultList;
+    }
+
+    private WebClient.RequestHeadersSpec<?> getRequestHeadersSpec(Address address, int pageNo) {
+        return webClient.get().uri(uriBuilder -> uriBuilder
+                .queryParam("serviceKey", apiKey)
+                .queryParam("bjdongCd", address.getBcode())
+//                .queryParam("platGbCd", "0")
+                .queryParam("bun", address.getBun())
+                .queryParam("ji", address.getJi())
+//                .queryParam("startDate", "")
+//                .queryParam("endDate", "")
+                .queryParam("numOfRows", SAFE_QUERY)
+                .queryParam("pageNo", pageNo)
+                .queryParam("sigunguCd", address.getSigunguCode())
+                .queryParam("_type", "json")
+                .build());
+    }
+
+    public List<ApiResponseItem> fetchData(Address address) {
+        log.info("sigungucode {} ", address.getSigunguCode());
+        log.info("bcode {} ", address.getBcode());
         WebClient.RequestHeadersSpec<?> request = webClient.get().uri(uriBuilder -> uriBuilder
                 .queryParam("serviceKey", apiKey)
-                .queryParam("bjdongCd", "10300")
-                .queryParam("platGbCd", "0")
-                .queryParam("bun", "0012")
-                .queryParam("ji", "0000")
-                .queryParam("startDate", "")
-                .queryParam("endDate", "")
-                .queryParam("numOfRows", "10")
-                .queryParam("pageNo", "1")
-                .queryParam("sigunguCd", "11680")
+                .queryParam("bjdongCd", address.getBcode())
+//                .queryParam("platGbCd", "0")
+//                .queryParam("bun", "0012")
+//                .queryParam("ji", "0000")
+//                .queryParam("startDate", "")
+//                .queryParam("endDate", "")
+//                .queryParam("numOfRows", "10")
+//                .queryParam("pageNo", "1")
+                .queryParam("sigunguCd", address.getSigunguCode())
+                .queryParam("_type", "json")
                 .build());
+
+        String response = request.retrieve().bodyToMono(String.class).block();
 
         ApiResponse apiResponse = request.retrieve().bodyToMono(ApiResponse.class).block();
 
-        ResponseBody responseBody = apiResponse.getBody();
+        assert apiResponse != null;
+        ResponseBody responseBody = apiResponse.getResponse().getBody();
 
-        List<ApiResponseItem> responseItemList = responseBody.getItems();
-
-        return responseBody;
+        return responseBody.getItems().getItem();
     }
 }

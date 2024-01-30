@@ -8,8 +8,10 @@ import java.util.List;
 @Data
 public class ResponseBody {
 
-    @JsonProperty("items")
-    private List<ApiResponseItem> items;
+    private Items items;
+    private int numOfRows;
+    private int pageNo;
+    private int totalCount;
 
     // Getters and Setters
 }

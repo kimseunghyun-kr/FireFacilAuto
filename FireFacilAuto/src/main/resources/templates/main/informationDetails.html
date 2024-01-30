@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Response Items</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles2.css}">
+</head>
+<body>
+
+<h2>Response Items</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Area</th>
+        <th>Area Exact YN</th>
+        <th>BJ Dong Code</th>
+        <th>Building Name</th>
+        <th>Block</th>
+        <th>Bun</th>
+        <th>Creation Day</th>
+        <th>Dong Name</th>
+        <th>Etc Purposes</th>
+        <th>Etc Structure</th>
+        <th>Floor Gb Code</th>
+        <th>Floor Gb Code Name</th>
+        <th>Floor Number</th>
+        <th>Floor Number Name</th>
+        <th>Ji</th>
+        <th>Lot</th>
+        <th>Main Attachment Gb Code</th>
+        <th>Main Attachment Gb Code Name</th>
+        <th>Main Purposes Code</th>
+        <th>Main Purposes Code Name</th>
+        <th>Management Bldrgst Pk</th>
+        <th>NA BJDong Code</th>
+        <th>NA Main Bun</th>
+        <th>NA Road Code</th>
+        <th>NA Sub Bun</th>
+        <th>NA Underground Code</th>
+        <th>New Plat Plc</th>
+        <th>Plat Gb Code</th>
+        <th>Plat Plc</th>
+        <th>Row Number</th>
+        <th>Sigungu Code</th>
+        <th>Splot Name</th>
+        <th>Structure Code</th>
+        <th>Structure Code Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the items in the ResponseBody -->
+    <tr th:each="item : ${response}">
+        <!-- Access the properties of ApiResponseItem -->
+        <td th:text="${item.area}"></td>
+        <td th:text="${item.areaExctYn}"></td>
+        <td th:text="${item.bjdongCd}"></td>
+        <td th:text="${item.bldNm}"></td>
+        <td th:text="${item.block}"></td>
+        <td th:text="${item.bun}"></td>
+        <td th:text="${item.crtnDay}"></td>
+        <td th:text="${item.dongNm}"></td>
+        <td th:text="${item.etcPurps}"></td>
+        <td th:text="${item.etcStrct}"></td>
+        <td th:text="${item.flrGbCd}"></td>
+        <td th:text="${item.flrGbCdNm}"></td>
+        <td th:text="${item.flrNo}"></td>
+        <td th:text="${item.flrNoNm}"></td>
+        <td th:text="${item.ji}"></td>
+        <td th:text="${item.lot}"></td>
+        <td th:text="${item.mainAtchGbCd}"></td>
+        <td th:text="${item.mainAtchGbCdNm}"></td>
+        <td th:text="${item.mainPurpsCd}"></td>
+        <td th:text="${item.mainPurpsCdNm}"></td>
+        <td th:text="${item.mgmBldrgstPk}"></td>
+        <td th:text="${item.naBjdongCd}"></td>
+        <td th:text="${item.naMainBun}"></td>
+        <td th:text="${item.naRoadCd}"></td>
+        <td th:text="${item.naSubBun}"></td>
+        <td th:text="${item.naUgrndCd}"></td>
+        <td th:text="${item.newPlatPlc}"></td>
+        <td th:text="${item.platGbCd}"></td>
+        <td th:text="${item.platPlc}"></td>
+        <td th:text="${item.rnum}"></td>
+        <td th:text="${item.sigunguCd}"></td>
+        <td th:text="${item.splotNm}"></td>
+        <td th:text="${item.strctCd}"></td>
+        <td th:text="${item.strctCdNm}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

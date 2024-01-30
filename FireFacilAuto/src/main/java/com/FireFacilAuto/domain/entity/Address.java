@@ -13,6 +13,9 @@ public class Address {
     private String extraAdr;
     private String sigunguCode;
     private String bcode;
+
+    private String ji;
+    private String bun;
     // getters and setters
 
 }

@@ -53,7 +53,23 @@
                     document.getElementById("postcode").value = data.zonecode;
                     document.getElementById("address").value = addr;
                     document.getElementById("sigunguCode").value = data.sigunguCode;
-                    document.getElementById("bcode").value = data.bcode;
+                    document.getElementById("bcode").value = parseInt(data.bcode.toString().substring(5))
+                    const regex = /\b(\d+)(?:-(\d+))?\b$/
+                    matchJibun = regex.exec(data.jibunAddress)
+                    jibunArray = matchJibun ? matchJibun.slice(1) : null;
+                    if (matchJibun) {
+                        // Ensure the length is at least 4 characters by zero-padding
+                        const paddedNumber1 = jibunArray[0].padStart(4, '0');
+                        const paddedNumber2 = jibunArray[1] ? jibunArray[1].padStart(4, '0') : '';
+
+                        // Update HTML elements
+                        document.getElementById("bun").value = paddedNumber1;
+                        document.getElementById("ji").value = paddedNumber2;
+                    } else {
+                        // Handle the case when no match is found
+                        document.getElementById("ji").value = null;
+                        document.getElementById("bun").value = null;
+                    }
 
                     // 커서를 상세주소 필드로 이동한다.
                     document.getElementById("detailAddress").focus();
@@ -70,6 +86,8 @@
         <!-- Hidden Input 1 -->
         <input type="hidden" id="sigunguCode" name="sigunguCode" th:field="*{sigunguCode}" readonly />
         <input type="hidden" id="bcode" name="bcode" th:field="*{bcode}" readonly />
+        <input type="hidden" id="ji" name="ji" th:field="*{ji}" readonly />
+        <input type="hidden" id="bun" name="bun" th:field="*{bun}" readonly />
 
 <!--        displayed Inputs      -->
         <div class="input-group">

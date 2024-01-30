@@ -5,10 +5,7 @@ import lombok.Data;
 
 @Data
 public class ApiResponse {
-
-    private ResponseHeader header;
-    private ResponseBody body;
-
+    private Response response;
     // Getters and Setters
 }
 
