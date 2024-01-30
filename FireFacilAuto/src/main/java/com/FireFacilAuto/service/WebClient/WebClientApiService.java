@@ -40,7 +40,11 @@ public class WebClientApiService {
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
         log.info("total counts {}" ,totalCount);
 
-        List<ApiResponseItem> resultList = new LinkedList<>(apiResponse.getResponse().getBody().getItems().getItem());
+        List<ApiResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        if(firstApiResponseList == null || firstApiResponseList.isEmpty()) {
+            return new LinkedList<>();
+        }
+        List<ApiResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
         int totalRepeats = (int) Math.ceil((double) totalCount / SAFE_QUERY);
         log.info("totalrepeats {}" , totalRepeats);
@@ -81,18 +85,11 @@ public class WebClientApiService {
         WebClient.RequestHeadersSpec<?> request = webClient.get().uri(uriBuilder -> uriBuilder
                 .queryParam("serviceKey", apiKey)
                 .queryParam("bjdongCd", address.getBcode())
-//                .queryParam("platGbCd", "0")
-//                .queryParam("bun", "0012")
-//                .queryParam("ji", "0000")
-//                .queryParam("startDate", "")
-//                .queryParam("endDate", "")
-//                .queryParam("numOfRows", "10")
-//                .queryParam("pageNo", "1")
                 .queryParam("sigunguCd", address.getSigunguCode())
                 .queryParam("_type", "json")
                 .build());
 
-        String response = request.retrieve().bodyToMono(String.class).block();
+//        String response = request.retrieve().bodyToMono(String.class).block();
 
         ApiResponse apiResponse = request.retrieve().bodyToMono(ApiResponse.class).block();
 
