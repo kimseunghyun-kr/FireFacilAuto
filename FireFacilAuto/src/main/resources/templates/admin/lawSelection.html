@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Law Selection</title>
+    <style>
+        .tab {
+            display: none;
+        }
+
+        .tab.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Law Selection</h1>
+
+<!-- Tab navigation -->
+<ul>
+    <li><a href="#" onclick="openTab(event, 'buildingTab')">Building Law Fields</a></li>
+    <li><a href="#" onclick="openTab(event, 'floorTab')">Floor Law Fields</a></li>
+</ul>
+
+<!-- Include building tab -->
+<div th:insert="~{admin/buildingTab}"></div>
+
+<!-- Include floor tab -->
+<div th:insert="~{admin/floorTab}"></div>
+
+<!-- JavaScript function to switch tabs -->
+<script>
+    function openTab(event, tabName) {
+        event.preventDefault();
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        document.getElementById(tabName).style.display = "block";
+    }
+</script>
+
+</body>
+</html>

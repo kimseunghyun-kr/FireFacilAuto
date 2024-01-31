@@ -1,0 +1,38 @@
+<!-- floorTab.html -->
+<div id="floorTab" class="tab" th:fragment="floorTab">
+    <form th:action="@{/admin/lawselection}" method="post" th:object="${floorForm}">
+        <h2>Select Floor Law Fields</h2>
+        <!-- Include input fields for floor law fields -->
+        <!-- Iterate over fields -->
+        <div th:each="field : ${fields}">
+            <!-- Check if the field is associable with a condition -->
+            <div th:if="${formUtility.floorFieldAssociableWithCondition(field)}">
+                <label th:text="${field}">Field Label:</label>
+                <input type="text" th:id="${field}" th:field="*{${field}}" />
+
+                <!-- Radio buttons for selecting condition -->
+                <label>
+                    <input type="radio" th:id="${field + '_equals'}" th:name="${'conditions[' + field + ']'}" th:value="EQUALS" />
+                    Equals
+                </label>
+
+                <label>
+                    <input type="radio" th:id="${field + '_not_equals'}" th:name="${'conditions[' + field + ']'}" th:value="NOT_EQUALS" />
+                    Not Equals
+                </label>
+                <!-- Add other condition options as needed -->
+            </div>
+
+            <!-- Fields not associable to a condition -->
+            <div th:unless="${formUtility.floorFieldAssociableWithCondition(field)}">
+                <label th:text="${field}">Field Label:</label>
+                <input type="text" th:id="${field}" th:field="*{${field}}" />
+                <!-- Add other input fields as needed for non-associable fields -->
+            </div>
+        </div>
+
+        <!-- Add more input fields for other floor law fields -->
+
+        <button type="submit">Submit Floor Law Fields</button>
+    </form>
+</div>

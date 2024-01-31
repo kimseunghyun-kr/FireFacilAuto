@@ -1,4 +1,4 @@
-package com.FireFacilAuto.service;
+package com.FireFacilAuto.service.classificationServices;
 
 
 import org.springframework.stereotype.Service;
