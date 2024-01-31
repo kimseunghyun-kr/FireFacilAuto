@@ -1,5 +1,6 @@
 package com.FireFacilAuto.domain.DTO.law;
 
+import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
 
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class BuildingLawForms {
 
 

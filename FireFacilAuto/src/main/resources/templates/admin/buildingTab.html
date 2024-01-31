@@ -1,14 +1,31 @@
 <!-- buildingTab.html -->
-<div id="buildingTab" class="tab" th:fragment="buildingTab">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BuildingTab</title>
+</head>
+<body>
+
+<div id="buildingTab" class="tab" th:fragment="buildingTab (buildingForm, formUtilityMethod , fields)">
+
+    <h2>Select Building Law Fields</h2>
+    <!-- Include input fields for building law fields -->
+    <!-- Iterate over fields -->
+<!--    <div th:each="field : ${fields}">-->
+<!--        <p th:text="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">text</p>-->
     <form th:action="@{/admin/lawselection}" method="post" th:object="${buildingForm}">
         <h2>Select Building Law Fields</h2>
         <!-- Include input fields for building law fields -->
         <!-- Iterate over fields -->
         <div th:each="field : ${fields}">
             <!-- Check if the field is associable with a condition -->
-            <div th:if="${formUtility.buildingFieldAssociableWithCondition(field)}">
+            <div th:if="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">
                 <label th:text="${field}">Field Label:</label>
-                <input type="text" th:id="${field}" th:field="*{${field}}" />
+                <input type="text" th:id="${field}" th:field="*{__${field}__}" />
 
                 <!-- Radio buttons for selecting condition -->
                 <label>
@@ -24,9 +41,9 @@
             </div>
 
             <!-- Fields not associable to a condition -->
-            <div th:unless="${formUtility.buildingFieldAssociableWithCondition(field)}">
+            <div th:unless="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">
                 <label th:text="${field}">Field Label:</label>
-                <input type="text" th:id="${field}" th:field="*{${field}}" />
+                <input type="text" th:id="${field}" th:field="*{__${field}__}" />
                 <!-- Add other input fields as needed for non-associable fields -->
             </div>
         </div>
@@ -34,3 +51,7 @@
         <button type="submit">Submit Building Law Fields</button>
     </form>
 </div>
+
+</body>
+</html>
+

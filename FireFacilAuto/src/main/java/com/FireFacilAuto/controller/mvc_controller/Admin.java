@@ -20,8 +20,8 @@ public class Admin {
 
     @GetMapping("/lawSelection")
     public String lawSelectionView(Model model) {
-        model.addAttribute("buildingForms", new BuildingLawForms());
-        model.addAttribute("floorLawForms", new FloorLawForms());
+        model.addAttribute("buildingForm", new BuildingLawForms());
+        model.addAttribute("floorForm", new FloorLawForms());
         model.addAttribute("formUtilityMethod", new FormUtilityMethods());
         return "/admin/lawSelection";
     }
