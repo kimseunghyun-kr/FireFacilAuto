@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Law Selection</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
     <style>
         .tab {
             display: none;
@@ -11,6 +12,38 @@
             display: block;
         }
     </style>
+
+    <script th:inline="javascript">
+        function validateAndSubmitForm() {
+            let form = document.getElementsByName('form');
+            let inputs = form.getElementsByTagName('input');
+
+            for (let i = 0; i < inputs.length; i++) {
+                let input = inputs[i];
+                if (input.type === 'text' && input.value.trim() === '') {
+                    // Skip radio buttons associated with empty text inputs
+                    let radioName = 'conditions[' + input.id + ']';
+                    let radios = form.querySelectorAll('[name="' + radioName + '"]');
+                    for (let j = 0; j < radios.length; j++) {
+                        radios[j].disabled = true;
+                    }
+                }
+            }
+
+            // Submit the form
+            form.submit();
+        }
+
+        function openTab(tabName) {
+            // remove all
+            let tabcontent = document.getElementsByClassName("tab");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            document.getElementById(tabName).style.display = "block";
+        }
+    </script>
+
 </head>
 <body>
 
@@ -27,22 +60,12 @@
 <!--    <p th:text="${formUtilityMethod.buildingFieldAssociableWithCondition('texas')}">formUtilityMethod</p>-->
 
 <!-- Include building tab -->
-<div th:insert="admin/buildingTab.html :: buildingTab (${buildingForm}, ${formUtilityMethod}, ${formUtilityMethod.allBuildingFields()})"></div>
+<div th:insert="~{admin/buildingTab.html :: buildingTab (${buildingForm}, ${formUtilityMethod}, ${formUtilityMethod.allBuildingFields()})}"></div>
 
 <!-- Include floor tab -->
-<div th:insert="admin/floorTab.html :: floorTab (${floorForm}, ${formUtilityMethod}, ${formUtilityMethod.allFloorFields()})"></div>
+<div th:insert="~{admin/floorTab.html :: floorTab (${floorForm}, ${formUtilityMethod}, ${formUtilityMethod.allFloorFields()})}"></div>
 
 <!-- JavaScript function to switch tabs -->
-<script>
-    function openTab(tabName) {
-        // remove all
-        let tabcontent = document.getElementsByClassName("tab");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        document.getElementById(tabName).style.display = "block";
-    }
-</script>
 
 </body>
 </html>

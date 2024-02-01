@@ -1,7 +1,7 @@
 <!-- floorTab.html -->
 
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -10,8 +10,8 @@
     <title>FloorTab</title>
 </head>
 <body>
-<div id="floorTab" class="tab" th:fragment="floorTab (floorForm, formUtilityMethod, fields)">
-    <form th:action="@{/admin/lawselection}" method="post" th:object="${floorForm}">
+<div id="floorTab" class="tab" th:fragment="floorTab(floorForm, formUtilityMethod, fields)">
+    <form th:action="@{/admin/lawSelectionFloor}" method="post" th:object="${floorForm}">
         <h2>Select Floor Law Fields</h2>
         <!-- Include input fields for floor law fields -->
         <!-- Iterate over fields -->
@@ -21,17 +21,37 @@
                 <label th:text="${field}">Field Label:</label>
                 <input type="text" th:id="${field}" th:field="*{__${field}__}" />
 
-                <!-- Radio buttons for selecting condition -->
-                <label>
-                    <input type="radio" th:id="${field + '_equals'}" th:name="${'conditions[' + field + ']'}" th:value="EQUALS" />
-                    Equals
-                </label>
+                <div class = "radio-buttons">
+                    <!-- Radio buttons for selecting condition -->
+                    <label>
+                        <input type="radio" th:id="${field + '_equals'}" th:name="${'conditions[' + field + ']'}" th:value="EQUAL" />
+                        같다 (=)
+                    </label>
 
-                <label>
-                    <input type="radio" th:id="${field + '_not_equals'}" th:name="${'conditions[' + field + ']'}" th:value="NOT_EQUALS" />
-                    Not Equals
-                </label>
-                <!-- Add other condition options as needed -->
+                    <label>
+                        <input type="radio" th:id="${field + '_not_equals'}" th:name="${'conditions[' + field + ']'}" th:value="NOT_EQUAL" />
+                        같지 않다(!=)
+                    </label>
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than_or_equal'}" th:name="${'conditions[' + field + ']'}" th:value="GREATER_THAN_OR_EQUAL" />
+                        크거나 같다 (>=)
+                    </label>
+
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than'}" th:name="${'conditions[' + field + ']'}" th:value="GREATER_THAN" />
+                        크다 (>)
+                    </label>
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than_or_equal'}" th:name="${'conditions[' + field + ']'}" th:value="LESS_THAN_OR_EQUAL" />
+                        작거나 같다 (<=)
+                    </label>
+
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than'}" th:name="${'conditions[' + field + ']'}" th:value="LESS_THAN" />
+                        작다 (<)
+                    </label>
+                    <!-- Add other condition options as needed -->
+                </div>
             </div>
 
             <!-- Fields not associable to a condition -->
