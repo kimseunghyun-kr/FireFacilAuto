@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -17,9 +18,7 @@ public class FloorLawForms {
 
     public Boolean isUnderGround; //지하여부
 
-    public Integer floorClassification; //층 주용도
-
-    public Integer floorSpecification; //층 세부용도
+    public String floorPurpose; //층 용도
 
     public Double floorArea; //층 바닥면적
 

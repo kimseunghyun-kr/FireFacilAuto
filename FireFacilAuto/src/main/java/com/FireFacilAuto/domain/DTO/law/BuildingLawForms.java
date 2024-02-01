@@ -24,9 +24,7 @@ public class BuildingLawForms {
 
     public Long GFA; //연면적
 
-    public List<Integer> buildingClassification; //건물 주용도
-
-    public List<Integer> buildingSpecification; //건물 세부용도
+    public String buildingPurpose; //건물 용도
 
     public Long length; //터널 등 지하구 거리
 

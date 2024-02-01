@@ -16,7 +16,7 @@ public class FormUtilityMethods {
 
     public List<String> allBuildingFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "totalFloors",
-                "undergroundFloors", "overgroundFloors", "GFA", "buildingClassification", "buildingSpecification",
+                "undergroundFloors", "overgroundFloors", "GFA", "buildingPurpose",
                 "length", "dateofApproval", "buildingHumanCapacity");
     }
 
@@ -29,7 +29,7 @@ public class FormUtilityMethods {
 
     public List<String> allFloorFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo",
-                "isUnderGround", "floorClassification", "floorSpecification", "floorArea", "floorMaterial",
+                "isUnderGround", "floorPurpose" , "floorArea", "floorMaterial",
                 "floorWindowAvailability"
         );
     }

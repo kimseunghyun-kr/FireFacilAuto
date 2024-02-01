@@ -60,8 +60,18 @@
 
             <!-- Fields not associable to a condition -->
             <div th:unless="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">
+                <div th:if="${field == 'buildingPurpose'}">
+                    <span> 개별 입력 형식 : (주용도코드,세부용도코드), (주용도코드, 세부용도코드).... </span>
+                    <span> 주용도 전체 적용 : (-1, -1) </span>
+                    <span> 주용도 구간 적용 : ([1-5], -1) </span>
+                    <span> 세부용도 전체 적용 : (주용도, -1) </span>
+                    <span> 세부용도 구간 적용 : (주용도, [1-4]) </span>
+                </div>
+
+
                 <label th:text="${field}">Field Label:</label>
                 <input type="text" th:id="${field}" th:field="*{__${field}__}" />
+
                 <!-- Add other input fields as needed for non-associable fields -->
             </div>
         </div>

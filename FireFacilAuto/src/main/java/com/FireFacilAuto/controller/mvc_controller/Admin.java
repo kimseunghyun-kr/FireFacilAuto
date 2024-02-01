@@ -2,8 +2,12 @@ package com.FireFacilAuto.controller.mvc_controller;
 
 import com.FireFacilAuto.domain.DTO.law.BuildingLawForms;
 import com.FireFacilAuto.domain.DTO.law.FloorLawForms;
+import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.service.lawService.LawService;
 import com.FireFacilAuto.util.FormUtilityMethods;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 @Slf4j
 public class Admin {
+    @Autowired
+    public LawService lawService;
+
     @GetMapping("/main")
     public String adminView(){
         return "/admin/main";
@@ -30,13 +37,17 @@ public class Admin {
     @PostMapping("/lawSelectionBuild")
     public String BuildlawSelectionFormReceive(BuildingLawForms form, Model model) {
         log.info("BuildingForm , {}", form);
+        BuildingLawFields bf = lawService.makeBuildingLaw(form);
         return"redirect:/admin/main";
 
     }
 
+
+
     @PostMapping("/lawSelectionFloor")
     public String FloorlawSelectionFormReceive(FloorLawForms form, Model model) {
         log.info("floorForm {}", form);
+        FloorLawFields ff = lawService.makeFloorLaw(form);
         return "redirect:/admin/main";
     }
 }
