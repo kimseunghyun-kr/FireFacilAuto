@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
-import org.springframework.context.annotation.EnableMBeanExport;
 
 import java.util.List;
 

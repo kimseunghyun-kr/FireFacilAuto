@@ -1,14 +1,25 @@
 <!-- floorTab.html -->
-<div id="floorTab" class="tab" th:fragment="floorTab">
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>FloorTab</title>
+</head>
+<body>
+<div id="floorTab" class="tab" th:fragment="floorTab (floorForm, formUtilityMethod, fields)">
     <form th:action="@{/admin/lawselection}" method="post" th:object="${floorForm}">
         <h2>Select Floor Law Fields</h2>
         <!-- Include input fields for floor law fields -->
         <!-- Iterate over fields -->
         <div th:each="field : ${fields}">
             <!-- Check if the field is associable with a condition -->
-            <div th:if="${formUtility.floorFieldAssociableWithCondition(field)}">
+            <div th:if="${formUtilityMethod.floorFieldAssociableWithCondition(field)}">
                 <label th:text="${field}">Field Label:</label>
-                <input type="text" th:id="${field}" th:field="*{${field}}" />
+                <input type="text" th:id="${field}" th:field="*{__${field}__}" />
 
                 <!-- Radio buttons for selecting condition -->
                 <label>
@@ -24,9 +35,9 @@
             </div>
 
             <!-- Fields not associable to a condition -->
-            <div th:unless="${formUtility.floorFieldAssociableWithCondition(field)}">
+            <div th:unless="${formUtilityMethod.floorFieldAssociableWithCondition(field)}">
                 <label th:text="${field}">Field Label:</label>
-                <input type="text" th:id="${field}" th:field="*{${field}}" />
+                <input type="text" th:id="${field}" th:field="*{__${field}__}" />
                 <!-- Add other input fields as needed for non-associable fields -->
             </div>
         </div>
@@ -36,3 +47,7 @@
         <button type="submit">Submit Floor Law Fields</button>
     </form>
 </div>
+
+</body>
+</html>
+

@@ -18,22 +18,25 @@
 
 <!-- Tab navigation -->
 <ul>
-    <li><a href="#" onclick="openTab(event, 'buildingTab')">Building Law Fields</a></li>
-    <li><a href="#" onclick="openTab(event, 'floorTab')">Floor Law Fields</a></li>
+    <li><a href="#" onclick="openTab('buildingTab')">Building Law Fields</a></li>
+    <li><a href="#" onclick="openTab('floorTab')">Floor Law Fields</a></li>
 </ul>
 
+<!--<div th:if="${formUtilityMethod != null}">-->
+<!--    &lt;!&ndash; Debug output &ndash;&gt;-->
+<!--    <p th:text="${formUtilityMethod.buildingFieldAssociableWithCondition('texas')}">formUtilityMethod</p>-->
+
 <!-- Include building tab -->
-<div th:insert="~{admin/buildingTab}"></div>
+<div th:insert="admin/buildingTab.html :: buildingTab (${buildingForm}, ${formUtilityMethod}, ${formUtilityMethod.allBuildingFields()})"></div>
 
 <!-- Include floor tab -->
-<div th:insert="~{admin/floorTab}"></div>
+<div th:insert="admin/floorTab.html :: floorTab (${floorForm}, ${formUtilityMethod}, ${formUtilityMethod.allFloorFields()})"></div>
 
 <!-- JavaScript function to switch tabs -->
 <script>
-    function openTab(event, tabName) {
-        event.preventDefault();
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tab");
+    function openTab(tabName) {
+        // remove all
+        let tabcontent = document.getElementsByClassName("tab");
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
         }
