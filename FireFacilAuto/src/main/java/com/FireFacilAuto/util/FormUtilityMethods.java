@@ -16,19 +16,19 @@ public class FormUtilityMethods {
 
     public List<String> allBuildingFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "totalFloors",
-                "undergroundFloors", "overgroundFloors", "GFA", "buildingPurpose",
+                "totalUndergroundFloors", "totalOvergroundFloors", "GFA", "buildingPurpose",
                 "length", "dateofApproval", "buildingHumanCapacity");
     }
 
     public boolean floorFieldAssociableWithCondition(String fieldName) {
         List<String> fieldsWithConditions = Arrays.asList("floorNo",
-                "isUnderGround", "floorArea", "floorMaterial", "floorWindowAvailability"
+                "floorArea", "floorMaterial", "floorWindowAvailability"
         );
         return fieldsWithConditions.contains(fieldName);
     }
 
     public List<String> allFloorFields() {
-        return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo",
+        return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo", "purposeFloorAreaSum",
                 "isUnderGround", "floorPurpose" , "floorArea", "floorMaterial",
                 "floorWindowAvailability"
         );

@@ -8,11 +8,13 @@ import com.FireFacilAuto.service.lawService.LawService;
 import com.FireFacilAuto.util.FormUtilityMethods;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -34,10 +36,18 @@ public class Admin {
         return "/admin/lawSelection";
     }
 
+
+
     @PostMapping("/lawSelectionBuild")
-    public String BuildlawSelectionFormReceive(BuildingLawForms form, Model model) {
+    public String BuildlawSelectionFormReceive(Model model, @RequestBody String request,
+                                               @RequestParam("purposesFirst") List<String> purposesFirst,
+                                               @RequestParam("purposesSecond") List<String> purposesSecond,
+                                               BuildingLawForms form) {
+        log.info("request {}", request);
         log.info("BuildingForm , {}", form);
-        BuildingLawFields bf = lawService.makeBuildingLaw(form);
+        log.info("request, {} ", purposesFirst);
+        log.info("request2 , {}", purposesSecond);
+        List<BuildingLawFields> bf = lawService.makeBuildingLaw(form, purposesFirst, purposesSecond);
         return"redirect:/admin/main";
 
     }
@@ -45,9 +55,12 @@ public class Admin {
 
 
     @PostMapping("/lawSelectionFloor")
-    public String FloorlawSelectionFormReceive(FloorLawForms form, Model model) {
+    public String FloorlawSelectionFormReceive(Model model, @RequestBody String request,
+                                               @RequestParam("purposesFirst") List<String> purposesFirst,
+                                               @RequestParam("purposesSecond") List<String> purposesSecond,
+                                               FloorLawForms form) {
         log.info("floorForm {}", form);
-        FloorLawFields ff = lawService.makeFloorLaw(form);
+        List<FloorLawFields> ff = lawService.makeFloorLaw(form, purposesFirst, purposesSecond);
         return "redirect:/admin/main";
     }
 }

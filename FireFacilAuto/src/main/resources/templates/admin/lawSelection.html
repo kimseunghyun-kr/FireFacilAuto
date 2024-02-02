@@ -41,76 +41,30 @@
                 tabcontent[i].style.display = "none";
             }
             document.getElementById(tabName).style.display = "block";
-            PurposeData = [];
         }
 
-        let PurposeData = [];
-
-        function addPurpose(listName) {
-            // Find the container where you want to append new input fields
-            let container = document.getElementById(listName + 'Container');
-
-            // Create a new div for the input fields
-            let newDiv = document.createElement('div');
-            newDiv.className = listName +'Input';
-            newDiv.setAttribute('data-index', container.children.length);
-
-            // Create labels and input fields
-            let classificationLabel = document.createElement('label');
-            classificationLabel.textContent = 'Classification:';
-            let classificationInput = document.createElement('input');
-            classificationInput.type = 'text';
-            classificationInput.name = listName + 'Classification';
-            classificationInput.setAttribute('th:field', '*{' + listName + '[' + container.children.length + '].classification}');
-
-            let specificationLabel = document.createElement('label');
-            specificationLabel.textContent = 'Specification:';
-            let specificationInput = document.createElement('input');
-            specificationInput.type = 'text';
-            specificationInput.name = listName + 'Specification';
-            specificationInput.setAttribute('th:field', '*{' + listName + '[' + container.children.length + '].specification}');
-
-            // Append labels and input fields to the new div
-            newDiv.appendChild(classificationLabel);
-            newDiv.appendChild(classificationInput);
-            newDiv.appendChild(specificationLabel);
-            newDiv.appendChild(specificationInput);
-
-            // Append the new div to the container
-            container.insertBefore(newDiv, container.lastElementChild);
-
-            PurposeData.push({
-                classification: '',
-                specification: ''
-            });
-
-            updateThymeleafFields(listName);
-            console.log(PurposeData)
+        function addInput() {
+            const purposesContainer = document.getElementById('purposesContainer');
+            const newInputDiv = document.createElement('div');
+            newInputDiv.innerHTML =
+                `<input type="number" name="purposesFirst" placeholder="용도" required>
+             <input type="number" name="purposesSecond" placeholder="세부용도 , 전체 = -1" required>
+             <button type="button" onclick="removeInput(this)">Remove</button>`;
+            purposesContainer.appendChild(newInputDiv);
         }
 
-        function updateThymeleafFields(listName) {
-            PurposeData.forEach((data, index) => {
-                // Update the Thymeleaf fields based on the array
-                document.querySelector(`[data-index="${index}"] [name="${listName}Classification"]`).value = data.classification;
-                document.querySelector(`[data-index="${index}"] [name="${listName}Specification"]`).value = data.specification;
-            });
-        }
+        function removeInput(button) {
+            const purposesContainer = document.getElementById('purposesContainer');
+            const inputDiv = button.parentNode;
 
-        function removeLast(listName) {
-            let container = document.getElementById(listName + 'Container');
-            let lastDiv = container.lastElementChild;
-
-            if (lastDiv && container.children.length > 0) {
-                container.removeChild(lastDiv);
-                // Remove the last item from the JavaScript array
-                PurposeData.pop();
-
-                // Update Thymeleaf fields based on the modified JavaScript array
-                updateThymeleafFields(listName);
+            // Check if there is more than one pair of input elements before removing
+            if (purposesContainer.children.length > 1) {
+                purposesContainer.removeChild(inputDiv);
+            } else {
+                alert("At least one pair of inputs must remain.");
             }
-
-
         }
+
     </script>
 
 </head>

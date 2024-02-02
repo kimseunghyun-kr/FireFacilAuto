@@ -61,17 +61,35 @@
             <!-- Fields not associable to a condition -->
             <div th:unless="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">
                 <div th:if="${field == 'buildingPurpose'}">
+
+                    <h3> 용도 텍스트로 입력 </h3>
+                    <div id="purposesContainer">
+                        <!-- Initial pair of inputs -->
+                        <div>
+                            <input type="text" name="purposesFirst" placeholder="용도 ( 용도 -> 용도코드 매퍼 생성 전까지는 숫자로만 )">
+                            <input type="text" name="purposesSecond" placeholder="세부용도 ( 용도 -> 용도코드 매퍼 생성 전까지는 숫자로만 )">
+                            <button type="button" onclick="removeInput(this)">Remove</button>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="addInput()">용도추가</button>
+
+                    <h3> 용도 코드 형식 다중 입력 </h3>
                     <span> 개별 입력 형식 : (주용도코드,세부용도코드), (주용도코드, 세부용도코드).... </span>
                     <span> 주용도 전체 적용 : (-1, -1) </span>
                     <span> 주용도 구간 적용 : ([1-5], -1) </span>
                     <span> 세부용도 전체 적용 : (주용도, -1) </span>
                     <span> 세부용도 구간 적용 : (주용도, [1-4]) </span>
+
+                    <label th:text="${field}">Field Label:</label>
+                    <input type="text" th:id="${field}" th:field="*{__${field}__}" />
+
                 </div>
 
-
-                <label th:text="${field}">Field Label:</label>
-                <input type="text" th:id="${field}" th:field="*{__${field}__}" />
-
+                <div th:unless="${field == 'buildingPurpose'}">
+                    <label th:text="${field}">Field Label:</label>
+                    <input type="text" th:id="${field}" th:field="*{__${field}__}" />
+                </div>
                 <!-- Add other input fields as needed for non-associable fields -->
             </div>
         </div>

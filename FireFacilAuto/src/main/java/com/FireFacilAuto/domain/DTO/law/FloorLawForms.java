@@ -14,7 +14,7 @@ public class FloorLawForms {
 
     public Integer minorCategoryCode; //세부시설법 식별코드
 
-    public Integer floorNo; //충수
+    public Integer floorNo; //충수 조건
 
     public Boolean isUnderGround; //지하여부
 

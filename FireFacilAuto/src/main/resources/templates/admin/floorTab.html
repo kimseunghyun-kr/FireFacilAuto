@@ -57,6 +57,19 @@
             <!-- Fields not associable to a condition -->
             <div th:unless="${formUtilityMethod.floorFieldAssociableWithCondition(field)}">
                 <div th:if="${field == 'floorPurpose'}">
+
+                    <div id="purposesContainer">
+                        <!-- Initial pair of inputs -->
+                        <div>
+                            <input type="text" name="purposesFirst" placeholder="용도 ( 용도 -> 용도코드 매퍼 생성 전까지는 숫자로만 ">
+                            <input type="text" name="purposesSecond" placeholder="세부용도 ( 용도 -> 용도코드 매퍼 생성 전까지는 숫자로만 ">
+                            <button type="button" onclick="removeInput(this)">Remove</button>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="addInput()">Add Pair</button>
+
+
                     <span> 개별 입력 형식 : (주용도코드,세부용도코드), (주용도코드, 세부용도코드).... </span>
                     <span> 주용도 전체 적용 : (-1, -1) </span>
                     <span> 주용도 구간 적용 : ([1-5], -1) </span>
