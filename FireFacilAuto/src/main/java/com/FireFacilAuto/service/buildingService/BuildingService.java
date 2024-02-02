@@ -9,5 +9,6 @@ import java.util.List;
 public class BuildingService {
 //    convert to building to execute later
     public static void process(List<ApiResponseItem> resultList) {
+        return;
     }
 }

@@ -42,7 +42,7 @@ public class BuildingLawFields {
     public Integer buildingSpecification; //건물 세부용도
     @Column(columnDefinition = "integer default -1")
     @Positive
-    public Long length; //터널 등 지하구 거리
+    public Double length; //터널 등 지하구 거리
     @Column(columnDefinition = "timestamp default '0001-01-01T00:00:00'")
     public LocalDateTime dateofApproval; //사용승인일
 

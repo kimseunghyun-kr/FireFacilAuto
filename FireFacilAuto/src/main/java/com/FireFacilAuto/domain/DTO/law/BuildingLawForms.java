@@ -22,11 +22,11 @@ public class BuildingLawForms {
 
     public Integer overgroundFloors; //건물 내 총 지상층
 
-    public Long GFA; //연면적
+    public Double GFA; //연면적
 
     public String buildingPurpose; //건물 용도
 
-    public Long length; //터널 등 지하구 거리
+    public Double length; //터널 등 지하구 거리
 
     public LocalDateTime dateofApproval; //사용승인일
 

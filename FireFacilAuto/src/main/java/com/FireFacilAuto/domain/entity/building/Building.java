@@ -32,7 +32,7 @@ public class Building {
 
     public Integer buildingSpecification; //건물 세부용도
 
-    public Long length; //터널 등 지하구 거리
+    public Double length; //터널 등 지하구 거리
 
     public LocalDateTime dateofApproval; //사용승인일
 
