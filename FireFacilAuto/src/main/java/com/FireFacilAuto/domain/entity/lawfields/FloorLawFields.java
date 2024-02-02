@@ -1,10 +1,7 @@
 package com.FireFacilAuto.domain.entity.lawfields;
 
 import com.FireFacilAuto.domain.Conditions;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
@@ -45,9 +42,10 @@ public class FloorLawFields {
     public Boolean floorWindowAvailability; //무창층 (무창층에만 1 / 아닐 시 0)
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "floorLawFields")
     public List<Conditions> conditionsList;
 
 }

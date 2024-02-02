@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="floorTab" class="tab" th:fragment="floorTab(floorForm, formUtilityMethod, fields)">
-    <form th:action="@{/admin/lawSelectionFloor}" method="post" th:object="${floorForm}">
+    <form th:action="@{/admin/lawSelectionFormReceive}" method="post" th:object="${floorForm}">
         <h2>Select Floor Law Fields</h2>
         <!-- Include input fields for floor law fields -->
         <!-- Iterate over fields -->
@@ -86,6 +86,9 @@
         </div>
 
         <!-- Add more input fields for other floor law fields -->
+
+        <!-- Add formType parameter to distinguish between building and floor forms -->
+        <input type="hidden" name="formType" value="floor" />
 
         <button type="submit">Submit Floor Law Fields</button>
     </form>

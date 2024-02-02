@@ -1,4 +1,4 @@
-package com.FireFacilAuto.util;
+package com.FireFacilAuto.util.form;
 
 import lombok.Data;
 

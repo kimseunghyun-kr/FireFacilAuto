@@ -17,7 +17,7 @@
     <!-- Iterate over fields -->
     <!--    <div th:each="field : ${fields}">-->
     <!--        <p th:text="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">text</p>-->
-    <form th:action="@{/admin/lawSelectionBuild}" method="post" th:object="${buildingForm}">
+    <form th:action="@{/admin/lawSelectionFormReceive}" method="post" th:object="${buildingForm}">
         <!-- Include input fields for building law fields -->
         <!-- Iterate over fields -->
         <div th:each="field : ${fields}">
@@ -93,6 +93,9 @@
                 <!-- Add other input fields as needed for non-associable fields -->
             </div>
         </div>
+
+        <!-- Add formType parameter to distinguish between building and floor forms -->
+        <input type="hidden" name="formType" value="building" />
 
         <button type="submit">Submit Building Law Fields</button>
     </form>

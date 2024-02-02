@@ -1,16 +1,28 @@
 package com.FireFacilAuto.service.lawService;
 
+import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.DTO.law.BuildingLawForms;
 import com.FireFacilAuto.domain.DTO.law.FloorLawForms;
+import com.FireFacilAuto.domain.entity.building.Building;
+import com.FireFacilAuto.domain.entity.building.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.repository.BuildingLawFieldsRepository;
+import com.FireFacilAuto.repository.FloorLawFieldsRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -20,60 +32,112 @@ import java.util.stream.IntStream;
 public  class LawService {
 
     private final ConversionService conversionService;
+    private final BuildingLawFieldsRepository blawFieldRepository;
+    private final FloorLawFieldsRepository flawFieldRepository;
 
 
     @Autowired
-    public LawService(ConversionService conversionService) {
+    public LawService(ConversionService conversionService, BuildingLawFieldsRepository blawFieldRepository, FloorLawFieldsRepository flawFieldRepository) {
         this.conversionService = conversionService;
+        this.blawFieldRepository = blawFieldRepository;
+        this.flawFieldRepository = flawFieldRepository;
     }
+
+    public <T> Page<T> getPaginatedLaws(int page, int size, Class<T> entityType) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (BuildingLawFields.class.equals(entityType)) {
+            return (Page<T>) blawFieldRepository.findAll(pageable);
+        } else if (FloorLawFields.class.equals(entityType)) {
+            return (Page<T>) flawFieldRepository.findAll(pageable);
+        } else {
+            throw new IllegalArgumentException("Unsupported entity type: " + entityType);
+        }
+    }
+
 
     public List<BuildingLawFields> makeBuildingLaw(BuildingLawForms form, List<String> purposeClass, List<String> purposeSpec) {
         String stringInput = form.buildingPurpose;
         List<Integer[]> purposeList = purposeMapper(stringInput, purposeClass, purposeSpec);
-        return buildingLawFactory(form, purposeList);
-    }
-
-    private List<BuildingLawFields> buildingLawFactory(BuildingLawForms form, List<Integer[]> purposeList) {
-        List<BuildingLawFields> result = new LinkedList<>();
-        for(Integer[] purposePair : purposeList) {
-            BuildingLawFields template = conversionService.convert(form, BuildingLawFields.class);
-            assert template != null;
-            template.setBuildingClassification(purposePair[0]);
-            template.setBuildingSpecification(purposePair[1]);
-            result.add(template);
-        }
-        return result;
+        return lawFactory(form, purposeList, BuildingLawFields.class , blawFieldRepository);
     }
 
     public List<FloorLawFields> makeFloorLaw(FloorLawForms form , List<String> purposeClass, List<String> purposeSpec) {
         String stringInput = form.floorPurpose;
         List<Integer[]> purposeList = purposeMapper(stringInput, purposeClass, purposeSpec);
-        return floorLawFactory(form, purposeList);
+        return lawFactory(form, purposeList, FloorLawFields.class , flawFieldRepository);
     }
 
-    private List<FloorLawFields> floorLawFactory(FloorLawForms form, List<Integer[]> purposeList) {
-        List<FloorLawFields> result = new LinkedList<>();
-        for(Integer[] purposePair : purposeList) {
-            FloorLawFields template = conversionService.convert(form, FloorLawFields.class);
+
+    private <T> List<T> lawFactory(Object form, List<Integer[]> purposeList, Class<T> entityType, JpaRepository<T, Long> repository) {
+        List<T> result = new LinkedList<>();
+        Map<String, ComparisonOperator> conditionMap = getConditions(form);
+        for (Integer[] purposePair : purposeList) {
+            T template = conversionService.convert(form, entityType);
             assert template != null;
-            template.setFloorClassification(purposePair[0]);
-            template.setFloorSpecification(purposePair[1]);
+            setPurpose(template, purposePair);
+            List<Conditions> conditionsList = conditionMap.entrySet().stream()
+                    .map(entry -> createCondition(entry.getKey(), entry.getValue(), template))
+                    .toList();
+            setConditions(template, conditionsList);
             result.add(template);
+            saveLaw(template, repository);
         }
         return result;
     }
 
-    private List<Integer[]> purposeMapper (String parsable , List<String> purposeClass, List<String> purposeSpec) {
+    private Map<String, ComparisonOperator> getConditions(Object form) {
+        if (form instanceof BuildingLawForms) {
+            return ((BuildingLawForms) form).getConditions();
+        } else if (form instanceof FloorLawForms) {
+            return ((FloorLawForms) form).getConditions();
+        }
+        return Map.of();
+    }
+
+    private <T> void setPurpose(T template, Integer[] purposePair) {
+        if (template instanceof BuildingLawFields) {
+            ((BuildingLawFields) template).setBuildingClassification(purposePair[0]);
+            ((BuildingLawFields) template).setBuildingSpecification(purposePair[1]);
+        } else if (template instanceof FloorLawFields) {
+            ((FloorLawFields) template).setFloorClassification(purposePair[0]);
+            ((FloorLawFields) template).setFloorSpecification(purposePair[1]);
+        }
+    }
+
+    private <T> Conditions createCondition(String fieldName, ComparisonOperator operator, T template) {
+        Conditions condition = new Conditions();
+        condition.setFieldName(fieldName);
+        condition.setOperator(operator);
+        if (template instanceof BuildingLawFields) {
+            condition.setBuildingLawFields((BuildingLawFields) template);
+        } else if (template instanceof FloorLawFields) {
+            condition.setFloorLawFields((FloorLawFields) template);
+        }
+        return condition;
+    }
+
+    private <T> void setConditions(T template, List<Conditions> conditionsList) {
+        if (template instanceof BuildingLawFields) {
+            ((BuildingLawFields) template).setConditionsList(conditionsList);
+        } else if (template instanceof FloorLawFields) {
+            ((FloorLawFields) template).setConditionsList(conditionsList);
+        }
+    }
+
+    private <T> void saveLaw(T template, JpaRepository<T, Long> repository) {
+        repository.save(template);
+    }
+
+    private List<Integer[]> purposeMapper(String parsable, List<String> purposeClass, List<String> purposeSpec) {
         List<Integer[]> resultList = new LinkedList<>();
         if (parsable != null && !parsable.replace(" ", "").isEmpty()) {
-            List<Integer[]> parsedResult = parser(parsable);
-            resultList.addAll(parsedResult);
+            resultList.addAll(parser(parsable));
         }
-        List<Integer[]> parsedPurpose = parser(purposeClass, purposeSpec);
-        resultList.addAll(parsedPurpose);
-
+        resultList.addAll(parser(purposeClass, purposeSpec));
         return resultList;
     }
+
 
 //    remember to change the Integer.parseInt into mapper class for purposeStringName -> IntegerCode;
     private List<Integer[]> parser(List<String> purposeClass, List<String> purposeSpec) {
@@ -122,5 +186,16 @@ public  class LawService {
             }
         }
         return result;
+    }
+
+
+    public List<BuildingLawFields> getLawsWithApplicablePurpose(Building building) {
+        return blawFieldRepository.findMatchingPurpose(building.getBuildingClassification(),
+                building.getBuildingSpecification());
+    }
+
+    public List<FloorLawFields> getLawsWithApplicablePurpose(Floor floor) {
+        return flawFieldRepository.findMatchingPurpose(floor.getFloorClassification(),
+                floor.getFloorSpecification());
     }
 }

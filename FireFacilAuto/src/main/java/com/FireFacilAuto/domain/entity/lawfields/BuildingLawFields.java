@@ -1,15 +1,13 @@
 package com.FireFacilAuto.domain.entity.lawfields;
 
 import com.FireFacilAuto.domain.Conditions;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,7 +31,7 @@ public class BuildingLawFields {
     @Column(columnDefinition = "integer default -1")
     @Positive
     public Integer overgroundFloors; //건물 내 총 지상층
-    @Column(columnDefinition = "integer default -1")
+    @Column(columnDefinition = "bigint default -1")
     @Positive
     public Long GFA; //연면적
     @Column(columnDefinition = "integer default -1")
@@ -56,9 +54,31 @@ public class BuildingLawFields {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "buildingLawFields")
     public List<Conditions> conditionsList;
+
+
+    /**
+     * this is an option. not delving right now
+     */
+//    public Map<String, Object> getAllFieldValues() {
+//        Map<String, Object> fieldValues = new HashMap<>();
+//        Field[] fields = getClass().getDeclaredFields();
+//
+//        for (Field field : fields) {
+//            try {
+//                field.setAccessible(true);
+//                Object value = field.get(this);
+//                fieldValues.put(field.getName(), value);
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace(); // Handle the exception as needed
+//            }
+//        }
+//
+//        return fieldValues;
+//    }
 
 }
