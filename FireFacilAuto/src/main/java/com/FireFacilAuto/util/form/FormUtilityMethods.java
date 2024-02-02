@@ -22,13 +22,13 @@ public class FormUtilityMethods {
 
     public boolean floorFieldAssociableWithCondition(String fieldName) {
         List<String> fieldsWithConditions = Arrays.asList("floorNo",
-                "floorArea", "floorMaterial", "floorWindowAvailability"
+                "floorArea", "floorWindowAvailability"
         );
         return fieldsWithConditions.contains(fieldName);
     }
 
     public List<String> allFloorFields() {
-        return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo", "purposeFloorAreaSum",
+        return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo",
                 "isUnderGround", "floorPurpose" , "floorArea", "floorMaterial",
                 "floorWindowAvailability"
         );

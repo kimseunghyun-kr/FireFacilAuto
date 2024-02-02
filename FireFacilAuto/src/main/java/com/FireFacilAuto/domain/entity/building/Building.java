@@ -26,7 +26,7 @@ public class Building {
 
     public Integer overgroundFloors; //건물 내 총 지상층
 
-    public Long GFA; //연면적
+    public Double GFA; //연면적
 
     public Integer buildingClassification; //건물 주용도
 

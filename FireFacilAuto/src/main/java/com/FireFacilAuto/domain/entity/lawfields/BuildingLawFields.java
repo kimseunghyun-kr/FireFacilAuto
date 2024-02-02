@@ -33,7 +33,7 @@ public class BuildingLawFields {
     public Integer overgroundFloors; //건물 내 총 지상층
     @Column(columnDefinition = "bigint default -1")
     @Positive
-    public Long GFA; //연면적
+    public Double GFA; //연면적
     @Column(columnDefinition = "integer default -1")
     @Positive
     public Integer buildingClassification; //건물 주용도

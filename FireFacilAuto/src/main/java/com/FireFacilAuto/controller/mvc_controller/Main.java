@@ -1,10 +1,12 @@
 package com.FireFacilAuto.controller.mvc_controller;
 
 import com.FireFacilAuto.domain.DTO.api.ApiResponseItem;
-import com.FireFacilAuto.domain.DTO.api.Items;
-import com.FireFacilAuto.domain.DTO.api.ResponseBody;
 import com.FireFacilAuto.domain.entity.Address;
+import com.FireFacilAuto.domain.entity.building.Building;
+import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.service.WebClient.WebClientApiService;
+import com.FireFacilAuto.service.buildingService.BuildingService;
+import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,10 +24,14 @@ import java.util.List;
 @SessionAttributes("response")
 public class Main {
     private final WebClientApiService apiService;
+    private final BuildingLawExecutionService buildingLawExecutionService;
+    private final BuildingService buildingService;
 
     @Autowired
-    public Main(WebClientApiService apiService) {
+    public Main(WebClientApiService apiService, BuildingLawExecutionService buildingLawExecutionService, BuildingService buildingService) {
         this.apiService = apiService;
+        this.buildingLawExecutionService = buildingLawExecutionService;
+        this.buildingService = buildingService;
     }
 
     @GetMapping("/input")
@@ -37,6 +43,7 @@ public class Main {
     @PostMapping("/informationDetails")
     public String rawResultShow(Model model, Address address) {
         List<ApiResponseItem> resultList = apiService.fetchAllData(address);
+        buildingService.process(resultList);
         log.info("responseBody, {}", resultList);
         model.addAttribute("response", resultList);
         return "redirect:/main/informationDetails";
@@ -50,6 +57,17 @@ public class Main {
 
         // Populate model attributes if needed
         model.addAttribute("response", resultList);
+        return "main/informationDetails";
+    }
+
+    @GetMapping("/execute")
+    public String showExecutedResults(Model model) {
+        Building building = new Building();
+
+        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(building);
+
+        // Populate model attributes if needed
+        model.addAttribute("resultSheet", resultSheet);
         return "main/informationDetails";
     }
 
