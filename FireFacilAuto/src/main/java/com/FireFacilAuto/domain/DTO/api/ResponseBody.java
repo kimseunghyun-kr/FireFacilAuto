@@ -6,9 +6,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ResponseBody {
+public class ResponseBody<T extends ApiResponseItem> {
 
-    private Items items;
+    private Items<T> items;
     private int numOfRows;
     private int pageNo;
     private int totalCount;

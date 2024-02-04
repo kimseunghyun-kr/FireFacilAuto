@@ -3,8 +3,8 @@ package com.FireFacilAuto.domain.DTO.api;
 import lombok.Data;
 
 @Data
-public class Response {
+public class Response<T extends ApiResponseItem> {
     private ResponseHeader header;
-    private ResponseBody body;
+    private ResponseBody<T> body;
 
 }

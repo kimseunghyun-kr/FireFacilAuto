@@ -11,26 +11,28 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 import static java.util.Objects.isNull;
 
-public class ItemsDeserializer extends StdDeserializer<Items> {
+public class ItemsDeserializer<T extends ApiResponseItem> extends StdDeserializer<Items<T>> {
 
-    public ItemsDeserializer() {
+    private final Class<T> itemType;
+
+    public ItemsDeserializer(Class<T> itemType) {
         super(Items.class);
+        this.itemType = itemType;
     }
 
     @Override
-    public Items deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public Items<T> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
         JsonNode itemNode = node.findValue("item");
 
         if (isNull(itemNode)) {
-            return new Items(Collections.emptyList());
+            return new Items<>(Collections.emptyList());
         } else {
-            List<ApiResponseItem> itemList = Arrays.stream(objectMapper.treeToValue(itemNode, ApiResponseItem[].class)).toList();
-            return new Items(itemList);
+            ObjectMapper objectMapper = (ObjectMapper) p.getCodec();
+            List<T> itemList = Arrays.asList(objectMapper.treeToValue(itemNode, itemType));
+            return new Items<>(itemList);
         }
     }
 }

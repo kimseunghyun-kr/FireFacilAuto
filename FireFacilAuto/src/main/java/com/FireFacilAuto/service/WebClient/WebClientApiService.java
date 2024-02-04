@@ -5,6 +5,7 @@ import com.FireFacilAuto.domain.entity.Address;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -39,7 +40,7 @@ public class WebClientApiService {
         this.webClient = webClient;
     }
 
-    public List<ApiResponseItem> fetchAllData(Address address, String requestType) {
+    public List<? extends ApiResponseItem> fetchAllData(Address address, String requestType) {
         log.info("Address: {}", address);
         int pageNo = 1;
         int totalCount;
@@ -47,13 +48,15 @@ public class WebClientApiService {
         WebClient.RequestHeadersSpec<?> request = getRequestHeadersSpec(address, requestType, pageNo);
         String response = request.retrieve().bodyToMono(String.class).block();
         log.info("response {}", response);
-        ApiResponse apiResponse = request.retrieve().bodyToMono(ApiResponse.class).block();
+
+        ApiResponse<? extends ApiResponseItem> apiResponse = getApiResponse(requestType, request);
 
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
         log.info("total counts {}" ,totalCount);
 
-        List<ApiResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        List<? extends ApiResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+
         if(firstApiResponseList == null || firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
@@ -66,7 +69,7 @@ public class WebClientApiService {
         while(pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
             request = getRequestHeadersSpec(address, requestType, pageNo);
-            apiResponse = request.retrieve().bodyToMono(ApiResponse.class).block();
+            apiResponse = getApiResponse(requestType, request);
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
             pageNo += 1;
@@ -74,6 +77,18 @@ public class WebClientApiService {
         }
 
         return resultList;
+    }
+
+    private ApiResponse<? extends ApiResponseItem> getApiResponse(String requestType, WebClient.RequestHeadersSpec<?> request) {
+        ApiResponse<? extends ApiResponseItem> apiResponse = null;
+        if(requestType.equals(BASE_INFO)) {
+            apiResponse = request.retrieve().bodyToMono(new ParameterizedTypeReference<ApiResponse<BaseApiResponse>>() {}).block();
+        }
+
+        if(requestType.equals(FLOOR_OUTLINE)) {
+            apiResponse = request.retrieve().bodyToMono(new ParameterizedTypeReference<ApiResponse<FloorResponseItem>>() {}).block();
+        }
+        return apiResponse;
     }
 
     public Map<String, Object> fetchSingleData(Address address, String requestType) {

@@ -4,8 +4,8 @@ import lombok.Data;
 
 
 @Data
-public class ApiResponse {
-    private Response response;
+public class ApiResponse<T extends ApiResponseItem> {
+    private Response<T> response;
     // Getters and Setters
 }
 
