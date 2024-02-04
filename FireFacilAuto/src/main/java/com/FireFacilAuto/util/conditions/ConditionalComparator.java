@@ -33,18 +33,6 @@ public class ConditionalComparator {
         };
     }
 
-//    public static boolean conditionParser(ComparisonOperator operator, LocalDateTime date1, LocalDateTime date2) {
-//        return evaluate(date1, operator.sqlText(), date2) && isActivated(date1);
-//    }
-//
-//    public static boolean conditionParser(ComparisonOperator operator, Long gfa, Long gfa1) {
-//        return evaluate(gfa, operator.sqlText(), gfa1) && isActivated(gfa);
-//    }
-//
-//    public static boolean conditionParser(ComparisonOperator operator, Integer gfa, Integer gfa1) {
-//        return evaluate(gfa, operator.sqlText(), gfa1) && isActivated(gfa);
-//    }
-
     public static <T extends Comparable<T>> boolean conditionParser(ComparisonOperator operator, T fieldValue, T appliedValue) {
         return evaluate(fieldValue, operator.sqlText(), appliedValue) && isActivated(fieldValue);
     }

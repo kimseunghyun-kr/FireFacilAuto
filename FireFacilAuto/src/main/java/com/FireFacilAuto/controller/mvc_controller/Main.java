@@ -11,12 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -41,24 +40,38 @@ public class Main {
     }
 
     @PostMapping("/informationDetails")
-    public String rawResultShow(Model model, Address address) {
-        List<ApiResponseItem> resultList = apiService.fetchAllData(address);
-        buildingService.process(resultList);
-        log.info("responseBody, {}", resultList);
-        model.addAttribute("response", resultList);
+    public String testRawResultShow(RedirectAttributes redirectAttributes, @ModelAttribute Address address, @RequestParam(name="requestType") String requestType) {
+        Map<String, Object> response = apiService.fetchSingleData(address, requestType);
+        redirectAttributes.addFlashAttribute("response", response);
         return "redirect:/main/informationDetails";
     }
 
     @GetMapping("/informationDetails")
-    public String showInformationDetails(Model model) {
-
-        // The data is retrieved from the session attribute
-        List<ApiResponseItem> resultList = (List<ApiResponseItem>) model.getAttribute("response");
-
+    public String testInformationDetails(@ModelAttribute("response") Map<String, Object> response, Model model) {
         // Populate model attributes if needed
-        model.addAttribute("response", resultList);
+        model.addAttribute("response", response);
         return "main/informationDetails";
     }
+
+//    @PostMapping("/informationDetails")
+//    public String rawResultShow(Model model, @ModelAttribute Address address, @RequestParam(name="requestType") String requestType) {
+//        List<ApiResponseItem> resultList = apiService.fetchAllData(address, requestType);
+//        buildingService.process(resultList, address);
+//        log.info("responseBody, {}", resultList);
+//        model.addAttribute("response", resultList);
+//        return "redirect:/main/informationDetails";
+//    }
+
+//    @GetMapping("/informationDetails")
+//    public String showInformationDetails(Model model) {
+//
+//        // The data is retrieved from the session attribute
+//        List<ApiResponseItem> resultList = (List<ApiResponseItem>) model.getAttribute("response");
+//
+//        // Populate model attributes if needed
+//        model.addAttribute("response", resultList);
+//        return "main/informationDetails";
+//    }
 
     @GetMapping("/execute")
     public String showExecutedResults(Model model) {

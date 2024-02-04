@@ -10,7 +10,25 @@
 
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
+        function simpleValidateForm() {
+            // Get values of the fields
+            var zipCode = document.getElementById("postcode").value;
+            var streetAdr = document.getElementById("address").value;
+            var requestType = document.getElementById("requestType").value;
+
+            // Check if fields are empty
+            if (zipCode.trim() === '' || streetAdr.trim() === '' || requestType.trim() === '') {
+                // Show alert if any of the fields are empty
+                alert('Please fill in all required fields.');
+                return false; // Prevent form submission
+            }
+
+            // If all fields are non-empty, allow form submission
+            return true;
+        }
+
         function execDaumPostcode() {
+
             new daum.Postcode({
                 oncomplete: function(data) {
                     // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
@@ -82,7 +100,7 @@
 
 <div class="form-container">
     <h2>소방시설 설치여부 가이드</h2>
-    <form action="/main/informationDetails" method="post" th:object="${address}">
+    <form action="/main/informationDetails" method="post" th:object="${address}" onsubmit="return simpleValidateForm()">
         <!-- Hidden Input 1 -->
         <input type="hidden" id="sigunguCode" name="sigunguCode" th:field="*{sigunguCode}" readonly />
         <input type="hidden" id="bcode" name="bcode" th:field="*{bcode}" readonly />
@@ -92,12 +110,12 @@
 <!--        displayed Inputs      -->
         <div class="input-group">
             <label for="postcode">우편번호:</label>
-            <input type="text" id="postcode" name="postcode" th:field="*{zipCode}" placeholder="우편번호를 입력하세요" readonly onclick="execDaumPostcode()"/>
+            <input type="text" id="postcode" name="postcode" th:field="*{zipCode}" placeholder="우편번호를 입력하세요" readonly onclick="execDaumPostcode()" th:required="true"/>
         </div>
 
         <div class="input-group">
             <label for="address">지번/도로명 주소:</label>
-            <input type="text" id="address" name="address" th:field="*{streetAdr}" placeholder="주소" readonly />
+            <input type="text" id="address" name="address" th:field="*{streetAdr}" placeholder="주소" readonly th:required="true"/>
         </div>
 
         <div class="input-group">
@@ -106,9 +124,23 @@
         </div>
 
         <div class="input-group">
-            <label for="extraAddress">참고항목:</label>
+            <label for="extraAddress">세부 동/호수:</label>
             <input type="text" id="extraAddress" name="extraAddress" th:field="*{extraAdr}" placeholder="참고항목" readonly />
         </div>
+
+        <label for="requestType">Select Request Type:</label>
+        <select id="requestType" name="requestType" class="select-button">
+            <option value="getBrFlrOulnInfo">FLOOR_OUTLINE</option>
+            <option value="getBrBasisOulnInfo">BASE_INFO</option>
+            <option value="getBrRecapTitleInfo">RECAP_TITLE</option>
+            <option value="getBrTitleInfo">TITLE</option>
+            <option value="getBrAtchJibunInfo">ATTACHED_ADDR</option>
+            <option value="getBrExposPubuseAreaInfo">EXPOSE_PUBLIC_USE_AREA</option>
+            <option value="getBrWclfInfo">WATER_CATCHMENT_FILTRATION</option>
+            <option value="getBrHsprcInfo">HOUSING_PRICE_INFO</option>
+            <option value="getBrExposInfo">EXPOSED_SPECIFICS</option>
+            <option value="getBrJijiguInfo">ZONING</option>
+        </select>
 
         <button type="submit">Submit</button>
     </form>

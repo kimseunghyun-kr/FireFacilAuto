@@ -1,90 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Response Items</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/styles2.css}">
+    <title>Data Display</title>
 </head>
 <body>
 
-<h2>Response Items</h2>
+<h2>Data Display</h2>
 
+<!-- Iterate over the entries of the map -->
 <table>
     <thead>
     <tr>
-        <th>면적(바닥)</th>
-        <th>면적제외여부</th>
-        <th>법정동코드</th>
-        <th>건물명</th>
-        <th>블록</th>
-        <th>번(번지)</th>
-        <th>생성일자</th>
-        <th>동명</th>
-        <th>세부(기타) 용도</th>
-        <th>세부(기타) 구조</th>
-        <th>층구분코드</th>
-        <th>층구분코드 명칭</th>
-        <th>층 번호</th>
-        <th>층 번호 명칭</th>
-        <th>지(번지)</th>
-        <th>로트</th>
-        <th>주건물(0) /부속(1) 구분 코드</th>
-        <th>주건물 / 부속건물 </th>
-        <th>주용도 코드</th>
-        <th>주용도 코드 명칭</th>
-        <th>관리건축물대장 PK (식별코드) </th>
-        <th>새주소 법정동 코드</th>
-        <th>새주소 본번</th>
-        <th>새주소 도로 코드</th>
-        <th>새주소 부번</th>
-        <th>새주소 지상 지하 코드</th>
-        <th>도로명 대지 위치</th>
-        <th>대지 구분 코드</th>
-        <th>대지 위치</th>
-        <th>순번</th>
-        <th>시군구 코드</th>
-        <th>특수지명</th>
-        <th>구조 코드</th>
-        <th>구조 코드 명칭</th>
+        <th>Key</th>
+        <th>Value</th>
     </tr>
     </thead>
     <tbody>
-    <!-- Loop through the items in the ResponseBody -->
-    <tr th:each="item : ${response}">
-        <!-- Access the properties of ApiResponseItem -->
-        <td th:text="${item.area}"></td>
-        <td th:text="${item.areaExctYn}"></td>
-        <td th:text="${item.bjdongCd}"></td>
-        <td th:text="${item.bldNm}"></td>
-        <td th:text="${item.block}"></td>
-        <td th:text="${item.bun}"></td>
-        <td th:text="${item.crtnDay}"></td>
-        <td th:text="${item.dongNm}"></td>
-        <td th:text="${item.etcPurps}"></td>
-        <td th:text="${item.etcStrct}"></td>
-        <td th:text="${item.flrGbCd}"></td>
-        <td th:text="${item.flrGbCdNm}"></td>
-        <td th:text="${item.flrNo}"></td>
-        <td th:text="${item.flrNoNm}"></td>
-        <td th:text="${item.ji}"></td>
-        <td th:text="${item.lot}"></td>
-        <td th:text="${item.mainAtchGbCd}"></td>
-        <td th:text="${item.mainAtchGbCdNm}"></td>
-        <td th:text="${item.mainPurpsCd}"></td>
-        <td th:text="${item.mainPurpsCdNm}"></td>
-        <td th:text="${item.mgmBldrgstPk}"></td>
-        <td th:text="${item.naBjdongCd}"></td>
-        <td th:text="${item.naMainBun}"></td>
-        <td th:text="${item.naRoadCd}"></td>
-        <td th:text="${item.naSubBun}"></td>
-        <td th:text="${item.naUgrndCd}"></td>
-        <td th:text="${item.newPlatPlc}"></td>
-        <td th:text="${item.platGbCd}"></td>
-        <td th:text="${item.platPlc}"></td>
-        <td th:text="${item.rnum}"></td>
-        <td th:text="${item.sigunguCd}"></td>
-        <td th:text="${item.splotNm}"></td>
-        <td th:text="${item.strctCd}"></td>
-        <td th:text="${item.strctCdNm}"></td>
+    <tr th:each="entry : ${response}">
+        <!-- Access the key and value of each entry -->
+        <td th:text="${entry.key}"></td>
+        <td th:text="${entry.value}"></td>
     </tr>
     </tbody>
 </table>

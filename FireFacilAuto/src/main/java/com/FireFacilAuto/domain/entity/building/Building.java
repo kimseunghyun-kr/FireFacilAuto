@@ -3,6 +3,7 @@ package com.FireFacilAuto.domain.entity.building;
 import com.FireFacilAuto.domain.entity.Address;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.boot.autoconfigure.graphql.ConditionalOnGraphQlSchema;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 public class Building {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long UUID; //내부 시스템용 식별코드
 
     @Embedded

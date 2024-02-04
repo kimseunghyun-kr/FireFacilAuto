@@ -5,9 +5,6 @@ import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Component
 public class BuildingLawFormsToBuildingLawFieldsConverter implements Converter<BuildingLawForms, BuildingLawFields> {
 
@@ -28,4 +25,5 @@ public class BuildingLawFormsToBuildingLawFieldsConverter implements Converter<B
 
         return target;
     }
+
 }
