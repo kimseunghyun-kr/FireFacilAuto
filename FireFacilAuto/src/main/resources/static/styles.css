@@ -133,3 +133,40 @@ button:hover {
 .select-container:hover .select-options {
     display: block;
 }
+
+h2 {
+    color: #333;
+    text-align: center;
+}
+
+.field {
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.field strong {
+    color: #007bff;
+}
+
+.field span {
+    display: block;
+    margin-top: 4px;
+    color: #555;
+    white-space: nowrap;
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.object-line {
+    display: flex;
+    overflow-x: auto;
+    margin-bottom: 20px; /* Add margin at the bottom */
+    padding: 10px; /* Add padding to the entire object-line */
+}
+.field:nth-child(odd) {
+    background-color: #f0f0f0; /* Set the background color for odd fields */
+}
+
+.field:nth-child(even) {
+    background-color: #e0e0e0; /* Set the background color for even fields */
+}

@@ -14,7 +14,7 @@
             // Get values of the fields
             var zipCode = document.getElementById("postcode").value;
             var streetAdr = document.getElementById("address").value;
-            var requestType = document.getElementById("requestType").value;
+            // var requestType = document.getElementById("requestType").value;
 
             // Check if fields are empty
             if (zipCode.trim() === '' || streetAdr.trim() === '' || requestType.trim() === '') {
@@ -100,7 +100,7 @@
 
 <div class="form-container">
     <h2>소방시설 설치여부 가이드</h2>
-    <form action="/main/informationDetails" method="post" th:object="${address}" onsubmit="return simpleValidateForm()">
+    <form action="/main/baseSelect" method="post" th:object="${address}" onsubmit="return simpleValidateForm()">
         <!-- Hidden Input 1 -->
         <input type="hidden" id="sigunguCode" name="sigunguCode" th:field="*{sigunguCode}" readonly />
         <input type="hidden" id="bcode" name="bcode" th:field="*{bcode}" readonly />
@@ -128,19 +128,19 @@
             <input type="text" id="extraAddress" name="extraAddress" th:field="*{extraAdr}" placeholder="참고항목" readonly />
         </div>
 
-        <label for="requestType">Select Request Type:</label>
-        <select id="requestType" name="requestType" class="select-button">
-            <option value="getBrFlrOulnInfo">FLOOR_OUTLINE</option>
-            <option value="getBrBasisOulnInfo">BASE_INFO</option>
-            <option value="getBrRecapTitleInfo">RECAP_TITLE</option>
-            <option value="getBrTitleInfo">TITLE</option>
-            <option value="getBrAtchJibunInfo">ATTACHED_ADDR</option>
-            <option value="getBrExposPubuseAreaInfo">EXPOSE_PUBLIC_USE_AREA</option>
-            <option value="getBrWclfInfo">WATER_CATCHMENT_FILTRATION</option>
-            <option value="getBrHsprcInfo">HOUSING_PRICE_INFO</option>
-            <option value="getBrExposInfo">EXPOSED_SPECIFICS</option>
-            <option value="getBrJijiguInfo">ZONING</option>
-        </select>
+<!--        <label for="requestType">Select Request Type:</label>-->
+<!--        <select id="requestType" name="requestType" class="select-button">-->
+<!--            <option value="getBrFlrOulnInfo">FLOOR_OUTLINE</option>-->
+<!--            <option value="getBrBasisOulnInfo">BASE_INFO</option>-->
+<!--            <option value="getBrRecapTitleInfo">RECAP_TITLE</option>-->
+<!--            <option value="getBrTitleInfo">TITLE</option>-->
+<!--            <option value="getBrAtchJibunInfo">ATTACHED_ADDR</option>-->
+<!--            <option value="getBrExposPubuseAreaInfo">EXPOSE_PUBLIC_USE_AREA</option>-->
+<!--            <option value="getBrWclfInfo">WATER_CATCHMENT_FILTRATION</option>-->
+<!--            <option value="getBrHsprcInfo">HOUSING_PRICE_INFO</option>-->
+<!--            <option value="getBrExposInfo">EXPOSED_SPECIFICS</option>-->
+<!--            <option value="getBrJijiguInfo">ZONING</option>-->
+<!--        </select>-->
 
         <button type="submit">Submit</button>
     </form>

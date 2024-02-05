@@ -1,6 +1,6 @@
 package com.FireFacilAuto.service.buildingService;
 
-import com.FireFacilAuto.domain.DTO.api.ApiResponseItem;
+import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import jakarta.validation.constraints.NotNull;
@@ -24,14 +24,14 @@ public class BuildingService {
 
 
     //    convert to building to execute later
-    public List<Building> process(List<ApiResponseItem> resultList, Address address) {
+    public List<Building> process(List<BaseResponseItem> resultList, Address address) {
         List<Building> result = resultList.stream().map(
                 apiResponseItem -> mapper(apiResponseItem, address)
         ).collect(Collectors.toList());
         return null;
     }
 
-    private Building mapper(@NotNull ApiResponseItem apiResponseItem, Address address) {
+    private Building mapper(@NotNull BaseResponseItem apiResponseItem, Address address) {
         Building building = conversionService.convert(apiResponseItem, Building.class);
         assert building != null;
         building.setJuso(address);

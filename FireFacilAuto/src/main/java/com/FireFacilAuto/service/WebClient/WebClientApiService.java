@@ -18,8 +18,8 @@ import java.util.Map;
 @Service
 @Slf4j
 public class WebClientApiService {
-    private final Integer MAX_QUERY = 100;
-    private final Integer SAFE_QUERY = 80;
+    public static final Integer MAX_QUERY = 100;
+    public static final Integer SAFE_QUERY = 80;
 
 
     @Value("${webclient.api.key}")
@@ -30,83 +30,6 @@ public class WebClientApiService {
     public WebClientApiService(WebClient webClient) {
         this.webClient = webClient;
     }
-
-
-    public List<BaseResponseItem> fetchAllBaseData(Address address, String requestType) {
-        log.info("Address: {}", address);
-        int pageNo = 1;
-        int totalCount;
-        WebClient.RequestHeadersSpec<?> request = getRequestHeadersSpec(address, requestType, pageNo);
-        String response = request.retrieve().bodyToMono(String.class).block();
-        log.info("response {}", response);
-        BaseApiResponse apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
-        assert apiResponse != null;
-        totalCount = apiResponse.getResponse().getBody().getTotalCount();
-        log.info("total counts {}" ,totalCount);
-
-        List<BaseResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} " , firstApiResponseList);
-
-        if(firstApiResponseList.isEmpty()) {
-            return new LinkedList<>();
-        }
-
-        List<BaseResponseItem> resultList = new LinkedList<>(firstApiResponseList);
-
-        int totalRepeats = (int) Math.ceil((double) totalCount / SAFE_QUERY);
-        log.info("totalrepeats {}" , totalRepeats);
-        pageNo += 1;
-
-        while(pageNo <= totalRepeats) {
-            log.info("pageNo {}", pageNo);
-            request = getRequestHeadersSpec(address, requestType, pageNo);
-            apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
-            assert apiResponse != null;
-            resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
-            pageNo += 1;
-        }
-        return resultList;
-
-    }
-
-    public List<FloorResponseItem> fetchAllFloorData(Address address, String requestType) {
-        log.info("Address: {}", address);
-        int pageNo = 1;
-        int totalCount;
-
-        WebClient.RequestHeadersSpec<?> request = getRequestHeadersSpec(address, requestType, pageNo);
-        String response = request.retrieve().bodyToMono(String.class).block();
-        log.info("response {}", response);
-
-        FloorApiResponse apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
-        assert apiResponse != null;
-        totalCount = apiResponse.getResponse().getBody().getTotalCount();
-        log.info("total counts {}", totalCount);
-
-        List<FloorResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} ", firstApiResponseList.getFirst());
-
-        if (firstApiResponseList.isEmpty()) {
-            return new LinkedList<>();
-        }
-
-        List<FloorResponseItem> resultList = new LinkedList<>(firstApiResponseList);
-
-        int totalRepeats = (int) Math.ceil((double) totalCount / SAFE_QUERY);
-        log.info("totalrepeats {}", totalRepeats);
-        pageNo += 1;
-
-        while (pageNo <= totalRepeats) {
-            log.info("pageNo {}", pageNo);
-            request = getRequestHeadersSpec(address, requestType, pageNo);
-            apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
-            assert apiResponse != null;
-            resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
-            pageNo += 1;
-        }
-        return resultList;
-    }
-
 
     public Map<String, Object> fetchSingleData(Address address, String requestType) {
         log.info("sigungucode {} ", address.getSigunguCode());
@@ -119,7 +42,7 @@ public class WebClientApiService {
         return response;
     }
 
-    private WebClient.RequestHeadersSpec<?> getRequestHeadersSpec(Address address, String endpoint, int pageNo) {
+    public WebClient.RequestHeadersSpec<?> getRequestHeadersSpec(Address address, String endpoint, int pageNo) {
         return webClient.get().uri(uriBuilder -> uriBuilder
                 .pathSegment(endpoint)
                 .queryParam("serviceKey", apiKey)
