@@ -56,6 +56,7 @@ public class WebClientApiService {
         log.info("total counts {}" ,totalCount);
 
         List<? extends ApiResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        log.info("firstApiResponse, {} " , firstApiResponseList);
 
         if(firstApiResponseList == null || firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
@@ -88,6 +89,7 @@ public class WebClientApiService {
         if(requestType.equals(FLOOR_OUTLINE)) {
             apiResponse = request.retrieve().bodyToMono(new ParameterizedTypeReference<ApiResponse<FloorResponseItem>>() {}).block();
         }
+        log.info("apiResponse, {} " , apiResponse);
         return apiResponse;
     }
 

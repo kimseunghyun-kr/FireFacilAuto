@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 @JsonDeserialize(using = ItemsDeserializer.class)
-public class Items<T extends ApiResponseItem> {
+public  class Items<T extends ApiResponseItem> {
 
     private List<T> item;
 
