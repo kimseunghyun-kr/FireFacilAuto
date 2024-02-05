@@ -1,9 +1,11 @@
-package com.FireFacilAuto.domain.DTO.api;
+package com.FireFacilAuto.domain.DTO.api.baseapi;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class BaseApiResponse extends ApiResponseItem {
+@NoArgsConstructor
+public class BaseResponseItem {
     private String bjdongCd;
     private String bldNm;
     private String block;

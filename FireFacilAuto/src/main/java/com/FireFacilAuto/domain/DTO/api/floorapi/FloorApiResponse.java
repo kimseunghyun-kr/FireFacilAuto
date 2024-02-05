@@ -1,13 +1,13 @@
-package com.FireFacilAuto.domain.DTO.api;
+package com.FireFacilAuto.domain.DTO.api.floorapi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 
 @Data
-public class ApiResponse<T extends ApiResponseItem> {
+public class FloorApiResponse{
     @JsonProperty("response")
-    private Response<T> response;
+    private FloorResponse response;
     // Getters and Setters
 }
 

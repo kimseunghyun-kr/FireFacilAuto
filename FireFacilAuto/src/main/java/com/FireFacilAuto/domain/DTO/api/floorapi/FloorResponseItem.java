@@ -1,12 +1,14 @@
-package com.FireFacilAuto.domain.DTO.api;
+package com.FireFacilAuto.domain.DTO.api.floorapi;
+
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Data
-public class FloorResponseItem extends ApiResponseItem{
+@NoArgsConstructor
+public class FloorResponseItem {
 
     @JsonProperty("area")
     private String area;

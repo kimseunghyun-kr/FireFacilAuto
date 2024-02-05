@@ -1,11 +1,13 @@
 package com.FireFacilAuto.service.WebClient;
 
-import com.FireFacilAuto.domain.DTO.api.*;
+import com.FireFacilAuto.domain.DTO.api.baseapi.BaseApiResponse;
+import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
+import com.FireFacilAuto.domain.DTO.api.floorapi.FloorApiResponse;
+import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -19,17 +21,6 @@ public class WebClientApiService {
     private final Integer MAX_QUERY = 100;
     private final Integer SAFE_QUERY = 80;
 
-    private final String FLOOR_OUTLINE = "getBrFlrOulnInfo";
-    private final String BASE_INFO = "getBrBasisOulnInfo";
-    private final String RECAP_TITLE = "getBrRecapTitleInfo";
-    private final String TITLE = "getBrTitleInfo";
-    private final String ATTACHED_ADDR = "getBrAtchJibunInfo";
-    private final String EXPOSE_PUBLIC_USE_AREA = "getBrExposPubuseAreaInfo";
-    private final String WATER_CATCHMENT_FILTRATION = "getBrWclfInfo";
-    private final String HOUSING_PRICE_INFO = "getBrHsprcInfo";
-    private final String EXPOSED_SPECIFICS = "getBrExposInfo";
-    private final String ZONING = "getBrJijiguInfo";
-
 
     @Value("${webclient.api.key}")
     private String apiKey;
@@ -40,28 +31,27 @@ public class WebClientApiService {
         this.webClient = webClient;
     }
 
-    public List<? extends ApiResponseItem> fetchAllData(Address address, String requestType) {
+
+    public List<BaseResponseItem> fetchAllBaseData(Address address, String requestType) {
         log.info("Address: {}", address);
         int pageNo = 1;
         int totalCount;
-
         WebClient.RequestHeadersSpec<?> request = getRequestHeadersSpec(address, requestType, pageNo);
         String response = request.retrieve().bodyToMono(String.class).block();
         log.info("response {}", response);
-
-        ApiResponse<? extends ApiResponseItem> apiResponse = getApiResponse(requestType, request);
-
+        BaseApiResponse apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
         log.info("total counts {}" ,totalCount);
 
-        List<? extends ApiResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        List<BaseResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
         log.info("firstApiResponse, {} " , firstApiResponseList);
 
-        if(firstApiResponseList == null || firstApiResponseList.isEmpty()) {
+        if(firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
-        List<ApiResponseItem> resultList = new LinkedList<>(firstApiResponseList);
+
+        List<BaseResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
         int totalRepeats = (int) Math.ceil((double) totalCount / SAFE_QUERY);
         log.info("totalrepeats {}" , totalRepeats);
@@ -70,28 +60,53 @@ public class WebClientApiService {
         while(pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
             request = getRequestHeadersSpec(address, requestType, pageNo);
-            apiResponse = getApiResponse(requestType, request);
+            apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
             pageNo += 1;
+        }
+        return resultList;
 
+    }
+
+    public List<FloorResponseItem> fetchAllFloorData(Address address, String requestType) {
+        log.info("Address: {}", address);
+        int pageNo = 1;
+        int totalCount;
+
+        WebClient.RequestHeadersSpec<?> request = getRequestHeadersSpec(address, requestType, pageNo);
+        String response = request.retrieve().bodyToMono(String.class).block();
+        log.info("response {}", response);
+
+        FloorApiResponse apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
+        assert apiResponse != null;
+        totalCount = apiResponse.getResponse().getBody().getTotalCount();
+        log.info("total counts {}", totalCount);
+
+        List<FloorResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        log.info("firstApiResponse, {} ", firstApiResponseList.getFirst());
+
+        if (firstApiResponseList.isEmpty()) {
+            return new LinkedList<>();
         }
 
+        List<FloorResponseItem> resultList = new LinkedList<>(firstApiResponseList);
+
+        int totalRepeats = (int) Math.ceil((double) totalCount / SAFE_QUERY);
+        log.info("totalrepeats {}", totalRepeats);
+        pageNo += 1;
+
+        while (pageNo <= totalRepeats) {
+            log.info("pageNo {}", pageNo);
+            request = getRequestHeadersSpec(address, requestType, pageNo);
+            apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
+            assert apiResponse != null;
+            resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
+            pageNo += 1;
+        }
         return resultList;
     }
 
-    private ApiResponse<? extends ApiResponseItem> getApiResponse(String requestType, WebClient.RequestHeadersSpec<?> request) {
-        ApiResponse<? extends ApiResponseItem> apiResponse = null;
-        if(requestType.equals(BASE_INFO)) {
-            apiResponse = request.retrieve().bodyToMono(new ParameterizedTypeReference<ApiResponse<BaseApiResponse>>() {}).block();
-        }
-
-        if(requestType.equals(FLOOR_OUTLINE)) {
-            apiResponse = request.retrieve().bodyToMono(new ParameterizedTypeReference<ApiResponse<FloorResponseItem>>() {}).block();
-        }
-        log.info("apiResponse, {} " , apiResponse);
-        return apiResponse;
-    }
 
     public Map<String, Object> fetchSingleData(Address address, String requestType) {
         log.info("sigungucode {} ", address.getSigunguCode());
@@ -114,7 +129,7 @@ public class WebClientApiService {
                 .queryParam("ji", address.getJi())
 //                .queryParam("startDate", "")
 //                .queryParam("endDate", "")
-                .queryParam("numOfRows", 1)
+                .queryParam("numOfRows", 2)
                 .queryParam("pageNo", pageNo)
                 .queryParam("sigunguCd", address.getSigunguCode())
                 .queryParam("_type", "json")

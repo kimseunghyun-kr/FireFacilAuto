@@ -1,6 +1,6 @@
 package com.FireFacilAuto.controller.mvc_controller;
 
-import com.FireFacilAuto.domain.DTO.api.ApiResponseItem;
+import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
@@ -55,7 +55,7 @@ public class Main {
 
     @PostMapping("/informationDetails")
     public String rawResultShow(Model model, @ModelAttribute Address address, @RequestParam(name="requestType") String requestType) {
-        List<ApiResponseItem> resultList = (List<ApiResponseItem>) apiService.fetchAllData(address, requestType);
+        List<BaseResponseItem> resultList =  apiService.fetchAllBaseData(address, requestType);
 //        buildingService.process(resultList, address);
         log.info("responseBody, {}", resultList);
         model.addAttribute("response", resultList);
@@ -66,7 +66,7 @@ public class Main {
     public String showInformationDetails(Model model) {
 
         // The data is retrieved from the session attribute
-        List<ApiResponseItem> resultList = (List<ApiResponseItem>) model.getAttribute("response");
+        List<BaseResponseItem> resultList = (List<BaseResponseItem>) model.getAttribute("response");
 
         // Populate model attributes if needed
         model.addAttribute("response", resultList);

@@ -1,8 +1,5 @@
 package com.FireFacilAuto.service.WebClient;
 
-import com.FireFacilAuto.domain.DTO.api.ApiResponse;
-import com.FireFacilAuto.domain.DTO.api.ApiResponseItem;
-import com.FireFacilAuto.domain.DTO.api.ResponseBody;
 import com.FireFacilAuto.domain.entity.Address;
 import org.springframework.web.reactive.function.client.WebClient;
 
