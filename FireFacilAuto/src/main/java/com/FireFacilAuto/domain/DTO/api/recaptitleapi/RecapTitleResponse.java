@@ -4,8 +4,8 @@ import com.FireFacilAuto.domain.DTO.api.ResponseHeader;
 import lombok.Data;
 
 @Data
-public class recapTitleResponse {
+public class RecapTitleResponse {
     private ResponseHeader header;
-    private recapTitleResponseBody body;
+    private RecapTitleResponseBody body;
 
 }

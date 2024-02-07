@@ -18,7 +18,7 @@ public class FloorLawFormsToFloorLawFieldsConverter implements Converter<FloorLa
         target.setIsUnderGround(source.getIsUnderGround());
         target.setFloorClassification(-1); // Set a default value, adjust as needed
         target.setFloorSpecification(-1); // Set a default value, adjust as needed
-        target.setFloorArea(source.getFloorArea());
+        target.setFloorAreaSum(source.getFloorAreaSum());
         target.setFloorMaterial(source.getFloorMaterial());
 
         // Set default values for fields not present in FloorLawForms

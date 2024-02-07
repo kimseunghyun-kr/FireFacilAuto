@@ -13,23 +13,23 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-public class recapTitleItemsDeserializer extends StdDeserializer<recapTitleItems> {
+public class RecapTitleItemsDeserializer extends StdDeserializer<RecapTitleItems> {
 
-    public recapTitleItemsDeserializer() {
-        super(recapTitleItems.class);
+    public RecapTitleItemsDeserializer() {
+        super(RecapTitleItems.class);
     }
 
     @Override
-    public recapTitleItems deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public RecapTitleItems deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode node = p.getCodec().readTree(p);
         JsonNode itemNode = node.findValue("item");
 
         if (isNull(itemNode)) {
-            return new recapTitleItems(Collections.emptyList());
+            return new RecapTitleItems(Collections.emptyList());
         } else {
-            List<recapTitleResponseItem> itemList = Arrays.stream(objectMapper.treeToValue(itemNode, recapTitleResponseItem[].class)).toList();
-            return new recapTitleItems(itemList);
+            List<RecapTitleResponseItem> itemList = Arrays.stream(objectMapper.treeToValue(itemNode, RecapTitleResponseItem[].class)).toList();
+            return new RecapTitleItems(itemList);
         }
     }
 }

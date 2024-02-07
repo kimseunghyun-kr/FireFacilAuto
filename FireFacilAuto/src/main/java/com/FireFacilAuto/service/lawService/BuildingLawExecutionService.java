@@ -84,12 +84,21 @@ public class BuildingLawExecutionService {
 
 //      Surviving inputs are all satisfyign the conditonal requirement of floorNo
 //      floorAreaSum
-        if (isActivated(flf.floorArea)) {
+        if (isActivated(flf.floorAreaSum)) {
             Conditions conditional = getCondition(conditions, "floorArea");
             double floorAreaSum = calculateFloorAreaSum(floorResultsList, flf);
-            if (!conditionParser(conditional.getOperator(), floorAreaSum, flf.floorArea)) {
+            if (!conditionParser(conditional.getOperator(), floorAreaSum, flf.floorAreaSum)) {
                 floorResultsList.clear();
             }
+        }
+        if (floorResultsList.isEmpty()) {
+            return;
+        }
+//      Surviving inputs are all satisfyign the conditonal requirement of floorNo
+//      floorAreaThreshold
+        if (isActivated(flf.floorAreaThreshold)) {
+            Conditions conditional = getCondition(conditions, "floorThreshold");
+            floorResultsList.removeIf(survivingResults -> !conditionParser(conditional.getOperator(), survivingResults.getFloor().getFloorArea(), flf.floorAreaThreshold));
         }
         if (floorResultsList.isEmpty()) {
             return;

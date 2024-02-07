@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@JsonDeserialize(using = recapTitleItemsDeserializer.class)
+@JsonDeserialize(using = RecapTitleItemsDeserializer.class)
 @NoArgsConstructor
-public class recapTitleItems {
+public class RecapTitleItems {
 
-    public List<recapTitleResponseItem> item;
+    public List<RecapTitleResponseItem> item;
 
-    public recapTitleItems(List<recapTitleResponseItem> item) {
+    public RecapTitleItems(List<RecapTitleResponseItem> item) {
         this.item = item;
     }
 }

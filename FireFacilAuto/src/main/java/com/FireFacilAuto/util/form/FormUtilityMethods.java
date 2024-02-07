@@ -22,7 +22,7 @@ public class FormUtilityMethods {
 
     public boolean floorFieldAssociableWithCondition(String fieldName) {
         List<String> fieldsWithConditions = Arrays.asList("floorNo",
-                "floorArea", "floorWindowAvailability"
+                "floorArea", "floorWindowAvailability", "floorAreaThreshold"
         );
         return fieldsWithConditions.contains(fieldName);
     }
@@ -30,7 +30,7 @@ public class FormUtilityMethods {
     public List<String> allFloorFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo",
                 "isUnderGround", "floorPurpose" , "floorArea", "floorMaterial",
-                "floorWindowAvailability"
+                "floorWindowAvailability", "floorAreaThreshold"
         );
     }
 

@@ -31,7 +31,10 @@ public class FloorLawFields {
     public Integer floorSpecification; //층 세부용도
     @Column(columnDefinition = "integer default -1")
     @Positive
-    public Double floorArea; //층 바닥면적
+    public Double floorAreaSum; //층 바닥면적 합
+    @Column(columnDefinition = "integer default -1")
+    @Positive
+    public Double floorAreaThreshold; //층 바닥면적 합
     @Column(columnDefinition = "integer default -1")
     @Positive
     public Integer floorMaterial; //층 재료

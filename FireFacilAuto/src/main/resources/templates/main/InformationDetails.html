@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Your Page</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <!-- Iterate over all fields dynamically -->
+        <th th:each="fieldName : ${#fields.all}">
+            <span th:text="${fieldName}"></span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Iterate through the list and display fields of each object -->
+    <tr th:each="obj : ${objectList}">
+        <!-- Iterate over all fields dynamically and display their values -->
+        <td th:each="fieldName : ${#fields.all}">
+            <span th:text="${#fields.eval('obj.' + fieldName)}"></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
