@@ -1,11 +1,11 @@
-package com.FireFacilAuto.domain.DTO.api.attachedaddrapi;
+package com.FireFacilAuto.domain.DTO.api.exposInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class AttachedAddrApiResponse {
+public class ExposedInfoApiResponse {
     @JsonProperty("response")
-    private AttachedAddrResponse response;
+    private ExposedInfoResponse response;
     // Getters and Setters
 }

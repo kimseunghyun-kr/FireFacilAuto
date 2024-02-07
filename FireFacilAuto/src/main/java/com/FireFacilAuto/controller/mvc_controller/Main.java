@@ -45,20 +45,6 @@ public class Main {
         return "main/addressForm";
     }
 
-//    @PostMapping("/informationDetails")
-//    public String testRawResultShow(RedirectAttributes redirectAttributes, @ModelAttribute Address address, @RequestParam(name="requestType") String requestType) {
-//        Map<String, Object> response = apiService.fetchSingleData(address, requestType);
-//        redirectAttributes.addFlashAttribute("response", response);
-//        return "redirect:/main/informationDetails";
-//    }
-//
-//    @GetMapping("/informationDetails")
-//    public String testInformationDetails(@ModelAttribute("response") Map<String, Object> response, Model model) {
-//        // Populate model attributes if needed
-//        model.addAttribute("response", response);
-//        return "main/informationDetails";
-//    }
-
     @PostMapping("/baseSelect")
     public String rawResultShow(Model model, @ModelAttribute Address address) {
         List<BaseResponseItem> resultList =  baseApiService.fetchAllBaseData(address, "getBrBasisOulnInfo");
@@ -89,6 +75,21 @@ public class Main {
         model.addAttribute("resultSheet", resultSheet);
         return "baseInformationDetails";
     }
+
+//    @PostMapping("/informationDetails")
+//    public String testRawResultShow(RedirectAttributes redirectAttributes, @ModelAttribute Address address, @RequestParam(name="requestType") String requestType) {
+//        Map<String, Object> response = apiService.fetchSingleData(address, requestType);
+//        redirectAttributes.addFlashAttribute("response", response);
+//        return "redirect:/main/informationDetails";
+//    }
+//
+//    @GetMapping("/informationDetails")
+//    public String testInformationDetails(@ModelAttribute("response") Map<String, Object> response, Model model) {
+//        // Populate model attributes if needed
+//        model.addAttribute("response", response);
+//        return "main/informationDetails";
+//    }
+
 
 
 }

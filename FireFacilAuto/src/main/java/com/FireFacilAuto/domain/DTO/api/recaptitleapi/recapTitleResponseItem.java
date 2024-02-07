@@ -1,4 +1,4 @@
 package com.FireFacilAuto.domain.DTO.api.recaptitleapi;
 
-public class RecapTitleApiResponse {
+public class recapTitleResponseItem {
 }
