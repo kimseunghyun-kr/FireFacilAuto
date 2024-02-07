@@ -59,5 +59,11 @@ public class WebClientApiService {
                 .build());
     }
 
+    public void StringDeserializeCheck(Address address, WebClient.RequestHeadersSpec<?> request) {
+        log.info("Address: {}", address);
+        String response = request.retrieve().bodyToMono(String.class).block();
+        log.info("response {}", response);
+    }
+
 
 }

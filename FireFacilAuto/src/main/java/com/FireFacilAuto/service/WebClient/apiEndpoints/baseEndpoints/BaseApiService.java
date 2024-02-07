@@ -5,7 +5,6 @@ import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.service.WebClient.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,12 +24,12 @@ public class BaseApiService {
     }
 
     public List<BaseResponseItem> fetchAllBaseData(Address address, String requestType) {
-        log.info("Address: {}", address);
         int pageNo = 1;
         int totalCount;
+
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
-        String response = request.retrieve().bodyToMono(String.class).block();
-        log.info("response {}", response);
+        apiService.StringDeserializeCheck(address, request);
+
         BaseApiResponse apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
@@ -60,5 +59,7 @@ public class BaseApiService {
         return resultList;
 
     }
+
+
 
 }

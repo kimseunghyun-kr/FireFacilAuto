@@ -100,7 +100,7 @@
 
 <div class="form-container">
     <h2>소방시설 설치여부 가이드</h2>
-    <form action="/main/baseSelect" method="post" th:object="${address}" onsubmit="return simpleValidateForm()">
+    <form action="/main/selectResult" method="post" th:object="${address}" onsubmit="return simpleValidateForm()">
         <!-- Hidden Input 1 -->
         <input type="hidden" id="sigunguCode" name="sigunguCode" th:field="*{sigunguCode}" readonly />
         <input type="hidden" id="bcode" name="bcode" th:field="*{bcode}" readonly />

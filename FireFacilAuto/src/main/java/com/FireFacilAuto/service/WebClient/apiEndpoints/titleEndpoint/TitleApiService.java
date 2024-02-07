@@ -23,12 +23,13 @@ public class TitleApiService {
     }
 
     public List<TitleResponseItem> fetchAllTitleData(Address address, String requestType) {
-        log.info("Address: {}", address);
+
         int pageNo = 1;
         int totalCount;
+
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
-        String response = request.retrieve().bodyToMono(String.class).block();
-        log.info("response {}", response);
+        apiService.StringDeserializeCheck(address, request);
+
         TitleApiResponse apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();

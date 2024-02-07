@@ -3,6 +3,9 @@ package com.FireFacilAuto.domain.DTO.api.baseapi;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 public class BaseResponseItem {
@@ -37,5 +40,43 @@ public class BaseResponseItem {
     private String rnum;
     private String sigunguCd;
     private String splotNm;
+
+    public List<String> toList() {
+        List<String> resultList = new ArrayList<>();
+
+        resultList.add("bjdongCd");
+        resultList.add("bldNm");
+        resultList.add("block");
+        resultList.add("bun");
+        resultList.add("bylotCnt");
+        resultList.add("crtnDay");
+        resultList.add("guyukCd");
+        resultList.add("guyukCdNm");
+        resultList.add("ji");
+        resultList.add("jiguCd");
+        resultList.add("jiguCdNm");
+        resultList.add("jiyukCd");
+        resultList.add("jiyukCdNm");
+        resultList.add("lot");
+        resultList.add("mgmBldrgstPk");
+        resultList.add("mgmUpBldrgstPk");
+        resultList.add("naBjdongCd");
+        resultList.add("naMainBun");
+        resultList.add("naRoadCd");
+        resultList.add("naSubBun");
+        resultList.add("naUgrndCd");
+        resultList.add("newPlatPlc");
+        resultList.add("platGbCd");
+        resultList.add("platPlc");
+        resultList.add("regstrGbCd");
+        resultList.add("regstrGbCdNm");
+        resultList.add("regstrKindCd");
+        resultList.add("regstrKindCdNm");
+        resultList.add("rnum");
+        resultList.add("sigunguCd");
+        resultList.add("splotNm");
+
+        return resultList;
+    }
 
 }

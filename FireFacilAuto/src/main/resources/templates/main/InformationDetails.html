@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
 <head>
-    <title>Your Page</title>
+    <title>Display Object Fields</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles2.css}">
 </head>
 <body>
+<h1>Object Details</h1>
 
 <table>
+    <!-- Header row with field names -->
     <thead>
-    <tr>
-        <!-- Iterate over all fields dynamically -->
-        <th th:each="fieldName : ${#fields.all}">
-            <span th:text="${fieldName}"></span>
-        </th>
-    </tr>
+        <tr>
+            <th th:each="field : ${response[0].toList()}" th:text="${field}"></th>
+        </tr>
     </thead>
-    <tbody>
-    <!-- Iterate through the list and display fields of each object -->
-    <tr th:each="obj : ${objectList}">
-        <!-- Iterate over all fields dynamically and display their values -->
-        <td th:each="fieldName : ${#fields.all}">
-            <span th:text="${#fields.eval('obj.' + fieldName)}"></span>
-        </td>
-    </tr>
-    </tbody>
-</table>
 
+    <!-- Iterate through each object in the response -->
+    <th:block th:each="obj : ${response}">
+        <tr>
+            <!-- Display the field values for each object -->
+            <td th:each="field : ${obj.toList()}" th:text="${obj[field]}"></td>
+        </tr>
+    </th:block>
+</table>
 </body>
 </html>

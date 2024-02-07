@@ -24,12 +24,10 @@ public class ExposedInfoApiService {
     }
 
     public List<ExposedInfoResponseItem> fetchAllExposedInfoData(Address address, String requestType) {
-        log.info("Address: {}", address);
         int pageNo = 1;
         int totalCount;
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
-        String response = request.retrieve().bodyToMono(String.class).block();
-        log.info("response {}", response);
+        apiService.StringDeserializeCheck(address, request);
         ExposedInfoApiResponse apiResponse = request.retrieve().bodyToMono(ExposedInfoApiResponse.class).block();
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();

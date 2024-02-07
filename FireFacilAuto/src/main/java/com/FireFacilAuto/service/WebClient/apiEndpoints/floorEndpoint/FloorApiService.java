@@ -24,13 +24,10 @@ public class FloorApiService {
     }
 
     public List<FloorResponseItem> fetchAllFloorData(Address address, String requestType) {
-        log.info("Address: {}", address);
         int pageNo = 1;
         int totalCount;
-
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
-        String response = request.retrieve().bodyToMono(String.class).block();
-        log.info("response {}", response);
+        apiService.StringDeserializeCheck(address, request);
 
         FloorApiResponse apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
         assert apiResponse != null;
