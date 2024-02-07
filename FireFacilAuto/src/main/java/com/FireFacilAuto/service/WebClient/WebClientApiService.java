@@ -1,6 +1,7 @@
 package com.FireFacilAuto.service.WebClient;
 
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseApiResponse;
+import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponse;
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
 import com.FireFacilAuto.domain.DTO.api.floorapi.FloorApiResponse;
 import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
@@ -52,7 +53,7 @@ public class WebClientApiService {
                 .queryParam("ji", address.getJi())
 //                .queryParam("startDate", "")
 //                .queryParam("endDate", "")
-                .queryParam("numOfRows", 2)
+                .queryParam("numOfRows", SAFE_QUERY)
                 .queryParam("pageNo", pageNo)
                 .queryParam("sigunguCd", address.getSigunguCode())
                 .queryParam("_type", "json")

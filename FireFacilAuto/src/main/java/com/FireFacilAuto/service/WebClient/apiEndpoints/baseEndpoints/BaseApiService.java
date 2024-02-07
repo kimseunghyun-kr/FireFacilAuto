@@ -60,6 +60,23 @@ public class BaseApiService {
 
     }
 
+    public List<BaseResponseItem> fetchOnePageData(Address address, String requestType, Integer page) {
+
+        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, page);
+        BaseApiResponse apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
+        if(apiResponse == null) {
+            return new LinkedList<>();
+        }
+
+        List<BaseResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        log.info("firstApiResponse, {} " , firstApiResponseList);
+
+        if(firstApiResponseList.isEmpty()) {
+            return new LinkedList<>();
+        }
+        return firstApiResponseList;
+    }
+
 
 
 }

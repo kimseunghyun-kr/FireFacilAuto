@@ -16,6 +16,7 @@ import com.FireFacilAuto.service.WebClient.apiEndpoints.recapTitleEndpoint.Recap
 import com.FireFacilAuto.service.WebClient.apiEndpoints.titleEndpoint.TitleApiService;
 import com.FireFacilAuto.service.buildingService.BuildingService;
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -117,6 +118,7 @@ public class Main {
     }
 
 
+    @Deprecated
     @PostMapping("/baseSelect")
     public String baseSelectResultShow(Model model, @ModelAttribute Address address) {
         List<BaseResponseItem> resultList =  baseApiService.fetchAllBaseData(address, "getBrBasisOulnInfo");
@@ -126,6 +128,7 @@ public class Main {
         return "redirect:/main/baseInformationDetails";
     }
 
+    @Deprecated
     @GetMapping("/baseInformationDetails")
     public String showInformationDetails(Model model) {
 
