@@ -1,4 +1,4 @@
-package com.FireFacilAuto.service.WebClient;
+package com.FireFacilAuto.service.WebClient.api;
 
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseApiResponse;
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponse;

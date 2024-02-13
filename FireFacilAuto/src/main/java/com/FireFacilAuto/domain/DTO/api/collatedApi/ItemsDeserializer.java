@@ -1,4 +1,4 @@
-package com.FireFacilAuto.domain.DTO.api.OneApiDTOAttempt;
+package com.FireFacilAuto.domain.DTO.api.collatedApi;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;

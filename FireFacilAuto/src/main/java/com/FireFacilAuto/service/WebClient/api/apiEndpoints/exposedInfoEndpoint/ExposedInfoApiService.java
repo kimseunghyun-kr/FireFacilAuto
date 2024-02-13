@@ -1,9 +1,9 @@
-package com.FireFacilAuto.service.WebClient.apiEndpoints.titleEndpoint;
+package com.FireFacilAuto.service.WebClient.api.apiEndpoints.exposedInfoEndpoint;
 
-import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleApiResponse;
-import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
+import com.FireFacilAuto.domain.DTO.api.exposInfo.ExposedInfoApiResponse;
+import com.FireFacilAuto.domain.DTO.api.exposInfo.ExposedInfoResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
-import com.FireFacilAuto.service.WebClient.WebClientApiService;
+import com.FireFacilAuto.service.WebClient.api.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,35 +14,33 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class TitleApiService {
+public class ExposedInfoApiService {
+
     private final WebClientApiService apiService;
 
     @Autowired
-    public TitleApiService(WebClientApiService apiService) {
+    public ExposedInfoApiService(WebClientApiService apiService) {
         this.apiService = apiService;
     }
 
-    public List<TitleResponseItem> fetchAllTitleData(Address address, String requestType) {
-
+    public List<ExposedInfoResponseItem> fetchAllExposedInfoData(Address address, String requestType) {
         int pageNo = 1;
         int totalCount;
-
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
         apiService.StringDeserializeCheck(address, request);
-
-        TitleApiResponse apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
+        ExposedInfoApiResponse apiResponse = request.retrieve().bodyToMono(ExposedInfoApiResponse.class).block();
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
         log.info("total counts {}" ,totalCount);
 
-        List<TitleResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        List<ExposedInfoResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
         log.info("firstApiResponse, {} " , firstApiResponseList);
 
         if(firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
 
-        List<TitleResponseItem> resultList = new LinkedList<>(firstApiResponseList);
+        List<ExposedInfoResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
         int totalRepeats = (int) Math.ceil((double) totalCount / WebClientApiService.SAFE_QUERY);
         log.info("totalrepeats {}" , totalRepeats);
@@ -51,7 +49,7 @@ public class TitleApiService {
         while(pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
             request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
-            apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
+            apiResponse = request.retrieve().bodyToMono(ExposedInfoApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
             pageNo += 1;

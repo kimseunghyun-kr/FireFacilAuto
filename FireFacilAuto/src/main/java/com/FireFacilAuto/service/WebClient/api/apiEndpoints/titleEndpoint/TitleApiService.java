@@ -1,9 +1,9 @@
-package com.FireFacilAuto.service.WebClient.apiEndpoints.floorEndpoint;
+package com.FireFacilAuto.service.WebClient.api.apiEndpoints.titleEndpoint;
 
-import com.FireFacilAuto.domain.DTO.api.floorapi.FloorApiResponse;
-import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
+import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleApiResponse;
+import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
-import com.FireFacilAuto.service.WebClient.WebClientApiService;
+import com.FireFacilAuto.service.WebClient.api.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,49 +14,49 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class FloorApiService {
-
+public class TitleApiService {
     private final WebClientApiService apiService;
 
     @Autowired
-    public FloorApiService(WebClientApiService apiService) {
+    public TitleApiService(WebClientApiService apiService) {
         this.apiService = apiService;
     }
 
-    public List<FloorResponseItem> fetchAllFloorData(Address address, String requestType) {
+    public List<TitleResponseItem> fetchAllTitleData(Address address, String requestType) {
+
         int pageNo = 1;
         int totalCount;
+
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
         apiService.StringDeserializeCheck(address, request);
 
-        FloorApiResponse apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
+        TitleApiResponse apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
-        log.info("total counts {}", totalCount);
+        log.info("total counts {}" ,totalCount);
 
-        List<FloorResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} ", firstApiResponseList.getFirst());
+        List<TitleResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
+        log.info("firstApiResponse, {} " , firstApiResponseList);
 
-        if (firstApiResponseList.isEmpty()) {
+        if(firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
 
-        List<FloorResponseItem> resultList = new LinkedList<>(firstApiResponseList);
+        List<TitleResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
         int totalRepeats = (int) Math.ceil((double) totalCount / WebClientApiService.SAFE_QUERY);
-        log.info("totalrepeats {}", totalRepeats);
+        log.info("totalrepeats {}" , totalRepeats);
         pageNo += 1;
 
-        while (pageNo <= totalRepeats) {
+        while(pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
             request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
-            apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
+            apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
             pageNo += 1;
         }
         return resultList;
+
     }
-
-
 }

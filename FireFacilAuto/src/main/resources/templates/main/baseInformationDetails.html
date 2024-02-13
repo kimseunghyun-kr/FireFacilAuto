@@ -4,107 +4,47 @@
     <meta charset="UTF-8"/>
     <title>Base Response Item Details</title>
     <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+    <script>
+        function submitForm(element) {
+            var form = element.closest('form');
+            form.querySelector('button[type="submit"]').click();
+        }
+    </script>
+
 </head>
 <body>
 
 <h2>Base Response Item Details</h2>
-<div th:each="obj : ${baseResponseItem}" class="object-line">
-    <div th:class="'field'">
-        <span><strong>bjdongCd:</strong> <span th:text="${obj.bjdongCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>bldNm:</strong> <span th:text="${obj.bldNm}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>block:</strong> <span th:text="${obj.block}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>bun:</strong> <span th:text="${obj.bun}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>bylotCnt:</strong> <span th:text="${obj.bylotCnt}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>crtnDay:</strong> <span th:text="${obj.crtnDay}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>guyukCd:</strong> <span th:text="${obj.guyukCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>guyukCdNm:</strong> <span th:text="${obj.guyukCdNm}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>ji:</strong> <span th:text="${obj.ji}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>jiguCd:</strong> <span th:text="${obj.jiguCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>jiguCdNm:</strong> <span th:text="${obj.jiguCdNm}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>jiyukCd:</strong> <span th:text="${obj.jiyukCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>jiyukCdNm:</strong> <span th:text="${obj.jiyukCdNm}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>lot:</strong> <span th:text="${obj.lot}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>mgmBldrgstPk:</strong> <span th:text="${obj.mgmBldrgstPk}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>mgmUpBldrgstPk:</strong> <span th:text="${obj.mgmUpBldrgstPk}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>naBjdongCd:</strong> <span th:text="${obj.naBjdongCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>naMainBun:</strong> <span th:text="${obj.naMainBun}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>naRoadCd:</strong> <span th:text="${obj.naRoadCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>naSubBun:</strong> <span th:text="${obj.naSubBun}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>naUgrndCd:</strong> <span th:text="${obj.naUgrndCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>newPlatPlc:</strong> <span th:text="${obj.newPlatPlc}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>platGbCd:</strong> <span th:text="${obj.platGbCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>platPlc:</strong> <span th:text="${obj.platPlc}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>regstrGbCd:</strong> <span th:text="${obj.regstrGbCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>regstrGbCdNm:</strong> <span th:text="${obj.regstrGbCdNm}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>regstrKindCd:</strong> <span th:text="${obj.regstrKindCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>regstrKindCdNm:</strong> <span th:text="${obj.regstrKindCdNm}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>rnum:</strong> <span th:text="${obj.rnum}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>sigunguCd:</strong> <span th:text="${obj.sigunguCd}"></span></span>
-    </div>
-    <div th:class="'field'">
-        <span><strong>splotNm:</strong> <span th:text="${obj.splotNm}"></span></span>
-    </div>
-
-    <hr/> <!-- Optional: Add a horizontal line between objects -->
+<div th:each="obj, objStat : ${baseResponseItem}" class="object-line">
+    <form th:action="@{/main/submitBaseObject}" th:object="${obj}" method="post" th:onclick="'submitForm(this)'">
+        <div th:class="'field'" th:attr="data-index=${objStat.index}" ondblclick="submitObject(this)">
+            <span><strong>rnum:</strong> <span th:text="${obj.rnum}"></span></span>
+        </div>
+        <div th:class="'field'">
+            <span><strong>bldNm:</strong> <span th:text="${obj.bldNm}"></span></span>
+        </div>
+        <div th:class="'field'">
+            <span><strong>block:</strong> <span th:text="${obj.block}"></span></span>
+        </div>
+        <div th:class="'field'">
+            <span><strong>mgmBldrgstPk:</strong> <span th:text="${obj.mgmBldrgstPk}"></span></span>
+        </div>
+        <div th:class="'field'">
+            <span><strong>mgmUpBldrgstPk:</strong> <span th:text="${obj.mgmUpBldrgstPk}"></span></span>
+        </div>
+        <div th:class="'field'">
+            <span><strong>regstrGbCd:</strong> <span th:text="${obj.regstrGbCd}"></span></span>
+        </div>
+        <div th:class="'field'">
+            <span><strong>regstrKindCd:</strong> <span th:text="${obj.regstrKindCd}"></span></span>
+        </div>
+        <hr/> <!-- Optional: Add a horizontal line between objects -->
+        <input type="hidden" th:name="baseResponseItemObject" th:value="${obj}"/>
+        <button type="submit" style="display: none;"></button>
+    </form>
 </div>
+
 
 
 </body>

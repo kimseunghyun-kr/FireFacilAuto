@@ -1,22 +1,14 @@
 package com.FireFacilAuto.controller.mvc_controller;
 
-import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponse;
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
-import com.FireFacilAuto.domain.DTO.api.exposInfo.ExposedInfoResponseItem;
-import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleResponse;
-import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleResponseItem;
-import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
-import com.FireFacilAuto.service.WebClient.apiEndpoints.baseEndpoints.BaseApiService;
-import com.FireFacilAuto.service.WebClient.apiEndpoints.exposedInfoEndpoint.ExposedInfoApiService;
-import com.FireFacilAuto.service.WebClient.apiEndpoints.floorEndpoint.FloorApiService;
-import com.FireFacilAuto.service.WebClient.apiEndpoints.recapTitleEndpoint.RecapTitleService;
-import com.FireFacilAuto.service.WebClient.apiEndpoints.titleEndpoint.TitleApiService;
+import com.FireFacilAuto.service.WebClient.api.APICollationService;
+import com.FireFacilAuto.service.WebClient.api.apiEndpoints.baseEndpoints.BaseApiService;
+import com.FireFacilAuto.service.WebClient.api.apiEndpoints.floorEndpoint.FloorApiService;
 import com.FireFacilAuto.service.buildingService.BuildingService;
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,29 +20,26 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequestMapping("/main")
-@SessionAttributes("response")
+@SessionAttributes({"response", "address"})
 public class Main {
     private final FloorApiService floorApiService;
     private final BaseApiService baseApiService;
 
-    private final TitleApiService titleApiService;
-    private final RecapTitleService recapTitleService;
-    private final ExposedInfoApiService exposedInfoApiService;
+
 
     private final BuildingLawExecutionService buildingLawExecutionService;
     private final BuildingService buildingService;
+    private final APICollationService apiCollationService;
 
 
 
     @Autowired
-    public Main(FloorApiService floorApiService, BaseApiService baseApiService, TitleApiService titleApiService, RecapTitleService recapTitleService, ExposedInfoApiService exposedInfoApiService, BuildingLawExecutionService buildingLawExecutionService, BuildingService buildingService) {
+    public Main(FloorApiService floorApiService, BaseApiService baseApiService, BuildingLawExecutionService buildingLawExecutionService, BuildingService buildingService, APICollationService apiCollationService) {
         this.floorApiService = floorApiService;
         this.baseApiService = baseApiService;
-        this.titleApiService = titleApiService;
-        this.recapTitleService = recapTitleService;
-        this.exposedInfoApiService = exposedInfoApiService;
         this.buildingLawExecutionService = buildingLawExecutionService;
         this.buildingService = buildingService;
+        this.apiCollationService = apiCollationService;
     }
 
     @GetMapping("/input")
@@ -59,85 +48,29 @@ public class Main {
         return "main/addressForm";
     }
 
-    @PostMapping("/selectResult")
-    public String selectionCascade(Model model, @ModelAttribute Address address) {
-        List<BaseResponseItem> resultListBas = baseApiService.fetchAllBaseData(address, "getBrBasisOulnInfo");
-        if(!resultListBas.isEmpty()) {
-            log.info("responseBody, {}", resultListBas);
-            model.addAttribute("response", resultListBas);
-            return "redirect:/main/InformationDetails";
-        }
-        List<TitleResponseItem> resultListTit = titleApiService.fetchAllTitleData(address, "getBrTitleInfo");
-        if(!resultListTit.isEmpty()) {
-            log.info("responseBody, {}", resultListTit);
-            model.addAttribute("response", resultListTit);
-            return "redirect:/main/InformationDetails";
-        }
-        List<ExposedInfoResponseItem> resultListex = exposedInfoApiService.fetchAllExposedInfoData(address, "getBrExposInfo");
-        if(!resultListex.isEmpty()) {
-            log.info("responseBody, {}", resultListex);
-            model.addAttribute("response", resultListex);
-            return "redirect:/main/InformationDetails";
-        }
-        List<RecapTitleResponseItem> resultListRec = recapTitleService.fetchAllRecapTitleData(address ,"getBrRecapTitleInfo");
-        if(!resultListRec.isEmpty()) {
-            log.info("responseBody, {}", resultListRec);
-            model.addAttribute("response", resultListRec);
-            return "redirect:/main/InformationDetails";
-        }
-
-        return "redirect:/main/input";
-    }
-
-    @GetMapping("/InformationDetails")
-    public String selectionShow(Model model) {
-        List<Object> resultList = (List<Object>) model.getAttribute("response");
-
-        if (!resultList.isEmpty()) {
-            Object getset = resultList.getFirst();
-
-            if (getset instanceof BaseResponseItem) {
-                model.addAttribute("response", castList(resultList, BaseResponseItem.class));
-            } else if (getset instanceof RecapTitleResponseItem) {
-                model.addAttribute("response", castList(resultList, RecapTitleResponseItem.class));
-            } else if (getset instanceof ExposedInfoResponseItem) {
-                model.addAttribute("response", castList(resultList, ExposedInfoResponseItem.class));
-            } else if (getset instanceof TitleResponseItem) {
-                model.addAttribute("response", castList(resultList, TitleResponseItem.class));
-            }
-
-            return "/main/InformationDetails";
-        }
-
-        return "redirect:/main/input";
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> List<T> castList(List<?> list, Class<T> clazz) {
-        return (List<T>) list;
-    }
-
-
-    @Deprecated
     @PostMapping("/baseSelect")
-    public String baseSelectResultShow(Model model, @ModelAttribute Address address) {
+    public String baseSelectModelPopulateSession (Model model, @ModelAttribute Address address) {
         List<BaseResponseItem> resultList =  baseApiService.fetchAllBaseData(address, "getBrBasisOulnInfo");
-//        buildingService.process(resultList, address);
         log.info("responseBody, {}", resultList);
+        buildingService.process(resultList, address);
         model.addAttribute("response", resultList);
+        model.addAttribute("address", address);
         return "redirect:/main/baseInformationDetails";
     }
 
-    @Deprecated
     @GetMapping("/baseInformationDetails")
-    public String showInformationDetails(Model model) {
-
+    public String baseSelectFormShow (Model model) {
         // The data is retrieved from the session attribute
         List<BaseResponseItem> resultList = (List<BaseResponseItem>) model.getAttribute("response");
-
         // Populate model attributes if needed
         model.addAttribute("baseResponseItem", resultList);
         return "/main/baseInformationDetails";
+    }
+
+    @PostMapping("/submitBaseObject")
+    public String baseSelectedItemReceive (Model model, @ModelAttribute BaseResponseItem baseResponseItemObject) {
+        apiCollationService.process(baseResponseItemObject, (Address) model.getAttribute("address"));
+        return "redirect:/main/showCollated";
     }
 
     @GetMapping("/execute")

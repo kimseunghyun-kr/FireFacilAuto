@@ -1,9 +1,9 @@
-package com.FireFacilAuto.service.WebClient.apiEndpoints.baseEndpoints;
+package com.FireFacilAuto.service.WebClient.api.apiEndpoints.baseEndpoints;
 
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseApiResponse;
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
-import com.FireFacilAuto.service.WebClient.WebClientApiService;
+import com.FireFacilAuto.service.WebClient.api.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
