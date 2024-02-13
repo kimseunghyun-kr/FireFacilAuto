@@ -23,6 +23,13 @@ public class BaseApiService {
         this.apiService = apiService;
     }
 
+    public List<BaseResponseItem> fetchAllTitleBaseData(Address address, String requestType) {
+        List<BaseResponseItem> result = this.fetchAllBaseData(address, requestType).stream().filter(data -> Integer.parseInt(data.getRegstrKindCd()) == 3).toList();
+
+        result = result.stream().filter(data -> Integer.parseInt(data.getRegstrKindCd()) == 3).toList();
+        return result;
+    }
+
     public List<BaseResponseItem> fetchAllBaseData(Address address, String requestType) {
         int pageNo = 1;
         int totalCount;

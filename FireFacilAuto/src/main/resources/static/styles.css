@@ -157,12 +157,6 @@ h2 {
     padding: 5px;
 }
 
-.object-line {
-    display: flex;
-    overflow-x: auto;
-    margin-bottom: 20px; /* Add margin at the bottom */
-    padding: 10px; /* Add padding to the entire object-line */
-}
 .field:nth-child(odd) {
     background-color: #f0f0f0; /* Set the background color for odd fields */
 }

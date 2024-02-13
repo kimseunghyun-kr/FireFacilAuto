@@ -33,10 +33,10 @@ public class RecapTitleService {
         RecapTitleApiResponse apiResponse = request.retrieve().bodyToMono(RecapTitleApiResponse.class).block();
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
-        log.info("total counts {}", totalCount);
+        log.info("total counts RecapTitle {}", totalCount);
 
         List<RecapTitleResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} ", firstApiResponseList.getFirst());
+        log.info("Recap Title first API response, {} ", firstApiResponseList.getFirst());
 
         if (firstApiResponseList.isEmpty()) {
             return new LinkedList<>();

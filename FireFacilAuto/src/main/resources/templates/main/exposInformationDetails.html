@@ -16,34 +16,30 @@
 <body>
 
 <div class="container">
-    <h2>Base Response Item Details</h2>
+    <h2>Expos Info Response Item Details</h2>
+
+    <form th:action="@{/main/continueWithTitleObj}" method="post">
+        <button type="submit" class="submit-button">표제부로 계속</button>
+    </form>
 
     <table class="response-table">
         <thead>
         <tr>
             <th class="header-cell">rnum</th>
             <th class="header-cell">Building Name</th>
+            <th class="header-cell">Ho Name</th>
             <th class="header-cell">Registration Pk</th>
-            <th class="header-cell">Up Registration Pk</th>
-            <th class="header-cell">Registration Code</th>
-            <th class="header-cell">Registration name</th>
-            <th class="header-cell">Kind Code</th>
-            <th class="header-cell">Kind name</th>
             <th class="header-cell">Action</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="obj, objStat : ${baseInfoList}" class="object-line" onclick="submitForm(this)">
+        <tr th:each="obj, objStat : ${exposInfoList}" class="object-line" onclick="submitForm(this)">
             <td><span th:text="${obj.rnum}"></span></td>
             <td><span th:text="${obj.bldNm}"></span></td>
+            <td><span th:text="${obj.hoNm}"></span></td>
             <td><span th:text="${obj.mgmBldrgstPk}"></span></td>
-            <td><span th:text="${obj.mgmUpBldrgstPk}"></span></td>
-            <td><span th:text="${obj.regstrGbCd}"></span></td>
-            <td><span th:text="${obj.regstrGbCdNm}"></span></td>
-            <td><span th:text="${obj.regstrKindCd}"></span></td>
-            <td><span th:text="${obj.regstrKindCdNm}"></span></td>
             <td>
-                <form th:action= "@{/main/submitBaseObject}" th:object="${obj}" method="post">
+                <form th:action= "@{/main/submitExposInfoObj}" th:object="${obj}" method="post">
                     <input type="hidden" th:name="baseResponseItemObject" th:value="${obj}"/>
                     <button type="submit" class="submit-button" style="display: none;">Submit</button>
                 </form>
