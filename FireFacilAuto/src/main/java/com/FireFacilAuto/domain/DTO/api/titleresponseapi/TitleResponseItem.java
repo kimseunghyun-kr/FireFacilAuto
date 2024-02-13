@@ -2,8 +2,10 @@ package com.FireFacilAuto.domain.DTO.api.titleresponseapi;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class TitleResponseItem {
+public class TitleResponseItem implements Serializable {
     public String archArea;
     public String atchBldArea;
     public String atchBldCnt;

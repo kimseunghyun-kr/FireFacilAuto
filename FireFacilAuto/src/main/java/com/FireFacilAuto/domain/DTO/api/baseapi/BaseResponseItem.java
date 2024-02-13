@@ -1,14 +1,17 @@
 package com.FireFacilAuto.domain.DTO.api.baseapi;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class BaseResponseItem {
+@JsonInclude(JsonInclude.Include.NON_NULL) // Exclude null values during serialization
+public class BaseResponseItem implements Serializable {
     private String bjdongCd;
     private String bldNm;
     private String block;

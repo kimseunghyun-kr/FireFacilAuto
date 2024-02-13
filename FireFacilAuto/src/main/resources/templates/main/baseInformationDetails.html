@@ -7,8 +7,8 @@
 
     <script>
         function submitForm(element) {
-            let form = element.closest('form');
-            form.querySelector('button[type="submit"]').click();
+            let button = element.querySelector('td button[type="submit"]');
+            button.click();
         }
     </script>
 
@@ -34,7 +34,7 @@
         </thead>
         <tbody>
         <tr th:each="obj, objStat : ${baseInfoList}" class="object-line" onclick="submitForm(this)">
-            <td><span th:text="${obj.rnum}"></span></td>
+            <td><span th:text="${objStat.index+1}"></span></td>
             <td><span th:text="${obj.bldNm}"></span></td>
             <td><span th:text="${obj.mgmBldrgstPk}"></span></td>
             <td><span th:text="${obj.mgmUpBldrgstPk}"></span></td>
@@ -44,7 +44,7 @@
             <td><span th:text="${obj.regstrKindCdNm}"></span></td>
             <td>
                 <form th:action= "@{/main/submitBaseObject}" th:object="${obj}" method="post">
-                    <input type="hidden" th:name="baseResponseItemObject" th:value="${obj}"/>
+                    <input type="hidden" th:id= "baseResponseItem" th:name="baseResponseItem" th:value="${obj}"/>
                     <button type="submit" class="submit-button" style="display: none;">Submit</button>
                 </form>
             </td>

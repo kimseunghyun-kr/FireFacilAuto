@@ -2,8 +2,10 @@ package com.FireFacilAuto.domain.DTO.api.exposInfo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class ExposedInfoResponseItem {
+public class ExposedInfoResponseItem implements Serializable {
 
     public String bjdongCd;
     public String bldNm;

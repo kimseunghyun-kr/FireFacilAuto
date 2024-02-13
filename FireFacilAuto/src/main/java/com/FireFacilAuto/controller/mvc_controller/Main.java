@@ -13,6 +13,7 @@ import com.FireFacilAuto.service.buildingService.BuildingService;
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequestMapping("/main")
-@SessionAttributes({"baseResponseItem", "address"})
+@SessionAttributes({"baseResultList","baseResponseItem", "address"})
 public class Main {
     private final FloorApiService floorApiService;
     private final BaseApiService baseApiService;
@@ -56,32 +57,31 @@ public class Main {
         List<BaseResponseItem> resultList =  apiCollationService.concurrentPreGetFromApi(address);
         log.info("responseBody, {}", resultList);
         buildingService.process(resultList, address);
-        redirectAttributes.addAttribute("response", resultList);
+        redirectAttributes.addFlashAttribute("response", resultList);
         model.addAttribute("address", address);
         return "redirect:/main/baseInformationDetails";
     }
 
     @GetMapping("/baseInformationDetails")
-    public String baseSelectFormShow (RedirectAttributes redirectAttributes, Model model) {
-        // The data is retrieved from the session attribute
-        List<BaseResponseItem> resultList = (List<BaseResponseItem>) redirectAttributes.getAttribute("response");
+    public String baseSelectFormShow (@ModelAttribute("response") List<BaseResponseItem> resultList, Model model) {
         // Populate model attributes if needed
         model.addAttribute("baseInfoList", resultList);
         return "/main/baseInformationDetails";
     }
 
     @PostMapping("/submitBaseObject")
-    public String baseSelectItemReceiveAndFindExposInfo (RedirectAttributes redirectAttributes, Model model, @ModelAttribute BaseResponseItem baseResponseItemObject) {
-        model.addAttribute("baseResponseItem",baseResponseItemObject);
-        List<ExposedInfoResponseItem> exposedInfoResponseItemList = apiCollationService.getfurtherSpecificSelect(baseResponseItemObject, (Address) model.getAttribute("address"));
-        redirectAttributes.addAttribute("exposInfoList", exposedInfoResponseItemList);
+    public String baseSelectItemReceiveAndFindExposInfo (RedirectAttributes redirectAttributes, Model model, @ModelAttribute("baseResponseItem") BaseResponseItem baseResponseItem) {
+        model.addAttribute("baseResponseItem",baseResponseItem);
+        log.info("controllerBaseResponseItem check at baseSelectItemAndFindExposInfo {}, " ,baseResponseItem);
+        List<ExposedInfoResponseItem> exposedInfoResponseItemList = apiCollationService.getfurtherSpecificSelect(baseResponseItem, (Address) model.getAttribute("address"));
+        redirectAttributes.addFlashAttribute("exposInfoList", exposedInfoResponseItemList);
         return "redirect:/main/showExpos";
     }
 
     @GetMapping("/showExpos")
-    public String exposSelectFormShow (Model model, RedirectAttributes redirectAttributes) {
-        List<ExposedInfoResponseItem> exposedInfoResponseItemList = (List<ExposedInfoResponseItem>) redirectAttributes.getAttribute("exposInfoList");
+    public String exposSelectFormShow (Model model, RedirectAttributes redirectAttributes, @ModelAttribute("exposInfoList")List<ExposedInfoResponseItem> exposedInfoResponseItemList) {
         assert exposedInfoResponseItemList != null;
+        log.info("controllerBaseResponseItem check at exposFormshow {}, " ,(BaseResponseItem) model.getAttribute("baseResponseItem"));
         if(exposedInfoResponseItemList.isEmpty()) {
             return "redirect:/main/continueWithTitleObj"; // to modify later into process.
         }
@@ -95,16 +95,18 @@ public class Main {
 
         //Todo
 
-        return "/main/input";
+        return "redirect:/main/input";
     }
 
     @PostMapping("/continueWithTitleObj")
     public String continueWithTitleObj (Model model) {
+        BaseResponseItem baseResponseItem = (BaseResponseItem) model.getAttribute("baseResponseItem");
+        log.info("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
         TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase((BaseResponseItem) model.getAttribute("baseResponseItem"), (Address) model.getAttribute("address"));
 
         //Todo
 
-        return "/main/input";
+        return "redirect:/main/input";
     }
 
     @GetMapping("/execute")

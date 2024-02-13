@@ -31,6 +31,7 @@ public class RecapTitleService {
         apiService.StringDeserializeCheck(address, request);
 
         RecapTitleApiResponse apiResponse = request.retrieve().bodyToMono(RecapTitleApiResponse.class).block();
+
         assert apiResponse != null;
         totalCount = apiResponse.getResponse().getBody().getTotalCount();
         log.info("total counts RecapTitle {}", totalCount);

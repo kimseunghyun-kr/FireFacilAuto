@@ -87,8 +87,15 @@ public class APICollationService {
     }
 
     public TitleResponseItem getTitleItemFromBase(BaseResponseItem baseResponseItem, Address address) {
-        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream()
-                .filter(obj -> obj.mgmBldrgstPk.equals(baseResponseItem.getMgmBldrgstPk())).findFirst().orElseThrow();
+        log.info("baseResponseItem whateverPk {}", baseResponseItem.getMgmBldrgstPk());
+
+
+        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream().map(obj -> {log.info("object value , {}", obj.mgmBldrgstPk);
+            return obj;})
+                .findFirst().orElseThrow();
+
+//        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream()
+//                .filter(obj -> obj.mgmBldrgstPk.equals(baseResponseItem.getMgmBldrgstPk())).findFirst().orElseThrow();
     }
 }
 

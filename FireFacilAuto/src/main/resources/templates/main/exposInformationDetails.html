@@ -7,9 +7,10 @@
 
     <script>
         function submitForm(element) {
-            let form = element.closest('form');
-            form.querySelector('button[type="submit"]').click();
+            let button = element.querySelector('td button[type="submit"]');
+            button.click();
         }
+
     </script>
 
 </head>
