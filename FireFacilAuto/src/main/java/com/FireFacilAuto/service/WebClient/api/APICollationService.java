@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -37,10 +39,13 @@ public class APICollationService {
     }
 
 
-    public List<BaseResponseItem> concurrentPreGetFromApi(Address address) {
+    public List<List<BaseResponseItem>> concurrentPreGetFromApi(Address address) {
         // Create CompletableFutures for each API call
-        CompletableFuture<List<BaseResponseItem>> baseFuture = CompletableFuture.supplyAsync(() ->
+        CompletableFuture<List<BaseResponseItem>> baseTitleFuture = CompletableFuture.supplyAsync(() ->
                 baseApiService.fetchAllTitleBaseData(address, "getBrBasisOulnInfo"));
+
+        CompletableFuture<List<BaseResponseItem>> baseExposFuture = CompletableFuture.supplyAsync(() ->
+                baseApiService.fetchAllExposInfoBaseData(address, "getBrBasisOulnInfo"));
 
         CompletableFuture<List<ExposedInfoResponseItem>> exposedFuture = CompletableFuture.supplyAsync(() ->
                 exposedInfoApiService.fetchAllExposedInfoData(address, "getBrExposInfo"));
@@ -52,19 +57,20 @@ public class APICollationService {
                 titleApiService.fetchAllTitleData(address, "getBrTitleInfo"));
 
         // Combine all CompletableFutures into one
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(baseFuture, exposedFuture, recapFuture, titleFuture);
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(baseTitleFuture, baseExposFuture, exposedFuture, recapFuture, titleFuture);
 
         // Wait for all CompletableFutures to complete
         try {
             allOf.get();
             // Retrieve the results from the completed CompletableFutures
-            List<BaseResponseItem> baseResponseItemList = baseFuture.get();
+            List<BaseResponseItem> baseResponseTitleItemList = baseTitleFuture.get();
+            List<BaseResponseItem> baseResponseExposItemList = baseExposFuture.get();
             List<ExposedInfoResponseItem> exposedInfoItemsList = exposedFuture.get();
             List<RecapTitleResponseItem> recapTitleServiceList = recapFuture.get();
             List<TitleResponseItem> titleResponseItemsList = titleFuture.get();
             // Your business logic with the retrieved lists
 
-            return baseResponseItemList;
+            return new LinkedList<>(List.of(baseResponseTitleItemList,baseResponseExposItemList));
 
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
@@ -81,21 +87,27 @@ public class APICollationService {
         return "";
     }
 
-    public List<ExposedInfoResponseItem> getfurtherSpecificSelect(BaseResponseItem baseResponseItemObject, Address address) {
+    public List<ExposedInfoResponseItem> getfurtherSpecificSelect(BaseResponseItem baseResponseItemObject, List<BaseResponseItem> exposList,  Address address) {
+        log.info("**************************************************");
+        log.info("getfurtherSpecificSelect BaseexposListChekc {}", exposList);
+
         List<ExposedInfoResponseItem> exposedInfoResponseItemList = exposedInfoApiService.fetchAllExposedInfoData(address, "getBrExposInfo");
-        return exposedInfoResponseItemList;
+        log.info("getfurtherSpecificSelect exposedInfoResponseItemListCheck {}", exposedInfoResponseItemList);
+
+        List<String> exposListWithBaseResponseItemObjectParent = exposList.stream().filter(obj -> obj.getMgmUpBldrgstPk().equals(baseResponseItemObject.getMgmBldrgstPk())).map(BaseResponseItem::getMgmBldrgstPk).toList();
+
+        return exposedInfoResponseItemList.stream().filter(obj -> exposListWithBaseResponseItemObjectParent.contains(obj.mgmBldrgstPk)).toList();
     }
 
     public TitleResponseItem getTitleItemFromBase(BaseResponseItem baseResponseItem, Address address) {
         log.info("baseResponseItem whateverPk {}", baseResponseItem.getMgmBldrgstPk());
 
 
-        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream().map(obj -> {log.info("object value , {}", obj.mgmBldrgstPk);
-            return obj;})
-                .findFirst().orElseThrow();
+//        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream().peek(obj -> log.info("object value , {}", obj.mgmBldrgstPk))
+//                .findFirst().orElseThrow();
 
-//        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream()
-//                .filter(obj -> obj.mgmBldrgstPk.equals(baseResponseItem.getMgmBldrgstPk())).findFirst().orElseThrow();
+        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream()
+                .filter(obj -> obj.mgmBldrgstPk.equals(baseResponseItem.getMgmBldrgstPk())).findFirst().orElseThrow();
     }
 }
 

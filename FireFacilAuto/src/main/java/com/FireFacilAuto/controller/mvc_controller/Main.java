@@ -11,20 +11,18 @@ import com.FireFacilAuto.service.WebClient.api.apiEndpoints.baseEndpoints.BaseAp
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.floorEndpoint.FloorApiService;
 import com.FireFacilAuto.service.buildingService.BuildingService;
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
 @Slf4j
 @RequestMapping("/main")
-@SessionAttributes({"baseResultList","baseResponseItem", "address"})
 public class Main {
     private final FloorApiService floorApiService;
     private final BaseApiService baseApiService;
@@ -53,35 +51,55 @@ public class Main {
     }
 
     @PostMapping("/baseSelect")
-    public String baseSelectModelPopulateSession (RedirectAttributes redirectAttributes, Model model, @ModelAttribute Address address) {
-        List<BaseResponseItem> resultList =  apiCollationService.concurrentPreGetFromApi(address);
-        log.info("responseBody, {}", resultList);
-        buildingService.process(resultList, address);
-        redirectAttributes.addFlashAttribute("response", resultList);
+    public String baseSelectModelPopulateSession (HttpSession httpSession, Model model, @ModelAttribute Address address) {
+        List<List<BaseResponseItem>> collatedList =  apiCollationService.concurrentPreGetFromApi(address);
+        if(collatedList.size() != 2) {
+            return "redirect:/main/input";
+        }
+        List<BaseResponseItem> baseTitleList = collatedList.getFirst();
+        List<BaseResponseItem> baseExposList = collatedList.getLast();
+        log.info("responseBody, {}", baseTitleList);
+//        buildingService.process(baseTitleList, address);
+
+        httpSession.setAttribute("baseExposList", baseExposList);
+        httpSession.setAttribute("response", baseTitleList);
+        httpSession.setAttribute("address", address);
+
         model.addAttribute("address", address);
         return "redirect:/main/baseInformationDetails";
     }
 
     @GetMapping("/baseInformationDetails")
-    public String baseSelectFormShow (@ModelAttribute("response") List<BaseResponseItem> resultList, Model model) {
+    public String baseSelectFormShow (HttpSession httpSession, Model model) {
+        // get list from session attributes
+        List<BaseResponseItem> baseResponseItemList = (List<BaseResponseItem>) httpSession.getAttribute("response");
         // Populate model attributes if needed
-        model.addAttribute("baseInfoList", resultList);
+        model.addAttribute("baseInfoList", baseResponseItemList);
         return "/main/baseInformationDetails";
     }
 
     @PostMapping("/submitBaseObject")
-    public String baseSelectItemReceiveAndFindExposInfo (RedirectAttributes redirectAttributes, Model model, @ModelAttribute("baseResponseItem") BaseResponseItem baseResponseItem) {
-        model.addAttribute("baseResponseItem",baseResponseItem);
+    public String baseSelectItemReceiveAndFindExposInfo (HttpSession httpSession, Model model, @ModelAttribute("baseResponsePk") String baseResponsePk) {
+        List<BaseResponseItem> baseResponseItemList = (List<BaseResponseItem>)httpSession.getAttribute("response");
+        log.info("baseItemResponseListCheck at submitBaseObject, {}", baseResponseItemList);
+        BaseResponseItem baseResponseItem = baseResponseItemList.stream().filter(obj -> obj.getMgmBldrgstPk().equals(baseResponsePk)).findFirst().orElseThrow();
+
+        httpSession.removeAttribute("response");
+        httpSession.setAttribute("baseResponseItem", baseResponseItem);
+
         log.info("controllerBaseResponseItem check at baseSelectItemAndFindExposInfo {}, " ,baseResponseItem);
-        List<ExposedInfoResponseItem> exposedInfoResponseItemList = apiCollationService.getfurtherSpecificSelect(baseResponseItem, (Address) model.getAttribute("address"));
-        redirectAttributes.addFlashAttribute("exposInfoList", exposedInfoResponseItemList);
+        List<BaseResponseItem> baseExposList = (List<BaseResponseItem>) httpSession.getAttribute("baseExposList");
+        List<ExposedInfoResponseItem> exposedInfoResponseItemList = apiCollationService.getfurtherSpecificSelect(baseResponseItem, baseExposList, (Address) httpSession.getAttribute("address"));
+
+        httpSession.setAttribute("exposInfoList", exposedInfoResponseItemList);
         return "redirect:/main/showExpos";
     }
 
     @GetMapping("/showExpos")
-    public String exposSelectFormShow (Model model, RedirectAttributes redirectAttributes, @ModelAttribute("exposInfoList")List<ExposedInfoResponseItem> exposedInfoResponseItemList) {
+    public String exposSelectFormShow (Model model, HttpSession httpSession) {
+        List<ExposedInfoResponseItem> exposedInfoResponseItemList = (List<ExposedInfoResponseItem>) httpSession.getAttribute("exposInfoList");
         assert exposedInfoResponseItemList != null;
-        log.info("controllerBaseResponseItem check at exposFormshow {}, " ,(BaseResponseItem) model.getAttribute("baseResponseItem"));
+        log.info("exposInfo check at exposFormshow {}, " , httpSession.getAttribute("exposInfoList"));
         if(exposedInfoResponseItemList.isEmpty()) {
             return "redirect:/main/continueWithTitleObj"; // to modify later into process.
         }
@@ -90,8 +108,8 @@ public class Main {
     }
 
     @PostMapping("/continueWithExposInfoObj")
-    public String continueWithExposInfoObj (Model model, @ModelAttribute ExposedInfoResponseItem exposedInfoResponseItem){
-        TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase((BaseResponseItem) model.getAttribute("baseResponseItem"), (Address) model.getAttribute("address"));
+    public String continueWithExposInfoObj (Model model, HttpSession httpSession){
+        TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase((BaseResponseItem) httpSession.getAttribute("baseResponseItem"), (Address) httpSession.getAttribute("address"));
 
         //Todo
 
@@ -99,10 +117,10 @@ public class Main {
     }
 
     @PostMapping("/continueWithTitleObj")
-    public String continueWithTitleObj (Model model) {
-        BaseResponseItem baseResponseItem = (BaseResponseItem) model.getAttribute("baseResponseItem");
+    public String continueWithTitleObj (Model model, HttpSession httpSession) {
+        BaseResponseItem baseResponseItem = (BaseResponseItem) httpSession.getAttribute("baseResponseItem");
         log.info("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
-        TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase((BaseResponseItem) model.getAttribute("baseResponseItem"), (Address) model.getAttribute("address"));
+        TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase((BaseResponseItem) httpSession.getAttribute("baseResponseItem"), (Address) httpSession.getAttribute("address"));
 
         //Todo
 

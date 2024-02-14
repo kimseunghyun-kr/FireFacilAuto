@@ -6,6 +6,7 @@ import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.service.WebClient.api.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,6 +24,7 @@ public class RecapTitleService {
     }
 
 
+    @Cacheable(value="fetchAllRecapTitleData")
     public List<RecapTitleResponseItem> fetchAllRecapTitleData(Address address, String requestType) {
 
         int pageNo = 1;

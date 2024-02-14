@@ -5,7 +5,9 @@ import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.service.WebClient.api.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -22,6 +24,7 @@ public class TitleApiService {
         this.apiService = apiService;
     }
 
+    @Cacheable("fetchAllTitleData")
     public List<TitleResponseItem> fetchAllTitleData(Address address, String requestType) {
 
         int pageNo = 1;

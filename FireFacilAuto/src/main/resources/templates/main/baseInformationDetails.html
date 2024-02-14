@@ -44,7 +44,7 @@
             <td><span th:text="${obj.regstrKindCdNm}"></span></td>
             <td>
                 <form th:action= "@{/main/submitBaseObject}" th:object="${obj}" method="post">
-                    <input type="hidden" th:id= "baseResponseItem" th:name="baseResponseItem" th:value="${obj}"/>
+                    <input type="hidden" th:id= "baseResponsePk" th:name="baseResponsePk" th:value="${obj.mgmBldrgstPk}"/>
                     <button type="submit" class="submit-button" style="display: none;">Submit</button>
                 </form>
             </td>

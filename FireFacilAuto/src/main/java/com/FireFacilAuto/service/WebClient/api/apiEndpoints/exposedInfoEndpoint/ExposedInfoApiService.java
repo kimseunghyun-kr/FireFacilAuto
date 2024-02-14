@@ -24,6 +24,7 @@ public class ExposedInfoApiService {
         this.apiService = apiService;
     }
 
+    @Cacheable(value="fetchAllExposedInfoData")
     public List<ExposedInfoResponseItem> fetchAllExposedInfoData(Address address, String requestType) {
         int pageNo = 1;
         int totalCount;
