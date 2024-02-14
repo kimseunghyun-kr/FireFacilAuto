@@ -5,7 +5,6 @@ import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.service.WebClient.api.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class TitleApiService {
+
+    private static final String URI = "getBrTitleInfo";
     private final WebClientApiService apiService;
 
     @Autowired
@@ -25,12 +26,12 @@ public class TitleApiService {
     }
 
     @Cacheable("fetchAllTitleData")
-    public List<TitleResponseItem> fetchAllTitleData(Address address, String requestType) {
+    public List<TitleResponseItem> fetchAllTitleData(Address address) {
 
         int pageNo = 1;
         int totalCount;
 
-        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, pageNo);
         apiService.StringDeserializeCheck(address, request);
 
         TitleApiResponse apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
@@ -39,11 +40,12 @@ public class TitleApiService {
         log.info("total counts {}" ,totalCount);
 
         List<TitleResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} " , firstApiResponseList);
 
         if(firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
+
+        log.info("firstApiResponse, {} " , firstApiResponseList);
 
         List<TitleResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
@@ -53,7 +55,7 @@ public class TitleApiService {
 
         while(pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
-            request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+            request = apiService.getRequestHeadersSpec(address, URI, pageNo);
             apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());

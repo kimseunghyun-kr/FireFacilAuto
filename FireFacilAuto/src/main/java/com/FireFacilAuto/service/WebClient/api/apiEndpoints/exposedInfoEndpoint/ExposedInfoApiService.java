@@ -17,6 +17,8 @@ import java.util.List;
 @Slf4j
 public class ExposedInfoApiService {
 
+    private static final String URI = "getBrExposInfo";
+
     private final WebClientApiService apiService;
 
     @Autowired
@@ -25,10 +27,10 @@ public class ExposedInfoApiService {
     }
 
     @Cacheable(value="fetchAllExposedInfoData")
-    public List<ExposedInfoResponseItem> fetchAllExposedInfoData(Address address, String requestType) {
+    public List<ExposedInfoResponseItem> fetchAllExposedInfoData(Address address) {
         int pageNo = 1;
         int totalCount;
-        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, pageNo);
         apiService.StringDeserializeCheck(address, request);
         ExposedInfoApiResponse apiResponse = request.retrieve().bodyToMono(ExposedInfoApiResponse.class).block();
         assert apiResponse != null;
@@ -36,11 +38,11 @@ public class ExposedInfoApiService {
         log.info("total counts {}" ,totalCount);
 
         List<ExposedInfoResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} " , firstApiResponseList);
 
         if(firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
+        log.info("firstApiResponse, {} " , firstApiResponseList);
 
         List<ExposedInfoResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
@@ -50,7 +52,7 @@ public class ExposedInfoApiService {
 
         while(pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
-            request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+            request = apiService.getRequestHeadersSpec(address, URI, pageNo);
             apiResponse = request.retrieve().bodyToMono(ExposedInfoApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());

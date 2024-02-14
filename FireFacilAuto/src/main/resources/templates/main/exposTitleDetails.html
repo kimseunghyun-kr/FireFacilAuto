@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Base Response Item Details</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/baseInformation.css}">
+
+    <script>
+        function submitForm(element) {
+            let button = element.querySelector('td button[type="submit"]');
+            button.click();
+        }
+    </script>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>exposTitle Response Item Details</h2>
+
+    <table class="response-table">
+        <thead>
+        <tr>
+            <th class="header-cell">제목</th>
+            <th class="header-cell">건물명</th>
+            <th class="header-cell">등록 PK</th>
+            <th class="header-cell">주용도코드</th>
+            <th class="header-cell">주용도명</th>
+            <th class="header-cell">기타용도</th>
+            <th class="header-cell">세대수</th>
+            <th class="header-cell">총지상층</th>
+            <th class="header-cell">총지하층</th>
+            <th class="header-cell">연면적</th>
+            <th class="header-cell">허가일</th>
+            <th class="header-cell">구조코드</th>
+            <th class="header-cell">구조명</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:object="${titleResponseItem}" class="object-line" onclick="submitForm(this)">
+            <td><span th:text="표제부"></span></td>
+            <td><span th:text="*{bldNm}"></span></td>
+            <td><span th:text="*{mgmBldrgstPk}"></span></td>
+            <td><span th:text="*{mainPurpsCd}"></span></td>
+            <td><span th:text="*{mainPurpsCdNm}"></span></td>
+            <td><span th:text="*{etcPurps}"></span></td>
+            <td><span th:text="*{hhldCnt}"></span></td>
+            <td><span th:text="*{grndFlrCnt}"></span></td>
+            <td><span th:text="*{ugrndFlrCnt}"></span></td>
+            <td><span th:text="*{totArea}"></span></td>
+            <td><span th:text="*{pmsDay}"></span></td>
+            <td><span th:text="*{strctCd}"></span></td>
+            <td><span th:text="*{strctCdNm}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="response-table">
+        <thead>
+        <tr>
+            <th class="header-cell">제목</th>
+            <th class="header-cell">건물명</th>
+            <th class="header-cell">호수</th>
+            <th class="header-cell">등록 PK</th>
+            <th class="header-cell">층구분코드</th>
+            <th class="header-cell">층구분코드명</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:object="${exposInfoResponseItem}" class="object-line" onclick="submitForm(this)">
+            <td><span th:text="전유부"></span></td>
+            <td><span th:text="*{bldNm}"></span></td>
+            <td><span th:text="*{hoNm}"></span></td>
+            <td><span th:text="*{mgmBldrgstPk}"></span></td>
+            <td><span th:text="*{flrGbCd}"></span></td>
+            <td><span th:text="*{flrGbCdNm}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<form th:action="@{/main/input}" method="post">
+    <button type="submit" class="submit-button">새로운 검색 하기</button>
+</form>
+
+</body>
+</html>

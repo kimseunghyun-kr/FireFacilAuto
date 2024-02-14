@@ -1,5 +1,7 @@
 package com.FireFacilAuto.domain.DTO.api.baseapi;
 
+import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleItems;
+import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleResponseItem;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,6 +11,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -27,6 +30,10 @@ public class BaseItemsDeserializer extends StdDeserializer<BaseItems> {
 
         if (isNull(itemNode)) {
             return new BaseItems(Collections.emptyList());
+        } else if (itemNode.isObject()){
+            List<BaseResponseItem> itemList = new LinkedList<>();
+            itemList.add(objectMapper.treeToValue(itemNode, BaseResponseItem.class));
+            return new BaseItems(itemList);
         } else {
             List<BaseResponseItem> itemList = Arrays.stream(objectMapper.treeToValue(itemNode, BaseResponseItem[].class)).toList();
             return new BaseItems(itemList);

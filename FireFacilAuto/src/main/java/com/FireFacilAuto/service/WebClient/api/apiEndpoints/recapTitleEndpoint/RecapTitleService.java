@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 public class RecapTitleService {
     private final WebClientApiService apiService;
+    private static final String URI = "getBrRecapTitleInfo";
 
     @Autowired
     public RecapTitleService(WebClientApiService apiService) {
@@ -25,11 +26,11 @@ public class RecapTitleService {
 
 
     @Cacheable(value="fetchAllRecapTitleData")
-    public List<RecapTitleResponseItem> fetchAllRecapTitleData(Address address, String requestType) {
+    public List<RecapTitleResponseItem> fetchAllRecapTitleData(Address address) {
 
         int pageNo = 1;
         int totalCount;
-        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, pageNo);
         apiService.StringDeserializeCheck(address, request);
 
         RecapTitleApiResponse apiResponse = request.retrieve().bodyToMono(RecapTitleApiResponse.class).block();
@@ -39,11 +40,12 @@ public class RecapTitleService {
         log.info("total counts RecapTitle {}", totalCount);
 
         List<RecapTitleResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("Recap Title first API response, {} ", firstApiResponseList.getFirst());
+
 
         if (firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
+        log.info("Recap Title first API response, {} ", firstApiResponseList.getFirst());
 
         List<RecapTitleResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
@@ -53,7 +55,7 @@ public class RecapTitleService {
 
         while (pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
-            request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+            request = apiService.getRequestHeadersSpec(address, URI, pageNo);
             apiResponse = request.retrieve().bodyToMono(RecapTitleApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());

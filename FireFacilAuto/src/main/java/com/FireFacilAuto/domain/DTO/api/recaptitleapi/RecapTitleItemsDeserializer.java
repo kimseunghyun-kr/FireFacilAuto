@@ -28,7 +28,7 @@ public class RecapTitleItemsDeserializer extends StdDeserializer<RecapTitleItems
 
         if (isNull(itemNode)) {
             return new RecapTitleItems(Collections.emptyList());
-        }  else if (itemNode.isObject()){
+        } else if (itemNode.isObject()){
             List<RecapTitleResponseItem> itemList = new LinkedList<>();
             itemList.add(objectMapper.treeToValue(itemNode, RecapTitleResponseItem.class));
             return new RecapTitleItems(itemList);

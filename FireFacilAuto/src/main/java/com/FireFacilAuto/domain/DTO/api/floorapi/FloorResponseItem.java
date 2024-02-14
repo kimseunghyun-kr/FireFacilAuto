@@ -11,106 +11,106 @@ import lombok.NoArgsConstructor;
 public class FloorResponseItem {
 
     @JsonProperty("area")
-    private String area;
+    public String area;
 
     @JsonProperty("areaExctYn")
-    private String areaExctYn;
+    public String areaExctYn;
 
     @JsonProperty("bjdongCd")
-    private String bjdongCd;
+    public String bjdongCd;
 
     @JsonProperty("bldNm")
-    private String bldNm;
+    public String bldNm;
 
     @JsonProperty("block")
-    private String block;
+    public String block;
 
     @JsonProperty("bun")
-    private String bun;
+    public String bun;
 
     @JsonProperty("crtnDay")
-    private String crtnDay;
+    public String crtnDay;
 
     @JsonProperty("dongNm")
-    private String dongNm;
+    public String dongNm;
 
     @JsonProperty("etcPurps")
-    private String etcPurps;
+    public String etcPurps;
 
     @JsonProperty("etcStrct")
-    private String etcStrct;
+    public String etcStrct;
 
     @JsonProperty("flrGbCd")
-    private String flrGbCd;
+    public String flrGbCd;
 
     @JsonProperty("flrGbCdNm")
-    private String flrGbCdNm;
+    public String flrGbCdNm;
 
     @JsonProperty("flrNo")
-    private String flrNo;
+    public String flrNo;
 
     @JsonProperty("flrNoNm")
-    private String flrNoNm;
+    public String flrNoNm;
 
     @JsonProperty("ji")
-    private String ji;
+    public String ji;
 
     @JsonProperty("lot")
-    private String lot;
+    public String lot;
 
     @JsonProperty("mainAtchGbCd")
-    private String mainAtchGbCd;
+    public String mainAtchGbCd;
 
     @JsonProperty("mainAtchGbCdNm")
-    private String mainAtchGbCdNm;
+    public String mainAtchGbCdNm;
 
     @JsonProperty("mainPurpsCd")
-    private String mainPurpsCd;
+    public String mainPurpsCd;
 
     @JsonProperty("mainPurpsCdNm")
-    private String mainPurpsCdNm;
+    public String mainPurpsCdNm;
 
     @JsonProperty("mgmBldrgstPk")
-    private String mgmBldrgstPk;
+    public String mgmBldrgstPk;
 
     @JsonProperty("naBjdongCd")
-    private String naBjdongCd;
+    public String naBjdongCd;
 
     @JsonProperty("naMainBun")
-    private String naMainBun;
+    public String naMainBun;
 
     @JsonProperty("naRoadCd")
-    private String naRoadCd;
+    public String naRoadCd;
 
     @JsonProperty("naSubBun")
-    private String naSubBun;
+    public String naSubBun;
 
     @JsonProperty("naUgrndCd")
-    private String naUgrndCd;
+    public String naUgrndCd;
 
     @JsonProperty("newPlatPlc")
-    private String newPlatPlc;
+    public String newPlatPlc;
 
     @JsonProperty("platGbCd")
-    private String platGbCd;
+    public String platGbCd;
 
     @JsonProperty("platPlc")
-    private String platPlc;
+    public String platPlc;
 
     @JsonProperty("rnum")
-    private String rnum;
+    public String rnum;
 
     @JsonProperty("sigunguCd")
-    private String sigunguCd;
+    public String sigunguCd;
 
     @JsonProperty("splotNm")
-    private String splotNm;
+    public String splotNm;
 
     @JsonProperty("strctCd")
-    private String strctCd;
+    public String strctCd;
 
     @JsonProperty("strctCdNm")
-    private String strctCdNm;
+    public String strctCdNm;
 
     // Getters and Setters
 }

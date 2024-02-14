@@ -18,6 +18,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class BaseApiService {
+    private static final String URI = "getBrBasisOulnInfo";
 
     private final WebClientApiService apiService;
 
@@ -30,26 +31,26 @@ public class BaseApiService {
     }
 
     @NotNull
-    private List<BaseResponseItem> getBaseResponseItems(Address address, String requestType) {
-        return this.self.fetchAllBaseData(address, requestType);
+    private List<BaseResponseItem> getBaseResponseItems(Address address) {
+        return this.self.fetchAllBaseData(address);
     }
 
-    public List<BaseResponseItem> fetchAllTitleBaseData(Address address, String requestType) {
-        List<BaseResponseItem> item = getBaseResponseItems(address, requestType);
+    public List<BaseResponseItem> fetchAllTitleBaseData(Address address) {
+        List<BaseResponseItem> item = getBaseResponseItems(address);
         return item.stream().filter(data -> Integer.parseInt(data.getRegstrKindCd()) == 3).toList();
     }
 
-    public List<BaseResponseItem> fetchAllExposInfoBaseData(Address address, String requestType) {
-        List<BaseResponseItem> item = getBaseResponseItems(address, requestType);
+    public List<BaseResponseItem> fetchAllExposInfoBaseData(Address address) {
+        List<BaseResponseItem> item = getBaseResponseItems(address);
         return item.stream().filter(data->Integer.parseInt(data.getRegstrKindCd()) == 4).toList();
     }
 
     @Cacheable(value = "fetchAllBaseData")
-    public List<BaseResponseItem> fetchAllBaseData(Address address, String requestType) {
+    public List<BaseResponseItem> fetchAllBaseData(Address address) {
         int pageNo = 1;
         int totalCount;
 
-        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, pageNo);
         apiService.StringDeserializeCheck(address, request);
 
         BaseApiResponse apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
@@ -58,11 +59,11 @@ public class BaseApiService {
         log.info("total counts {}" ,totalCount);
 
         List<BaseResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} " , firstApiResponseList);
 
         if(firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
+        log.info("firstApiResponse, {} " , firstApiResponseList);
 
         List<BaseResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
@@ -72,7 +73,7 @@ public class BaseApiService {
 
         while(pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
-            request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+            request = apiService.getRequestHeadersSpec(address, URI, pageNo);
             apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
@@ -84,7 +85,7 @@ public class BaseApiService {
 
     public List<BaseResponseItem> fetchOnePageData(Address address, String requestType, Integer page) {
 
-        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, page);
+        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, page);
         BaseApiResponse apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
         if(apiResponse == null) {
             return new LinkedList<>();

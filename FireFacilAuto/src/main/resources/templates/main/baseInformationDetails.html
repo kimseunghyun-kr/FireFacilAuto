@@ -21,14 +21,14 @@
     <table class="response-table">
         <thead>
         <tr>
-            <th class="header-cell">rnum</th>
-            <th class="header-cell">Building Name</th>
-            <th class="header-cell">Registration Pk</th>
-            <th class="header-cell">Up Registration Pk</th>
-            <th class="header-cell">Registration Code</th>
-            <th class="header-cell">Registration name</th>
-            <th class="header-cell">Kind Code</th>
-            <th class="header-cell">Kind name</th>
+            <th class="header-cell">행</th>
+            <th class="header-cell">건물명</th>
+            <th class="header-cell">건축물대장코드</th>
+            <th class="header-cell">상위건축물대장코드</th>
+            <th class="header-cell">대장구분코드</th>
+            <th class="header-cell">대장구분코드명</th>
+            <th class="header-cell">대장종류코드</th>
+            <th class="header-cell">대장종류코드명</th>
             <th class="header-cell">Action</th>
         </tr>
         </thead>
@@ -42,7 +42,7 @@
             <td><span th:text="${obj.regstrGbCdNm}"></span></td>
             <td><span th:text="${obj.regstrKindCd}"></span></td>
             <td><span th:text="${obj.regstrKindCdNm}"></span></td>
-            <td>
+            <td th:if="${flag == true}">
                 <form th:action= "@{/main/submitBaseObject}" th:object="${obj}" method="post">
                     <input type="hidden" th:id= "baseResponsePk" th:name="baseResponsePk" th:value="${obj.mgmBldrgstPk}"/>
                     <button type="submit" class="submit-button" style="display: none;">Submit</button>
@@ -51,6 +51,12 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:unless="${flag == true}">
+        <form th:action= "@{/main/input}" method="post">
+            <button type="submit" class="submit-button">메인 화면으로 돌아가기</button>
+        </form>
+    </div>
 </div>
 
 </body>

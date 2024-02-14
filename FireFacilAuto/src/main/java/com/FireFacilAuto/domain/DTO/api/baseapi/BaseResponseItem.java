@@ -44,7 +44,7 @@ public class BaseResponseItem implements Serializable {
     private String sigunguCd;
     private String splotNm;
 
-    public List<String> toList() {
+    private List<String> toList() {
         List<String> resultList = new ArrayList<>();
 
         resultList.add("bjdongCd");

@@ -16,6 +16,8 @@ import java.util.List;
 @Slf4j
 public class FloorApiService {
 
+    private static final String URI = "getBrFlrOulnInfo";
+
     private final WebClientApiService apiService;
 
     @Autowired
@@ -23,10 +25,10 @@ public class FloorApiService {
         this.apiService = apiService;
     }
 
-    public List<FloorResponseItem> fetchAllFloorData(Address address, String requestType) {
+    public List<FloorResponseItem> fetchAllFloorData(Address address) {
         int pageNo = 1;
         int totalCount;
-        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+        WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, pageNo);
         apiService.StringDeserializeCheck(address, request);
 
         FloorApiResponse apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
@@ -35,11 +37,11 @@ public class FloorApiService {
         log.info("total counts {}", totalCount);
 
         List<FloorResponseItem> firstApiResponseList = apiResponse.getResponse().getBody().getItems().getItem();
-        log.info("firstApiResponse, {} ", firstApiResponseList.getFirst());
 
         if (firstApiResponseList.isEmpty()) {
             return new LinkedList<>();
         }
+        log.info("firstApiResponse, {} ", firstApiResponseList.getFirst());
 
         List<FloorResponseItem> resultList = new LinkedList<>(firstApiResponseList);
 
@@ -49,7 +51,7 @@ public class FloorApiService {
 
         while (pageNo <= totalRepeats) {
             log.info("pageNo {}", pageNo);
-            request = apiService.getRequestHeadersSpec(address, requestType, pageNo);
+            request = apiService.getRequestHeadersSpec(address, URI, pageNo);
             apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
             assert apiResponse != null;
             resultList.addAll(apiResponse.getResponse().getBody().getItems().getItem());
