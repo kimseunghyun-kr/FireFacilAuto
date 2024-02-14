@@ -1,0 +1,30 @@
+<!-- floorLawView.html -->
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
+<head>
+    <!-- Head content -->
+    <title>Floor laws</title>
+</head>
+<body>
+<h2>Floor Laws</h2>
+
+<!-- Item list -->
+<!-- Display paginated laws-->
+<div th:each="law : ${laws}">
+    <div th:each="fieldName : ${floorLawFields}">
+        <p th:text="${fieldName}"></p>
+        <p th:text="${law[fieldName]}"></p>
+    </div>
+</div>
+
+
+<!-- Pagination links -->
+<div>
+    <ul>
+        <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/admin/paginatedLaws(page=${pageNumber}, entityType='floor')}" th:text="${pageNumber} + 1"></a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

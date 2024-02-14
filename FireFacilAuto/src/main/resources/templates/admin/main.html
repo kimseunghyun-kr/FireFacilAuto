@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
+<head>
+    <title>Law Selection</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+</head>
+<body>
+
+<h1>Welcome to Law Selection</h1>
+
+<!-- Button to trigger GET request -->
+<form th:action="@{/admin/lawSelection}" method="get">
+    <button type="submit">Select Laws</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Base Response Item Details</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/baseInformation.css}">
+
+    <script>
+        function submitForm(element) {
+            let button = element.querySelector('td button[type="submit"]');
+            button.click();
+        }
+    </script>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>Base Response Item Details</h2>
+
+    <table class="response-table">
+        <thead>
+        <tr>
+            <th class="header-cell">rnum</th>
+            <th class="header-cell">Building Name</th>
+            <th class="header-cell">Registration Pk</th>
+            <th class="header-cell">Up Registration Pk</th>
+            <th class="header-cell">Registration Code</th>
+            <th class="header-cell">Registration name</th>
+            <th class="header-cell">Kind Code</th>
+            <th class="header-cell">Kind name</th>
+            <th class="header-cell">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="obj, objStat : ${baseInfoList}" class="object-line" onclick="submitForm(this)">
+            <td><span th:text="${objStat.index+1}"></span></td>
+            <td><span th:text="${obj.bldNm}"></span></td>
+            <td><span th:text="${obj.mgmBldrgstPk}"></span></td>
+            <td><span th:text="${obj.mgmUpBldrgstPk}"></span></td>
+            <td><span th:text="${obj.regstrGbCd}"></span></td>
+            <td><span th:text="${obj.regstrGbCdNm}"></span></td>
+            <td><span th:text="${obj.regstrKindCd}"></span></td>
+            <td><span th:text="${obj.regstrKindCdNm}"></span></td>
+            <td>
+                <form th:action= "@{/main/submitBaseObject}" th:object="${obj}" method="post">
+                    <input type="hidden" th:id= "baseResponsePk" th:name="baseResponsePk" th:value="${obj.mgmBldrgstPk}"/>
+                    <button type="submit" class="submit-button" style="display: none;">Submit</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

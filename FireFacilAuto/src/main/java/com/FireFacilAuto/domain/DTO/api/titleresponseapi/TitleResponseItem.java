@@ -1,0 +1,88 @@
+package com.FireFacilAuto.domain.DTO.api.titleresponseapi;
+
+import lombok.Data;
+
+import java.io.Serializable;
+
+@Data
+public class TitleResponseItem implements Serializable {
+    public String archArea;
+    public String atchBldArea;
+    public String atchBldCnt;
+    public String bcRat;
+    public String bjdongCd;
+    public String bldNm;
+    public String block;
+    public String bun;
+    public String bylotCnt;
+    public String crtnDay;
+    public String dongNm;
+    public String emgenUseElvtCnt;
+    public String engrEpi;
+    public String engrGrade;
+    public String engrRat;
+    public String etcPurps;
+    public String etcRoof;
+    public String etcStrct;
+    public String fmlyCnt;
+    public String gnBldCert;
+    public String gnBldGrade;
+    public String grndFlrCnt;
+    public String heit;
+    public String hhldCnt;
+    public String hoCnt;
+    public String indrAutoArea;
+    public String indrAutoUtcnt;
+    public String indrMechArea;
+    public String indrMechUtcnt;
+    public String itgBldCert;
+    public String itgBldGrade;
+    public String ji;
+    public String lot;
+    public String mainAtchGbCd;
+    public String mainAtchGbCdNm;
+    public String mainPurpsCd;
+    public String mainPurpsCdNm;
+    public String mgmBldrgstPk;
+    public String naBjdongCd;
+    public String naMainBun;
+    public String naRoadCd;
+    public String naSubBun;
+    public String naUgrndCd;
+    public String newPlatPlc;
+    public String oudrAutoArea;
+    public String oudrAutoUtcnt;
+    public String oudrMechArea;
+    public String oudrMechUtcnt;
+    public String platArea;
+    public String platGbCd;
+    public String platPlc;
+    public String pmsDay;
+    public String pmsnoGbCd;
+    public String pmsnoGbCdNm;
+    public String pmsnoKikCd;
+    public String pmsnoKikCdNm;
+    public String pmsnoYear;
+    public String regstrGbCd;
+    public String regstrGbCdNm;
+    public String regstrKindCd;
+    public String regstrKindCdNm;
+    public String rideUseElvtCnt;
+    public String rnum;
+    public String roofCd;
+    public String roofCdNm;
+    public String rserthqkAblty;
+    public String rserthqkDsgnApplyYn;
+    public String sigunguCd;
+    public String splotNm;
+    public String stcnsDay;
+    public String strctCd;
+    public String strctCdNm;
+    public String totArea;
+    public String totDongTotArea;
+    public String ugrndFlrCnt;
+    public String useAprDay;
+    public String vlRat;
+    public String vlRatEstmTotArea;
+
+}

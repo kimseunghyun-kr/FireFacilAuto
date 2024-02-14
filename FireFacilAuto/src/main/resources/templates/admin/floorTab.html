@@ -1,0 +1,99 @@
+<!-- floorTab.html -->
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>FloorTab</title>
+</head>
+<body>
+<div id="floorTab" class="tab" th:fragment="floorTab(floorForm, formUtilityMethod, fields)">
+    <form th:action="@{/admin/lawSelectionFormReceive}" method="post" th:object="${floorForm}">
+        <h2>Select Floor Law Fields</h2>
+        <!-- Include input fields for floor law fields -->
+        <!-- Iterate over fields -->
+        <div th:each="field : ${fields}">
+            <!-- Check if the field is associable with a condition -->
+            <div th:if="${formUtilityMethod.floorFieldAssociableWithCondition(field)}">
+                <label th:text="${field}">Field Label:</label>
+                <input type="text" th:id="${field}" th:field="*{__${field}__}" />
+
+                <div class = "radio-buttons">
+                    <!-- Radio buttons for selecting condition -->
+                    <label>
+                        <input type="radio" th:id="${field + '_equals'}" th:name="${'conditions[' + field + ']'}" th:value="EQUAL" />
+                        같다 (=)
+                    </label>
+
+                    <label>
+                        <input type="radio" th:id="${field + '_not_equals'}" th:name="${'conditions[' + field + ']'}" th:value="NOT_EQUAL" />
+                        같지 않다(!=)
+                    </label>
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than_or_equal'}" th:name="${'conditions[' + field + ']'}" th:value="GREATER_THAN_OR_EQUAL" />
+                        크거나 같다 (>=)
+                    </label>
+
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than'}" th:name="${'conditions[' + field + ']'}" th:value="GREATER_THAN" />
+                        크다 (>)
+                    </label>
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than_or_equal'}" th:name="${'conditions[' + field + ']'}" th:value="LESS_THAN_OR_EQUAL" />
+                        작거나 같다 (<=)
+                    </label>
+
+                    <label>
+                        <input type="radio" th:id="${field + '_greater_than'}" th:name="${'conditions[' + field + ']'}" th:value="LESS_THAN" />
+                        작다 (<)
+                    </label>
+                    <!-- Add other condition options as needed -->
+                </div>
+            </div>
+
+            <!-- Fields not associable to a condition -->
+            <div th:unless="${formUtilityMethod.floorFieldAssociableWithCondition(field)}">
+                <div th:if="${field == 'floorPurpose'}">
+
+                    <div id="purposesContainer">
+                        <!-- Initial pair of inputs -->
+                        <div>
+                            <input type="text" name="purposesFirst" placeholder="용도 ( 용도 -> 용도코드 매퍼 생성 전까지는 숫자로만 ">
+                            <input type="text" name="purposesSecond" placeholder="세부용도 ( 용도 -> 용도코드 매퍼 생성 전까지는 숫자로만 ">
+                            <button type="button" onclick="removeInput(this)">Remove</button>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="addInput()">Add Pair</button>
+
+
+                    <span> 개별 입력 형식 : (주용도코드,세부용도코드), (주용도코드, 세부용도코드).... </span>
+                    <span> 주용도 전체 적용 : (-1, -1) </span>
+                    <span> 주용도 구간 적용 : ([1-5], -1) </span>
+                    <span> 세부용도 전체 적용 : (주용도, -1) </span>
+                    <span> 세부용도 구간 적용 : (주용도, [1-4]) </span>
+                </div>
+
+                    <label th:text="${field}">Field Label:</label>
+                    <input type="text" th:id="${field}" th:field="*{__${field}__}" />
+            </div>
+
+                <!-- Add other input fields as needed for non-associable fields -->
+
+        </div>
+
+        <!-- Add more input fields for other floor law fields -->
+
+        <!-- Add formType parameter to distinguish between building and floor forms -->
+        <input type="hidden" name="formType" value="floor" />
+
+        <button type="submit">Submit Floor Law Fields</button>
+    </form>
+</div>
+
+</body>
+</html>
+

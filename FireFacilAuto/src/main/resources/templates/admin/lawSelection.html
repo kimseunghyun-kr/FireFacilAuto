@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Law Selection</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+    <style>
+        .tab {
+            display: none;
+        }
+
+        .tab.active {
+            display: block;
+        }
+    </style>
+
+    <script th:inline="javascript">
+        function validateAndSubmitForm() {
+            let form = document.getElementsByName('form');
+            let inputs = form.getElementsByTagName('input');
+
+            for (let i = 0; i < inputs.length; i++) {
+                let input = inputs[i];
+                if (input.type === 'text' && input.value.trim() === '') {
+                    // Skip radio buttons associated with empty text inputs
+                    let radioName = 'conditions[' + input.id + ']';
+                    let radios = form.querySelectorAll('[name="' + radioName + '"]');
+                    for (let j = 0; j < radios.length; j++) {
+                        radios[j].disabled = true;
+                    }
+                }
+            }
+
+            // Submit the form
+            form.submit();
+        }
+
+        function openTab(tabName) {
+            // remove all
+            let tabcontent = document.getElementsByClassName("tab");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            document.getElementById(tabName).style.display = "block";
+        }
+
+        function addInput() {
+            const purposesContainer = document.getElementById('purposesContainer');
+            const newInputDiv = document.createElement('div');
+            newInputDiv.innerHTML =
+                `<input type="number" name="purposesFirst" placeholder="용도" required>
+             <input type="number" name="purposesSecond" placeholder="세부용도 , 전체 = -1" required>
+             <button type="button" onclick="removeInput(this)">Remove</button>`;
+            purposesContainer.appendChild(newInputDiv);
+        }
+
+        function removeInput(button) {
+            const purposesContainer = document.getElementById('purposesContainer');
+            const inputDiv = button.parentNode;
+
+            // Check if there is more than one pair of input elements before removing
+            if (purposesContainer.children.length > 1) {
+                purposesContainer.removeChild(inputDiv);
+            } else {
+                alert("At least one pair of inputs must remain.");
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+
+<h1>Law Selection</h1>
+
+<!-- Tab navigation -->
+<ul>
+    <li><a href="#" onclick="openTab('buildingTab')">Building Law Fields</a></li>
+    <li><a href="#" onclick="openTab('floorTab')">Floor Law Fields</a></li>
+</ul>
+
+<!--<div th:if="${formUtilityMethod != null}">-->
+<!--    &lt;!&ndash; Debug output &ndash;&gt;-->
+<!--    <p th:text="${formUtilityMethod.buildingFieldAssociableWithCondition('texas')}">formUtilityMethod</p>-->
+
+<!-- Include building tab -->
+<div th:insert="~{admin/buildingTab.html :: buildingTab (${buildingForm}, ${formUtilityMethod}, ${formUtilityMethod.allBuildingFields()})}"></div>
+
+<!-- Include floor tab -->
+<div th:insert="~{admin/floorTab.html :: floorTab (${floorForm}, ${formUtilityMethod}, ${formUtilityMethod.allFloorFields()})}"></div>
+
+<!-- JavaScript function to switch tabs -->
+
+</body>
+</html>
