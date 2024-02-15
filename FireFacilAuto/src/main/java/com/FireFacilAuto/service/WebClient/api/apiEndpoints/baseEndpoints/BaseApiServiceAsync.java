@@ -8,14 +8,20 @@ import jakarta.validation.constraints.NotNull;
 import jdk.jfr.Experimental;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @Slf4j
@@ -24,11 +30,14 @@ public class BaseApiServiceAsync {
     private final WebClientApiService apiService;
     private static final String URI = "getBrBasisOulnInfo";
     private final BaseApiServiceAsync self;
+    private final CacheManager cacheManager;
+    private final ConcurrentHashMap<Address, ReentrantLock> addressLocks = new ConcurrentHashMap<>();
 
     @Autowired
-    public BaseApiServiceAsync(WebClientApiService apiService, @Lazy BaseApiServiceAsync self) {
+    public BaseApiServiceAsync(WebClientApiService apiService, @Lazy BaseApiServiceAsync self, CacheManager cacheManager) {
         this.apiService = apiService;
         this.self = self;
+        this.cacheManager = cacheManager;
     }
 
     @NotNull
@@ -49,11 +58,37 @@ public class BaseApiServiceAsync {
         return item.stream().filter(data->Integer.parseInt(data.getRegstrKindCd()) == 4).toList();
     }
 
-   @Cacheable(value= "fetchAllBaseData")
+    @Cacheable(value= "fetchAllBaseData")
     public List<BaseResponseItem> fetchAllBaseData(Address address) {
-        int pageNo = 1;
-        
-        return Flux.range(1, Integer.MAX_VALUE).takeWhile(page -> page <= totalPages(address))
+        // Check if the data is already in the cache
+        Cache.ValueWrapper valueWrapper = Objects.requireNonNull(cacheManager.getCache("fetchAllBaseData")).get(address);
+
+        // Use the address as a key for the lock
+        ReentrantLock fetchLock = addressLocks.computeIfAbsent(address, k -> new ReentrantLock());
+
+        // Acquire the lock
+        fetchLock.lock();
+        try {
+            // Double-check if the value is inside the cache
+            if (valueWrapper != null) {
+                // Data is updated in cache
+                return (List<BaseResponseItem>) valueWrapper.get();
+            }
+
+            // Fetch data from the API
+            return fetchDataFromApi(address);
+        } finally {
+            // Release the lock
+            fetchLock.unlock();
+            addressLocks.remove(address, fetchLock);
+        }
+    }
+
+
+    public List<BaseResponseItem> fetchDataFromApi(Address address) {
+        int total = totalPages(address);
+        log.warn("totalPages : {}", total);
+        return Flux.range(1, total)
                 .flatMap(page -> {
                     log.info("currpage {}", page);
                     return fetchPageData(address, page);
@@ -67,8 +102,16 @@ public class BaseApiServiceAsync {
         Mono<BaseApiResponse> apiResponseMono = request.retrieve().bodyToMono(BaseApiResponse.class);
 
         return apiResponseMono
+//                .doOnNext(apiResponse -> log.info("Received API response: {}", apiResponse))
                 .flatMapMany(apiResponse -> Flux.fromIterable(apiResponse.getResponse().getBody().getItems().getItem()))
-                .doOnError(error -> log.error("Error fetching data for page {}", pageNo, error));
+                .doOnError(error -> {
+                    log.error("Error fetching data for page {}", pageNo, error);
+                    if (error instanceof WebClientResponseException) {
+                        String responseBody = ((WebClientResponseException) error).getResponseBodyAsString();
+                        String errorCode = ((WebClientResponseException) error).getStatusCode().toString();
+                        log.error("Response body: {} . errorcode: {}", responseBody, errorCode);
+                    }
+                });
     }
 
     private Integer totalPages(Address address) {

@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 
 @Data
 @NoArgsConstructor
-public class FloorResponseItem {
+public class FloorResponseItem implements Serializable {
 
     @JsonProperty("area")
     public String area;
