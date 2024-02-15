@@ -36,18 +36,15 @@ public class BaseApiService {
     }
 
     @Deprecated
-    public List<BaseResponseItem> fetchAllRecapTitleInfoBaseData(Address address) {
-        List<BaseResponseItem> item = getBaseResponseItems(address);
+    public List<BaseResponseItem> fetchAllRecapTitleInfoBaseData(List<BaseResponseItem> item) {
         return item.stream().filter(data->Integer.parseInt(data.getRegstrKindCd()) == 1).toList();
     }
 
-    public List<BaseResponseItem> fetchAllTitleBaseData(Address address) {
-        List<BaseResponseItem> item = getBaseResponseItems(address);
+    public List<BaseResponseItem> fetchAllTitleBaseData(List<BaseResponseItem> item) {
         return item.stream().filter(data -> Integer.parseInt(data.getRegstrKindCd()) == 3 || Integer.parseInt(data.getRegstrKindCd()) == 2).toList();
     }
 
-    public List<BaseResponseItem> fetchAllExposInfoBaseData(Address address) {
-        List<BaseResponseItem> item = getBaseResponseItems(address);
+    public List<BaseResponseItem> fetchAllExposInfoBaseData(List<BaseResponseItem> item) {
         return item.stream().filter(data->Integer.parseInt(data.getRegstrKindCd()) == 4).toList();
     }
 

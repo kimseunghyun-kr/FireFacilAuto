@@ -6,8 +6,8 @@ import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
 import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleResponseItem;
 import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
-import com.FireFacilAuto.service.WebClient.api.apiEndpoints.baseEndpoints.BaseApiService;
-import com.FireFacilAuto.service.WebClient.api.apiEndpoints.exposedInfoEndpoint.ExposedInfoApiService;
+import com.FireFacilAuto.service.WebClient.api.apiEndpoints.baseEndpoints.BaseApiServiceAsync;
+import com.FireFacilAuto.service.WebClient.api.apiEndpoints.exposedInfoEndpoint.ExposedInfoApiServiceAsync;
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.floorEndpoint.FloorApiService;
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.recapTitleEndpoint.RecapTitleService;
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.titleEndpoint.TitleApiService;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -27,12 +28,12 @@ public class APICollationService {
 
     private final TitleApiService titleApiService;
     private final RecapTitleService recapTitleService;
-    private final ExposedInfoApiService exposedInfoApiService;
-    private final BaseApiService baseApiService;
+    private final ExposedInfoApiServiceAsync exposedInfoApiService;
+    private final BaseApiServiceAsync baseApiService;
     private final FloorApiService floorApiService;
 
     @Autowired
-    public APICollationService(TitleApiService titleApiService, RecapTitleService recapTitleService, ExposedInfoApiService exposedInfoApiService, BaseApiService baseApiService, FloorApiService floorApiService) {
+    public APICollationService(TitleApiService titleApiService, RecapTitleService recapTitleService, ExposedInfoApiServiceAsync exposedInfoApiService, BaseApiServiceAsync baseApiService, FloorApiService floorApiService) {
         this.titleApiService = titleApiService;
         this.recapTitleService = recapTitleService;
         this.exposedInfoApiService = exposedInfoApiService;
@@ -41,13 +42,12 @@ public class APICollationService {
     }
 
 
+
+
     public List<List<BaseResponseItem>> concurrentPreGetFromApi(Address address) {
         // Create CompletableFutures for each API call
-        CompletableFuture<List<BaseResponseItem>> baseTitleFuture = CompletableFuture.supplyAsync(() ->
-                baseApiService.fetchAllTitleBaseData(address));
-
-        CompletableFuture<List<BaseResponseItem>> baseExposFuture = CompletableFuture.supplyAsync(() ->
-                baseApiService.fetchAllExposInfoBaseData(address));
+        CompletableFuture<List<BaseResponseItem>> baseFuture = CompletableFuture.supplyAsync(() ->
+                baseApiService.fetchAllBaseData(address));
 
         CompletableFuture<List<ExposedInfoResponseItem>> exposedFuture = CompletableFuture.supplyAsync(() ->
                 exposedInfoApiService.fetchAllExposedInfoData(address));
@@ -59,31 +59,35 @@ public class APICollationService {
                 titleApiService.fetchAllTitleData(address));
 
         // Combine all CompletableFutures into one
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(baseTitleFuture, baseExposFuture, exposedFuture, recapFuture, titleFuture);
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(baseFuture, exposedFuture, recapFuture, titleFuture);
 
         // Wait for all CompletableFutures to complete
         try {
-            allOf.get();
+//            allOf.get();
+            allOf.join();
             // Retrieve the results from the completed CompletableFutures
-            List<BaseResponseItem> baseResponseTitleItemList = baseTitleFuture.get();
-            List<BaseResponseItem> baseResponseExposItemList = baseExposFuture.get();
-            List<ExposedInfoResponseItem> exposedInfoItemsList = exposedFuture.get();
-            List<RecapTitleResponseItem> recapTitleServiceList = recapFuture.get();
-            List<TitleResponseItem> titleResponseItemsList = titleFuture.get();
+            List<BaseResponseItem> baseResponseItemList = baseFuture.join();
+            List<ExposedInfoResponseItem> exposedInfoItemsList = exposedFuture.join();
+            List<RecapTitleResponseItem> recapTitleServiceList = recapFuture.join();
+            List<TitleResponseItem> titleResponseItemsList = titleFuture.join();
             // Your business logic with the retrieved lists
 
+            List<BaseResponseItem> baseResponseTitleItemList = baseApiService.fetchAllTitleBaseData(baseResponseItemList);
+            List<BaseResponseItem> baseResponseExposItemList = baseApiService.fetchAllExposInfoBaseData(baseResponseItemList);
+
             if(baseResponseTitleItemList.isEmpty() && baseResponseExposItemList.isEmpty()) {
-                CompletableFuture<List<BaseResponseItem>> baseFuture = CompletableFuture.supplyAsync(() ->
-                        baseApiService.fetchAllBaseData(address));
-                allOf.get();
-                List<BaseResponseItem> baseResponseItemList = baseFuture.get();
                 return new LinkedList<>(List.of(baseResponseItemList));
             }
+
             return new LinkedList<>(List.of(baseResponseTitleItemList,baseResponseExposItemList));
 
-        } catch (InterruptedException | ExecutionException e) {
+        }
+        catch (CompletionException e) {
             throw new RuntimeException(e);
         }
+//        catch (InterruptedException | ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 
