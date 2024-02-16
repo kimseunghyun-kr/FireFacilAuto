@@ -73,12 +73,16 @@
                     document.getElementById("sigunguCode").value = data.sigunguCode;
                     document.getElementById("bcode").value = parseInt(data.bcode.toString().substring(5))
                     const regex = /\b(\d+)(?:-(\d+))?\b$/
-                    matchJibun = regex.exec(data.jibunAddress)
+                    matchJibun = regex.exec(data.autoJibunAddress)
+                    console.log("jibun juso : " + data.autoJibunAddress)
+                    console.log("jibun juso match regex: " + matchJibun)
                     jibunArray = matchJibun ? matchJibun.slice(1) : null;
                     if (matchJibun) {
                         // Ensure the length is at least 4 characters by zero-padding
                         const paddedNumber1 = jibunArray[0].padStart(4, '0');
+                        console.log("ji: " + paddedNumber1)
                         const paddedNumber2 = jibunArray[1] ? jibunArray[1].padStart(4, '0') : '';
+                        console.log("bun: " + paddedNumber2)
 
                         // Update HTML elements
                         document.getElementById("bun").value = paddedNumber1;
