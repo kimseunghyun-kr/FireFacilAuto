@@ -14,14 +14,19 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static com.FireFacilAuto.service.WebClient.api.WebClientApiService.CONCURRENCYLIMIT;
 
 @Service
 @Slf4j
@@ -92,7 +97,7 @@ public class BaseApiServiceAsync {
                 .flatMap(page -> {
                     log.info("currpage {}", page);
                     return fetchPageData(address, page);
-                })  // Fetch data for each page
+                }, CONCURRENCYLIMIT)  // Fetch data for each page
                 .collectList()
                 .block();  // Block and wait for the result
    }
@@ -105,13 +110,16 @@ public class BaseApiServiceAsync {
 //                .doOnNext(apiResponse -> log.info("Received API response: {}", apiResponse))
                 .flatMapMany(apiResponse -> Flux.fromIterable(apiResponse.getResponse().getBody().getItems().getItem()))
                 .doOnError(error -> {
-                    log.error("Error fetching data for page {}", pageNo, error);
+                    log.error("Error fetching BASE data for page {}", pageNo, error);
                     if (error instanceof WebClientResponseException) {
                         String responseBody = ((WebClientResponseException) error).getResponseBodyAsString();
                         String errorCode = ((WebClientResponseException) error).getStatusCode().toString();
                         log.error("Response body: {} . errorcode: {}", responseBody, errorCode);
                     }
-                });
+                }).retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(throwable -> throwable instanceof WebClientException)
+                );
+
     }
 
     private Integer totalPages(Address address) {

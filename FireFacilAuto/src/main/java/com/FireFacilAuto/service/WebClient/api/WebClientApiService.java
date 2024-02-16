@@ -15,12 +15,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
 public class WebClientApiService {
     public static final Integer MAX_QUERY = 100;
     public static final Integer SAFE_QUERY = 80;
+
+    public static final Integer CONCURRENCYLIMIT = 40;
 
 
     @Value("${webclient.api.key}")

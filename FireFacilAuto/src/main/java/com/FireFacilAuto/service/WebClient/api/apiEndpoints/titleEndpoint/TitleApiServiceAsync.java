@@ -1,8 +1,7 @@
-package com.FireFacilAuto.service.WebClient.api.apiEndpoints.floorEndpoint;
+package com.FireFacilAuto.service.WebClient.api.apiEndpoints.titleEndpoint;
 
-
-import com.FireFacilAuto.domain.DTO.api.floorapi.FloorApiResponse;
-import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
+import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleApiResponse;
+import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.service.WebClient.api.WebClientApiService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,24 +26,24 @@ import static com.FireFacilAuto.service.WebClient.api.WebClientApiService.CONCUR
 
 @Service
 @Slf4j
-public class FloorApiServiceAsync {
+public class TitleApiServiceAsync {
 
-    private static final String URI = "getBrFlrOulnInfo";
+    private static final String URI = "getBrTitleInfo";
 
     private final WebClientApiService apiService;
     private final CacheManager cacheManager;
     private final ConcurrentHashMap<Address, ReentrantLock> addressLocks = new ConcurrentHashMap<>();
 
     @Autowired
-    public FloorApiServiceAsync(WebClientApiService apiService, CacheManager cacheManager) {
+    public TitleApiServiceAsync(WebClientApiService apiService, CacheManager cacheManager) {
         this.apiService = apiService;
         this.cacheManager = cacheManager;
     }
 
-    @Cacheable(value="fetchAllFloorData")
-    public List<FloorResponseItem> fetchAllFloorData(Address address) {
+    @Cacheable(value="fetchAllTitleData")
+    public List<TitleResponseItem> fetchAllTitleData(Address address) {
         // Check if the data is already in the cache
-        Cache.ValueWrapper valueWrapper = Objects.requireNonNull(cacheManager.getCache("fetchAllFloorData")).get(address);
+        Cache.ValueWrapper valueWrapper = Objects.requireNonNull(cacheManager.getCache("fetchAllTitleData")).get(address);
 
         // Use the address as a key for the lock
         ReentrantLock fetchLock = addressLocks.computeIfAbsent(address, k -> new ReentrantLock());
@@ -55,7 +54,7 @@ public class FloorApiServiceAsync {
             // Double-check if the value is inside the cache
             if (valueWrapper != null) {
                 // Data is updated in cache
-                return (List<FloorResponseItem>) valueWrapper.get();
+                return (List<TitleResponseItem>) valueWrapper.get();
             }
 
             // Fetch data from the API
@@ -67,7 +66,7 @@ public class FloorApiServiceAsync {
         }
     }
 
-    public List<FloorResponseItem> fetchDataFromApi(Address address) {
+    public List<TitleResponseItem> fetchDataFromApi(Address address) {
         int pageNo = 1;
 
         return Flux.range(pageNo, Integer.MAX_VALUE).takeWhile(page -> page <= totalPages(address))
@@ -79,9 +78,9 @@ public class FloorApiServiceAsync {
                 .block();  // Block and wait for the result
     }
 
-    private Flux<FloorResponseItem> fetchPageData(Address address, int pageNo) {
+    private Flux<TitleResponseItem> fetchPageData(Address address, int pageNo) {
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, pageNo);
-        Mono<FloorApiResponse> apiResponseMono = request.retrieve().bodyToMono(FloorApiResponse.class);
+        Mono<TitleApiResponse> apiResponseMono = request.retrieve().bodyToMono(TitleApiResponse.class);
 
         return apiResponseMono
                 .flatMapMany(apiResponse -> Flux.fromIterable(apiResponse.getResponse().getBody().getItems().getItem()))
@@ -93,7 +92,7 @@ public class FloorApiServiceAsync {
 
     private Integer totalPages(Address address) {
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, 1);
-        FloorApiResponse apiResponse = request.retrieve().bodyToMono(FloorApiResponse.class).block();
+        TitleApiResponse apiResponse = request.retrieve().bodyToMono(TitleApiResponse.class).block();
 
         assert apiResponse != null;
         int totalCount = apiResponse.getResponse().getBody().getTotalCount();

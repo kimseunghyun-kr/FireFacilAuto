@@ -3,14 +3,13 @@ package com.FireFacilAuto.service.WebClient.api;
 import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
 import com.FireFacilAuto.domain.DTO.api.exposInfo.ExposedInfoResponseItem;
 import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
-import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleResponseItem;
 import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.baseEndpoints.BaseApiServiceAsync;
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.exposedInfoEndpoint.ExposedInfoApiServiceAsync;
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.floorEndpoint.FloorApiServiceAsync;
 import com.FireFacilAuto.service.WebClient.api.apiEndpoints.recapTitleEndpoint.RecapTitleService;
-import com.FireFacilAuto.service.WebClient.api.apiEndpoints.titleEndpoint.TitleApiService;
+import com.FireFacilAuto.service.WebClient.api.apiEndpoints.titleEndpoint.TitleApiServiceAsync;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +24,14 @@ import java.util.concurrent.CompletionException;
 @Service
 public class APICollationService {
 
-    private final TitleApiService titleApiService;
+    private final TitleApiServiceAsync titleApiService;
     private final RecapTitleService recapTitleService;
     private final ExposedInfoApiServiceAsync exposedInfoApiService;
     private final BaseApiServiceAsync baseApiService;
     private final FloorApiServiceAsync floorApiService;
 
     @Autowired
-    public APICollationService(TitleApiService titleApiService, RecapTitleService recapTitleService, ExposedInfoApiServiceAsync exposedInfoApiService, BaseApiServiceAsync baseApiService, FloorApiServiceAsync floorApiService) {
+    public APICollationService(TitleApiServiceAsync titleApiService, RecapTitleService recapTitleService, ExposedInfoApiServiceAsync exposedInfoApiService, BaseApiServiceAsync baseApiService, FloorApiServiceAsync floorApiService) {
         this.titleApiService = titleApiService;
         this.recapTitleService = recapTitleService;
         this.exposedInfoApiService = exposedInfoApiService;
@@ -48,14 +47,29 @@ public class APICollationService {
         CompletableFuture<List<BaseResponseItem>> baseFuture = CompletableFuture.supplyAsync(() ->
                 baseApiService.fetchAllBaseData(address));
 
-        CompletableFuture.supplyAsync(() ->
-                exposedInfoApiService.fetchAllExposedInfoData(address));
+        // Execute the other three tasks in the background after baseFuture is complete
+        CompletableFuture<Void> sideEffectTasks = baseFuture.thenRunAsync(() -> {
+            log.info("running start sideEffectTasks");
+            log.info("running start sideEffectTasks exposInfo");
+            CompletableFuture.supplyAsync(() -> {
+                try {
+                    exposedInfoApiService.fetchAllExposedInfoData(address);
+                } catch (Exception e) {
+                    log.error("Error in fetchAllExposedInfoData", e);
+                }
+                return null;
+            });
+            log.info("running start sideEffectTasks recaptitle");
+            CompletableFuture.supplyAsync(() -> {
+                recapTitleService.fetchAllRecapTitleData(address);
+                return null; // dummy result
+            });
+            CompletableFuture.supplyAsync(() -> {
+                titleApiService.fetchAllTitleData(address);
+                return null; // dummy result
+            });
+        });
 
-        CompletableFuture.supplyAsync(() ->
-                recapTitleService.fetchAllRecapTitleData(address));
-
-        CompletableFuture.supplyAsync(() ->
-                titleApiService.fetchAllTitleData(address));
 
 
         try {
