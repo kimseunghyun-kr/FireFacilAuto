@@ -40,8 +40,6 @@ public class APICollationService {
     }
 
 
-
-
     public List<List<BaseResponseItem>> concurrentPreGetFromApi(Address address) {
         // Create CompletableFutures for each API call
         CompletableFuture<List<BaseResponseItem>> baseFuture = CompletableFuture.supplyAsync(() ->
@@ -70,14 +68,10 @@ public class APICollationService {
             });
         });
 
-
-
         try {
-
             // Retrieve the results from the completed CompletableFutures
             List<BaseResponseItem> baseResponseItemList = baseFuture.join();
             // Your business logic with the retrieved lists
-
             List<BaseResponseItem> baseResponseTitleItemList = baseApiService.fetchAllTitleBaseData(baseResponseItemList);
             List<BaseResponseItem> baseResponseExposItemList = baseApiService.fetchAllExposInfoBaseData(baseResponseItemList);
 
@@ -106,11 +100,8 @@ public class APICollationService {
 
     public TitleResponseItem getTitleItemFromBase(BaseResponseItem baseResponseItem, Address address) {
         log.info("baseResponseItem whateverPk {}", baseResponseItem.getMgmBldrgstPk());
-
-
 //        return titleApiService.fetchAllTitleData(address, "getBrTitleInfo").stream().peek(obj -> log.info("object value , {}", obj.mgmBldrgstPk))
 //                .findFirst().orElseThrow();
-
         return titleApiService.fetchAllTitleData(address).stream()
                 .filter(obj -> obj.mgmBldrgstPk.equals(baseResponseItem.getMgmBldrgstPk())).findFirst().orElseThrow();
     }

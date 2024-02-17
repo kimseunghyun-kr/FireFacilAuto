@@ -153,9 +153,14 @@ public class Main {
     public String showFloorResults(HttpSession httpSession, Model model) {
         BaseResponseItem baseResponseItem = (BaseResponseItem) httpSession.getAttribute("baseResponseItem");
         Address address = (Address) httpSession.getAttribute("address");
+
         log.info("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
+
         TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase(baseResponseItem, address);
+        httpSession.setAttribute("titleResponseItem", titleResponseItem);
+
         List<FloorResponseItem> relatedFloorItems = apiCollationService.getFloorItemFromTitle(titleResponseItem, address);
+        httpSession.setAttribute("floorResponseItemList", relatedFloorItems);
 
         model.addAttribute("titleResponseItem", titleResponseItem);
         model.addAttribute("floorInfoList", relatedFloorItems);
@@ -166,8 +171,12 @@ public class Main {
     public String showSelectedTitleExposResult(HttpSession httpSession, Model model) {
         BaseResponseItem baseResponseItem = (BaseResponseItem) httpSession.getAttribute("baseResponseItem");
         Address address = (Address) httpSession.getAttribute("address");
+
         log.info("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
         TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase(baseResponseItem, address);
+
+        httpSession.setAttribute("titleResponseItem", titleResponseItem);
+
         ExposedInfoResponseItem exposedInfoResponseItem = (ExposedInfoResponseItem) httpSession.getAttribute("selectedExposItem");
         log.info("exposedInfoResponseItemAtshowselectedTitleExposResult , {}", exposedInfoResponseItem);
 
@@ -178,15 +187,39 @@ public class Main {
     }
 
 
-    @GetMapping("/execute")
-    public String showExecutedResults(Model model) {
-        Building building = new Building();
+    @SuppressWarnings("unchecked")
+    @GetMapping("/execute/BuildingFloor")
+    public String TitleFloorExecutedresults (HttpSession httpSession, Model model) {
+        TitleResponseItem titleResponseItem = (TitleResponseItem) httpSession.getAttribute("titleResponseItem");
+        List<FloorResponseItem> floorResponseItems = (List<FloorResponseItem>) httpSession.getAttribute("floorResponseItemList");
+        Address address = (Address)httpSession.getAttribute("address");
 
-        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(building);
+        ResultSheet resultSheet = buildingLawExecutionService.buildingBuildAndExecuteLaw(address, titleResponseItem, floorResponseItems);
 
         // Populate model attributes if needed
         model.addAttribute("resultSheet", resultSheet);
-        return "baseInformationDetails";
+
+        //Todo
+        return "redirect:/main/input";
+    }
+
+    @SuppressWarnings("unchecked")
+    @GetMapping("/execute/BuildingExposInfo")
+    public String ExposInfoExecutedResults (HttpSession httpSession, Model model) {
+        TitleResponseItem titleResponseItem = (TitleResponseItem) httpSession.getAttribute("titleResponseItem");
+        ExposedInfoResponseItem exposInfoResponseItem = (ExposedInfoResponseItem) httpSession.getAttribute("selectedExposItem");
+        Address address = (Address)httpSession.getAttribute("address");
+        FloorResponseItem floorResponseItem = apiCollationService.getFloorItemFromTitle(titleResponseItem, address)
+                .stream()
+                .filter(item -> Integer.parseInt(item.flrGbCd) == Integer.parseInt(exposInfoResponseItem.flrGbCd) &&
+                        Integer.parseInt(item.flrNo) == Integer.parseInt(exposInfoResponseItem.flrNo)).findFirst().orElseThrow();
+        ResultSheet resultSheet = buildingLawExecutionService.floorBuildAndExecuteLaw(address, titleResponseItem, exposInfoResponseItem, floorResponseItem);
+
+        // Populate model attributes if needed
+        model.addAttribute("resultSheet", resultSheet);
+
+        //Todo
+        return "redirect:/main/input";
     }
 
 

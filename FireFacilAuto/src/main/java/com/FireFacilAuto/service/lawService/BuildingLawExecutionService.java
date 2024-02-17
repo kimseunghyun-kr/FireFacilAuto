@@ -1,6 +1,10 @@
 package com.FireFacilAuto.service.lawService;
 
 import com.FireFacilAuto.domain.Conditions;
+import com.FireFacilAuto.domain.DTO.api.exposInfo.ExposedInfoResponseItem;
+import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
+import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
+import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
@@ -12,6 +16,7 @@ import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 
@@ -118,8 +123,6 @@ public class BuildingLawExecutionService {
         floorResultsList.removeIf(survivingResults -> survivingResults.getFloor().getFloorWindowAvailability() != flf.getFloorWindowAvailability());
 
         floorResultListMajorCodeMapper(floorResultsList, target);
-
-
 //             Integer floorNo; //충수
 //             Boolean isUnderGround; //지하여부
 //             Integer floorClassification; //층 주용도
@@ -127,8 +130,6 @@ public class BuildingLawExecutionService {
 //             Double floorArea; //층 바닥면적
 //             Integer floorMaterial; //층 재료
 //             Boolean floorWindowAvailability; //무창층 (무창층에만 1 / 아닐 시 0)
-
-
     }
 
     private double calculateFloorAreaSum(List<FloorResults> floorResultsList, FloorLawFields flf) {
@@ -156,12 +157,6 @@ public class BuildingLawExecutionService {
             }
         }
     }
-
-
-    //        public boolean buildingFieldAssociableWithCondition(String fieldName) {
-//        List<String> fieldsWithConditions = Arrays.asList("totalFloors", "undergroundFloors", "overgroundFloors",
-//                "GFA", "length", "dateofApproval", "buildingHumanCapacity");
-//        return fieldsWithConditions.contains(fieldName);
     private void buildingConditionComparator(BuildingLawFields blf, Building building, List<FloorResults> floorResultsList) {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
@@ -197,5 +192,102 @@ public class BuildingLawExecutionService {
                 .filter(c -> c.getFieldName().equals(fieldName))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public ResultSheet buildingBuildAndExecuteLaw(Address address, TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems) {
+        Building building = new Building();
+        buildingInitializr(address, titleResponseItem, building);
+
+        List<Floor> floors = floorResponseItemListToFloorListConverter(titleResponseItem, floorResponseItems, building);
+        building.setCompositeFloors(floors);
+
+        return executeLaw(building);
+    }
+
+    private void buildingInitializr(Address address, TitleResponseItem titleResponseItem, Building building) {
+        //TODO -> allocate number for classification based on code
+        building.setBuildingClassification(classificationCodeMapper(titleResponseItem));
+        building.setBuildingSpecification(specificationCodeMapper(titleResponseItem));
+
+        building.setJuso(address);
+        building.setDateofApproval(LocalDateTime.parse(titleResponseItem.getPmsnoGbCd()));
+        building.setGFA(Double.valueOf(titleResponseItem.getTotArea()));
+        building.setUndergroundFloors(Integer.valueOf(titleResponseItem.getUgrndFlrCnt()));
+        building.setOvergroundFloors(Integer.valueOf(titleResponseItem.getGrndFlrCnt()));
+        building.setTotalFloors(building.overgroundFloors + building.undergroundFloors);
+        //TODO -> calculate capacity
+        building.setBuildingHumanCapacity(getBuildingCapacity(titleResponseItem));
+    }
+
+
+    private List<Floor> floorResponseItemListToFloorListConverter(TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems, Building building) {
+        return floorResponseItems.stream().map(floorResponseItem -> {
+            Floor floor = new Floor();
+            floor.setBuilding(building);
+
+            //TODO -> allocate number for classification based on code
+            //Classification, specififation;
+            floor.setFloorClassification(classificationCodeMapper(floorResponseItem, titleResponseItem));
+            floor.setFloorSpecification(specificationCodeMapper(floorResponseItem, titleResponseItem));
+
+            floor.setFloorMaterial(Integer.valueOf(floorResponseItem.getStrctCd()));
+            floor.setIsUnderGround(floorGbCdMapper(floorResponseItem.getFlrGbCd()));
+            floor.setFloorArea(Double.valueOf(floorResponseItem.getArea()));
+            floor.setFloorNo(Integer.valueOf(floorResponseItem.getFlrNo()));
+
+            return floor;
+        }).toList();
+    }
+
+    private Boolean floorGbCdMapper(String flrGbCd) {
+        Integer target = Integer.parseInt(flrGbCd);
+        if(target == 2) {
+            return false;
+        } else if (target == 1) {
+            return true;
+        }
+        throw new RuntimeException("Invalid Mapping");
+    }
+
+    private Integer getBuildingCapacity(TitleResponseItem titleResponseItem) {
+        return Integer.valueOf(titleResponseItem.getHhldCnt());
+    }
+
+    //TODO
+    private Integer classificationCodeMapper(FloorResponseItem floor, TitleResponseItem title) {
+        return 1;
+    }
+    //TODO
+    private Integer classificationCodeMapper(TitleResponseItem title) {
+        return 1;
+    }
+
+    //TODO
+    private Integer specificationCodeMapper(FloorResponseItem floor, TitleResponseItem title) {
+        return 1;
+    }
+    //TODO
+    private Integer specificationCodeMapper(TitleResponseItem title) {
+        return 1;
+    }
+
+    public ResultSheet floorBuildAndExecuteLaw(Address address, TitleResponseItem titleResponseItem,
+                                               ExposedInfoResponseItem exposInfoResponseItem,
+                                               FloorResponseItem floorResponseItem) {
+        Building building = new Building();
+        buildingInitializr(address, titleResponseItem, building);
+
+        Floor floor = new Floor();
+        //Todo ;
+        floor.setFloorClassification(classificationCodeMapper(floorResponseItem, titleResponseItem));
+        floor.setFloorSpecification(specificationCodeMapper(floorResponseItem, titleResponseItem));
+
+        floor.setFloorMaterial(Integer.valueOf(floorResponseItem.getStrctCd()));
+        floor.setIsUnderGround(floorGbCdMapper(exposInfoResponseItem.getFlrGbCd()));
+        floor.setFloorArea(Double.valueOf(floorResponseItem.getArea()));
+        floor.setFloorNo(Integer.valueOf(exposInfoResponseItem.getFlrNo()));
+
+        building.setCompositeFloors(List.of(floor));
+        return executeLaw(building);
     }
 }

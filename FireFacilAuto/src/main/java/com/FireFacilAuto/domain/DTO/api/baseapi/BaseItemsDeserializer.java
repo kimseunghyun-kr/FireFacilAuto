@@ -1,7 +1,5 @@
 package com.FireFacilAuto.domain.DTO.api.baseapi;
 
-import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleItems;
-import com.FireFacilAuto.domain.DTO.api.recaptitleapi.RecapTitleResponseItem;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
