@@ -3,6 +3,7 @@ package com.FireFacilAuto.domain.DTO.law;
 import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ public class BuildingLawForms {
 
     public Double length; //터널 등 지하구 거리
 
-    public LocalDateTime dateofApproval; //사용승인일
+    public LocalDate dateofApproval; //사용승인일
 
 
 //    아직 미포함 정보

@@ -110,5 +110,12 @@ public class APICollationService {
         List<FloorResponseItem> floorResponseItems = floorApiService.fetchAllFloorData(address).stream().filter(floorObj -> floorObj.getMgmBldrgstPk().equals(titleResponseItem.mgmBldrgstPk)).toList();
         return floorResponseItems;
     }
+
+    public FloorResponseItem getFloorItemFromTitleForExpos(ExposedInfoResponseItem exposInfoResponseItem, TitleResponseItem titleResponseItem, Address address) {
+        List<FloorResponseItem> floorResponseItems = floorApiService.fetchAllFloorData(address).stream().filter(floorObj -> floorObj.getMgmBldrgstPk().equals(titleResponseItem.mgmBldrgstPk)).toList();
+        return floorResponseItems.stream()
+                .filter(item -> Integer.parseInt(item.flrGbCd) == Integer.parseInt(exposInfoResponseItem.flrGbCd) &&
+                        Integer.parseInt(item.flrNo) == Integer.parseInt(exposInfoResponseItem.flrNo)).findFirst().orElseThrow();
+    }
 }
 

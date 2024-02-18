@@ -12,19 +12,23 @@ import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.util.records.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 
 import static com.FireFacilAuto.util.conditions.ConditionalComparator.*;
 
 @Service
+@Slf4j
 public class BuildingLawExecutionService {
     private final LawService lawService;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     @Autowired
     public BuildingLawExecutionService(LawService lawService) {
@@ -40,14 +44,16 @@ public class BuildingLawExecutionService {
         resultSheet.setBuilding(building);
         List<FloorResults> floorResultsList = building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
 
+        log.info("part 3");
 //        building setup
         List<BuildingLawFields> candidateBuildingLaw = lawService.getLawsWithApplicablePurpose(building);
         candidateBuildingLaw.forEach(blf -> buildingConditionComparator(blf, building, floorResultsList));
-
+        log.info("part 4");
 //        해당되는 법령 받아오기
         Set<Pair> floorResultStore = new HashSet<>();
         List<FloorLawFields> candidateFloorLaw = new LinkedList<>();
 
+        log.info("part 5");
         for (FloorResults floorResults : floorResultsList) {
             Floor floor = floorResults.getFloor();
             Pair p = new Pair(floor.floorClassification, floor.floorClassification);
@@ -150,7 +156,7 @@ public class BuildingLawExecutionService {
         for (FloorResults survivingResults : floorResultsList) {
             switch (target[0]) {
                 case 1 -> survivingResults.getExtinguisherInstallation().setBooleanValue(target[1]);
-                case 2 -> survivingResults.getAlarmDeviceInstallation().setBooleanValue(target[1]);
+                case 2 -> survivingResults.getAlarmDeviceInstallation().setBooleanValues(target[1]);
                 case 3 -> survivingResults.getFireServiceSupportDeviceInstallation().setBooleanValue(target[1]);
                 case 4 -> survivingResults.getWaterSupplyInstallation().setBooleanValue(target[1]);
                 case 5 -> survivingResults.getEscapeRescueInstallation().setBooleanValue(target[1]);
@@ -206,11 +212,15 @@ public class BuildingLawExecutionService {
 
     private void buildingInitializr(Address address, TitleResponseItem titleResponseItem, Building building) {
         //TODO -> allocate number for classification based on code
+        log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem);
+
         building.setBuildingClassification(classificationCodeMapper(titleResponseItem));
         building.setBuildingSpecification(specificationCodeMapper(titleResponseItem));
 
         building.setJuso(address);
-        building.setDateofApproval(LocalDateTime.parse(titleResponseItem.getPmsnoGbCd()));
+
+        log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem.getPmsDay());
+        building.setDateofApproval(titleResponseItem.getPmsDay().isEmpty() ? LocalDate.now() :LocalDate.parse(titleResponseItem.getPmsDay(),formatter));
         building.setGFA(Double.valueOf(titleResponseItem.getTotArea()));
         building.setUndergroundFloors(Integer.valueOf(titleResponseItem.getUgrndFlrCnt()));
         building.setOvergroundFloors(Integer.valueOf(titleResponseItem.getGrndFlrCnt()));
@@ -240,10 +250,10 @@ public class BuildingLawExecutionService {
     }
 
     private Boolean floorGbCdMapper(String flrGbCd) {
-        Integer target = Integer.parseInt(flrGbCd);
-        if(target == 2) {
+        int target = Integer.parseInt(flrGbCd);
+        if(target == 20) {
             return false;
-        } else if (target == 1) {
+        } else if (target == 10) {
             return true;
         }
         throw new RuntimeException("Invalid Mapping");

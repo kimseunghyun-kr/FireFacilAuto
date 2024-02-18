@@ -1,17 +1,16 @@
 package com.FireFacilAuto.domain.entity.building;
 
-import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.installation.*;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = "building")
 public class Floor {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long UUID; //내부 시스템용 식별코드
 
     @ManyToOne

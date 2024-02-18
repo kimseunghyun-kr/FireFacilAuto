@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +44,8 @@ public class BuildingLawFields {
     @Column(columnDefinition = "integer default -1")
     @Positive
     public Double length; //터널 등 지하구 거리
-    @Column(columnDefinition = "timestamp default '0001-01-01T00:00:00'")
-    public LocalDateTime dateofApproval; //사용승인일
+    @Column(columnDefinition = "timestamp default '2023-01-01'")
+    public LocalDate dateofApproval; //사용승인일
 
 
 //    아직 미포함 정보

@@ -67,7 +67,7 @@ public class Main {
         }
         List<BaseResponseItem> baseTitleList = collatedList.getFirst();
         List<BaseResponseItem> baseExposList = collatedList.getLast();
-        log.info("responseBody, {}", baseTitleList);
+        log.debug("responseBody, {}", baseTitleList);
 //        buildingService.process(baseTitleList, address);
 
         httpSession.setAttribute("baseExposList", baseExposList);
@@ -106,13 +106,13 @@ public class Main {
     @PostMapping("/submitBaseObject")
     public String baseSelectItemReceiveAndFindExposInfo (HttpSession httpSession, Model model, @ModelAttribute("baseResponsePk") String baseResponsePk) {
         List<BaseResponseItem> baseResponseItemList = (List<BaseResponseItem>)httpSession.getAttribute("response");
-        log.info("baseItemResponseListCheck at submitBaseObject, {}", baseResponseItemList);
+        log.debug("baseItemResponseListCheck at submitBaseObject, {}", baseResponseItemList);
         BaseResponseItem baseResponseItem = baseResponseItemList.stream().filter(obj -> obj.getMgmBldrgstPk().equals(baseResponsePk)).findFirst().orElseThrow();
 
         httpSession.removeAttribute("response");
         httpSession.setAttribute("baseResponseItem", baseResponseItem);
 
-        log.info("controllerBaseResponseItem check at baseSelectItemAndFindExposInfo {}, " ,baseResponseItem);
+        log.debug("controllerBaseResponseItem check at baseSelectItemAndFindExposInfo {}, " ,baseResponseItem);
         List<BaseResponseItem> baseExposList = (List<BaseResponseItem>) httpSession.getAttribute("baseExposList");
         List<ExposedInfoResponseItem> exposedInfoResponseItemList = apiCollationService.getfurtherSpecificSelect(baseResponseItem, baseExposList, (Address) httpSession.getAttribute("address"));
 
@@ -124,7 +124,7 @@ public class Main {
     public String exposSelectFormShow (Model model, HttpSession httpSession) {
         List<ExposedInfoResponseItem> exposedInfoResponseItemList = (List<ExposedInfoResponseItem>) httpSession.getAttribute("exposInfoList");
         assert exposedInfoResponseItemList != null;
-        log.info("exposInfo check at exposFormshow {}, " , httpSession.getAttribute("exposInfoList"));
+        log.debug("exposInfo check at exposFormshow {}, " , httpSession.getAttribute("exposInfoList"));
         if(exposedInfoResponseItemList.isEmpty()) {
             return "redirect:/main/floorDetails"; // to modify later into process.
         }
@@ -134,11 +134,11 @@ public class Main {
 
     @PostMapping("/submitExposInfoObj")
     public String continueWithExposInfoObj (Model model, HttpSession httpSession, @ModelAttribute("exposInfoPk") String exposInfoPk){
-        log.info("exposInfoPk, {}", exposInfoPk);
+        log.debug("exposInfoPk, {}", exposInfoPk);
         List<ExposedInfoResponseItem> exposInfoList = (List<ExposedInfoResponseItem>) httpSession.getAttribute("exposInfoList");
         ExposedInfoResponseItem exposedInfoResponseItem = exposInfoList.stream().filter(exposObj -> exposObj.mgmBldrgstPk.equals(exposInfoPk)).findFirst().orElseThrow();
         httpSession.removeAttribute("exposInfoList");
-        log.info("exposInfoResponseItem {}", exposedInfoResponseItem);
+        log.debug("exposInfoResponseItem {}", exposedInfoResponseItem);
         httpSession.setAttribute("selectedExposItem", exposedInfoResponseItem);
 
         return "redirect:/main/exposTitleDetails";
@@ -154,7 +154,7 @@ public class Main {
         BaseResponseItem baseResponseItem = (BaseResponseItem) httpSession.getAttribute("baseResponseItem");
         Address address = (Address) httpSession.getAttribute("address");
 
-        log.info("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
+        log.debug("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
 
         TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase(baseResponseItem, address);
         httpSession.setAttribute("titleResponseItem", titleResponseItem);
@@ -172,13 +172,13 @@ public class Main {
         BaseResponseItem baseResponseItem = (BaseResponseItem) httpSession.getAttribute("baseResponseItem");
         Address address = (Address) httpSession.getAttribute("address");
 
-        log.info("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
+        log.debug("controllerBaseResponseItem check at continueWIthTitleObj {}, " ,baseResponseItem);
         TitleResponseItem titleResponseItem = apiCollationService.getTitleItemFromBase(baseResponseItem, address);
 
         httpSession.setAttribute("titleResponseItem", titleResponseItem);
 
         ExposedInfoResponseItem exposedInfoResponseItem = (ExposedInfoResponseItem) httpSession.getAttribute("selectedExposItem");
-        log.info("exposedInfoResponseItemAtshowselectedTitleExposResult , {}", exposedInfoResponseItem);
+        log.debug("exposedInfoResponseItemAtshowselectedTitleExposResult , {}", exposedInfoResponseItem);
 
         model.addAttribute("titleResponseItem", titleResponseItem);
         model.addAttribute("exposInfoResponseItem", exposedInfoResponseItem);
@@ -188,14 +188,14 @@ public class Main {
 
 
     @SuppressWarnings("unchecked")
-    @GetMapping("/execute/BuildingFloor")
+    @PostMapping("/execute/BuildingFloor")
     public String TitleFloorExecutedresults (HttpSession httpSession, Model model) {
         TitleResponseItem titleResponseItem = (TitleResponseItem) httpSession.getAttribute("titleResponseItem");
         List<FloorResponseItem> floorResponseItems = (List<FloorResponseItem>) httpSession.getAttribute("floorResponseItemList");
         Address address = (Address)httpSession.getAttribute("address");
 
         ResultSheet resultSheet = buildingLawExecutionService.buildingBuildAndExecuteLaw(address, titleResponseItem, floorResponseItems);
-
+        log.info("resultSheet, {}", resultSheet);
         // Populate model attributes if needed
         model.addAttribute("resultSheet", resultSheet);
 
@@ -203,20 +203,21 @@ public class Main {
         return "redirect:/main/input";
     }
 
-    @SuppressWarnings("unchecked")
-    @GetMapping("/execute/BuildingExposInfo")
+    @PostMapping("/execute/BuildingExposInfo")
     public String ExposInfoExecutedResults (HttpSession httpSession, Model model) {
         TitleResponseItem titleResponseItem = (TitleResponseItem) httpSession.getAttribute("titleResponseItem");
         ExposedInfoResponseItem exposInfoResponseItem = (ExposedInfoResponseItem) httpSession.getAttribute("selectedExposItem");
         Address address = (Address)httpSession.getAttribute("address");
-        FloorResponseItem floorResponseItem = apiCollationService.getFloorItemFromTitle(titleResponseItem, address)
-                .stream()
-                .filter(item -> Integer.parseInt(item.flrGbCd) == Integer.parseInt(exposInfoResponseItem.flrGbCd) &&
-                        Integer.parseInt(item.flrNo) == Integer.parseInt(exposInfoResponseItem.flrNo)).findFirst().orElseThrow();
+        FloorResponseItem floorResponseItem = apiCollationService.getFloorItemFromTitleForExpos(exposInfoResponseItem, titleResponseItem, address);
         ResultSheet resultSheet = buildingLawExecutionService.floorBuildAndExecuteLaw(address, titleResponseItem, exposInfoResponseItem, floorResponseItem);
 
+
+        log.info("resultSheet, {}", resultSheet);
+        
         // Populate model attributes if needed
         model.addAttribute("resultSheet", resultSheet);
+        
+        
 
         //Todo
         return "redirect:/main/input";

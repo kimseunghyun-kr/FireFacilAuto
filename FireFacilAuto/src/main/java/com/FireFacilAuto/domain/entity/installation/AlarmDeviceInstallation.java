@@ -2,9 +2,11 @@ package com.FireFacilAuto.domain.entity.installation;
 
 import jakarta.persistence.Entity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class AlarmDeviceInstallation extends BaseInstallation {
 
     public Boolean AutoFireDectionApparatus;
@@ -16,7 +18,7 @@ public class AlarmDeviceInstallation extends BaseInstallation {
     public Boolean VisualAlarmApparatus;
     public Boolean GasLeakageAlarmApparatus;
 
-    public void setBooleanValue(int number) {
+    public void setBooleanValues(int number) {
         switch (number) {
             case 1 -> setAutoFireDectionApparatus(true);
             case 2 -> setEmergencyAlarmApparatus(true);

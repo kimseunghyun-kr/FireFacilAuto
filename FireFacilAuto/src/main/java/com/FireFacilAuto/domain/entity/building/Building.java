@@ -3,9 +3,9 @@ package com.FireFacilAuto.domain.entity.building;
 import com.FireFacilAuto.domain.entity.Address;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.graphql.ConditionalOnGraphQlSchema;
+import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -13,13 +13,13 @@ import java.util.List;
 public class Building {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long UUID; //내부 시스템용 식별코드
 
     @Embedded
     public Address juso; //건물 주소
 
-    @OneToMany
+    @OneToMany(mappedBy = "building")
     public List<Floor> compositeFloors; //건물 내 층 정보
 
     public Integer totalFloors; //건물 내 총 층수
@@ -36,7 +36,7 @@ public class Building {
 
     public Double length; //터널 등 지하구 거리
 
-    public LocalDateTime dateofApproval; //사용승인일
+    public LocalDate dateofApproval; //사용승인일
 
 //    아직 미포함 정보
 

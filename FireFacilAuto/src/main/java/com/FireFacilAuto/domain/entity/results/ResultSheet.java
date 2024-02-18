@@ -1,10 +1,7 @@
 package com.FireFacilAuto.domain.entity.results;
 
 import com.FireFacilAuto.domain.entity.building.Building;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.List;
 public class ResultSheet {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
