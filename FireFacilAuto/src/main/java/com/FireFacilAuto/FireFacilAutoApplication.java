@@ -15,6 +15,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class FireFacilAutoApplication {
 
 	public static void main(String[] args) {
+		System.getProperties().forEach((key, value) -> {
+			log.info(key + ": " + value);
+		});
 		SpringApplication.run(FireFacilAutoApplication.class, args);
 	}
 

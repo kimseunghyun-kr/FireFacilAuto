@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - FireFacilAutoNetwork
+
+  firefacilauto:
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.md
+    ports:
+      - "8080:8080"
+    networks:
+      - FireFacilAutoNetwork
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+    labels:
+      - "version=1.0.0"  # Specify the version label for your image
+networks:
+  FireFacilAutoNetwork:

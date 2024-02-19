@@ -124,6 +124,8 @@ public class BaseApiServiceAsync {
 
     private Integer totalPages(Address address) {
         WebClient.RequestHeadersSpec<?> request = apiService.getRequestHeadersSpec(address, URI, 1);
+        String responseString = request.retrieve().bodyToMono(String.class).block();
+        log.info("totalPages at {}, ", responseString);
         BaseApiResponse apiResponse = request.retrieve().bodyToMono(BaseApiResponse.class).block();
 
         assert apiResponse != null;
