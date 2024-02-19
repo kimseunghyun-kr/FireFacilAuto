@@ -2,9 +2,11 @@ package com.FireFacilAuto.domain.entity.installation;
 
 import jakarta.persistence.Entity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class WaterSupplyInstallation extends BaseInstallation {
     public Boolean extinguisherWaterSupplyInstallation;
 

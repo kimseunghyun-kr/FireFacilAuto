@@ -88,7 +88,7 @@ public class Main {
         model.addAttribute("baseInfoList", baseResponseItemList);
         model.addAttribute("flag", false);
 
-        return "/main/baseInformationDetails";
+        return "main/baseInformationDetails";
     }
 
     @GetMapping("/baseInformationDetails")
@@ -100,7 +100,7 @@ public class Main {
         model.addAttribute("baseInfoList", baseResponseItemList);
         model.addAttribute("flag", true);
 
-        return "/main/baseInformationDetails";
+        return "main/baseInformationDetails";
     }
 
     @PostMapping("/submitBaseObject")
@@ -129,7 +129,7 @@ public class Main {
             return "redirect:/main/floorDetails"; // to modify later into process.
         }
         model.addAttribute("exposInfoList", exposedInfoResponseItemList);
-        return "/main/exposInformationDetails";
+        return "main/exposInformationDetails";
     }
 
     @PostMapping("/submitExposInfoObj")
@@ -164,7 +164,7 @@ public class Main {
 
         model.addAttribute("titleResponseItem", titleResponseItem);
         model.addAttribute("floorInfoList", relatedFloorItems);
-        return "/main/floorDetails";
+        return "main/floorDetails";
     }
 
     @GetMapping("/exposTitleDetails")
@@ -183,7 +183,7 @@ public class Main {
         model.addAttribute("titleResponseItem", titleResponseItem);
         model.addAttribute("exposInfoResponseItem", exposedInfoResponseItem);
 
-        return "/main/exposTitleDetails";
+        return "main/exposTitleDetails";
     }
 
 

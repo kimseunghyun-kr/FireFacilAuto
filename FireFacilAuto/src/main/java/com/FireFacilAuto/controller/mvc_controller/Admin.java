@@ -33,7 +33,7 @@ public class Admin {
         model.addAttribute("buildingForm", new BuildingLawForms());
         model.addAttribute("floorForm", new FloorLawForms());
         model.addAttribute("formUtilityMethod", new FormUtilityMethods());
-        return "/admin/lawSelection";
+        return "admin/lawSelection";
     }
 
     @PostMapping("/lawSelectionFormReceive")
@@ -74,10 +74,10 @@ public class Admin {
 
         if (BuildingLawFields.class.equals(entityClass)) {
             model.addAttribute("buildingLawFields", util.allBuildingFields());
-            return "/admin/buildingLawView";  // Use buildingLaws.html view
+            return "admin/buildingLawView";  // Use buildingLaws.html view
         } else if (FloorLawFields.class.equals(entityClass)) {
             model.addAttribute("floorLawFields", util.allFloorFields());
-            return "/admin/floorLawView";  // Use floorLaws.html view
+            return "admin/floorLawView";  // Use floorLaws.html view
         } else {
             throw new IllegalArgumentException("Unsupported entity type: " + entityType);
         }
