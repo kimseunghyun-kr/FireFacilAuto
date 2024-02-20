@@ -40,10 +40,16 @@ public class BuildingLawForms {
     // "조건" 식 저장
     private Map<String, ComparisonOperator> conditions = new HashMap<>();
 
-    public List<String> allBuildingFields() {
+    public static List<String> allBuildingFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "totalFloors",
                 "undergroundFloors", "overgroundFloors", "GFA", "buildingPurpose",
                 "length", "dateofApproval", "buildingHumanCapacity");
+    }
+
+    public static boolean buildingFieldAssociableWithCondition(String fieldName) {
+        List<String> fieldsWithConditions = Arrays.asList("totalFloors", "undergroundFloors", "overgroundFloors",
+                "GFA", "length", "dateofApproval", "buildingHumanCapacity");
+        return fieldsWithConditions.contains(fieldName);
     }
 
 

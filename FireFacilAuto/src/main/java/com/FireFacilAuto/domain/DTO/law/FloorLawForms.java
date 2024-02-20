@@ -34,11 +34,17 @@ public class FloorLawForms {
     // "조건" 식 저장
     private Map<String, ComparisonOperator> conditions = new HashMap<>();
 
-    public List<String> allFloorFields() {
+    public static List<String> allFloorFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo",
                 "isUnderGround", "floorPurpose" , "floorAreaSum", "floorAreaThreshold", "floorMaterial",
                 "floorWindowAvailability"
         );
     }
-    
+
+    public static boolean floorFieldAssociableWithCondition(String fieldName) {
+        List<String> fieldsWithConditions = Arrays.asList("floorNo",
+                "floorAreaSum", "floorWindowAvailability", "floorAreaThreshold"
+        );
+        return fieldsWithConditions.contains(fieldName);
+    }
 }

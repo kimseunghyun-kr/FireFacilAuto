@@ -5,7 +5,6 @@ import com.FireFacilAuto.domain.DTO.law.FloorLawForms;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.service.lawService.LawService;
-import com.FireFacilAuto.util.form.FormUtilityMethods;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +31,6 @@ public class Admin {
     public String lawSelectionView(Model model) {
         model.addAttribute("buildingForm", new BuildingLawForms());
         model.addAttribute("floorForm", new FloorLawForms());
-        model.addAttribute("formUtilityMethod", new FormUtilityMethods());
         return "admin/lawSelection";
     }
 
@@ -70,13 +68,12 @@ public class Admin {
         model.addAttribute("currentPage", paginatedLaws.getNumber());
         model.addAttribute("totalItems", paginatedLaws.getTotalElements());
         model.addAttribute("totalPages", paginatedLaws.getTotalPages());
-        FormUtilityMethods util = new FormUtilityMethods();
 
         if (BuildingLawFields.class.equals(entityClass)) {
-            model.addAttribute("buildingLawFields", util.allBuildingFields());
+            model.addAttribute("buildingLawFields", BuildingLawForms.allBuildingFields());
             return "admin/buildingLawView";  // Use buildingLaws.html view
         } else if (FloorLawFields.class.equals(entityClass)) {
-            model.addAttribute("floorLawFields", util.allFloorFields());
+            model.addAttribute("floorLawFields", FloorLawForms.allFloorFields());
             return "admin/floorLawView";  // Use floorLaws.html view
         } else {
             throw new IllegalArgumentException("Unsupported entity type: " + entityType);
