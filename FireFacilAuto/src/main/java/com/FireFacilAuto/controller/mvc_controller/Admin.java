@@ -25,7 +25,7 @@ public class Admin {
 
     @GetMapping("/main")
     public String adminView() {
-        return "/admin/main";
+        return "admin/main";
     }
 
     @GetMapping("/lawSelection")

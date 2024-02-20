@@ -5,6 +5,7 @@ import org.hibernate.query.sqm.ComparisonOperator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,12 @@ public class BuildingLawForms {
 
     // "조건" 식 저장
     private Map<String, ComparisonOperator> conditions = new HashMap<>();
+
+    public List<String> allBuildingFields() {
+        return Arrays.asList("majorCategoryCode", "minorCategoryCode", "totalFloors",
+                "undergroundFloors", "overgroundFloors", "GFA", "buildingPurpose",
+                "length", "dateofApproval", "buildingHumanCapacity");
+    }
 
 
 }

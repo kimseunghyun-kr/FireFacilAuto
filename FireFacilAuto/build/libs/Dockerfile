@@ -35,7 +35,7 @@ COPY ${JAR_FILE} /opt/app/firefacilauto.jar
 
 
 # Copy entrypoint script
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh entrypoint.sh
 
 # Give execute permission to the entrypoint script
 RUN chmod +x /entrypoint.sh

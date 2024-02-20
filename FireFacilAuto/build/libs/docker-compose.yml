@@ -12,7 +12,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: trienebutdiene/firefacilauto:v1
+    image: trienebutdiene/firefacilauto:v1.1.4
     ports:
       - "8080:8080"
     networks:
