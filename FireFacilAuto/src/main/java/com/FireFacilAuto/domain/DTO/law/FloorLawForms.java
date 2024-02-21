@@ -43,7 +43,7 @@ public class FloorLawForms {
 
     public static boolean floorFieldAssociableWithCondition(String fieldName) {
         List<String> fieldsWithConditions = Arrays.asList("floorNo",
-                "floorAreaSum", "floorWindowAvailability", "floorAreaThreshold"
+                "floorAreaSum", "floorAreaThreshold"
         );
         return fieldsWithConditions.contains(fieldName);
     }

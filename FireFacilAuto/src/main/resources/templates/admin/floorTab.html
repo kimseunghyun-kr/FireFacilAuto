@@ -10,14 +10,14 @@
     <title>FloorTab</title>
 </head>
 <body>
-<div id="floorTab" class="tab" th:fragment="floorTab(floorForm, formUtilityMethod, fields)">
+<div id="floorTab" class="tab" th:fragment="floorTab(floorForm, fields)">
     <form th:action="@{/admin/lawSelectionFormReceive}" method="post" th:object="${floorForm}">
         <h2>Select Floor Law Fields</h2>
         <!-- Include input fields for floor law fields -->
         <!-- Iterate over fields -->
         <div th:each="field : ${fields}">
             <!-- Check if the field is associable with a condition -->
-            <div th:if="${formUtilityMethod.floorFieldAssociableWithCondition(field)}">
+            <div th:if="${floorForm.floorFieldAssociableWithCondition(field)}">
                 <label th:text="${field}">Field Label:</label>
                 <input type="text" th:id="${field}" th:field="*{__${field}__}" />
 
@@ -55,7 +55,7 @@
             </div>
 
             <!-- Fields not associable to a condition -->
-            <div th:unless="${formUtilityMethod.floorFieldAssociableWithCondition(field)}">
+            <div th:unless="${floorForm.floorFieldAssociableWithCondition(field)}">
                 <div th:if="${field == 'floorPurpose'}">
 
                     <div id="purposesContainer">

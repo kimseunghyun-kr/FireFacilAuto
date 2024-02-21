@@ -13,5 +13,14 @@
     <button type="submit">Select Laws</button>
 </form>
 
+
+<form th:action="@{/admin/paginatedLaws}" method="get">
+    <input type="hidden" name="entityType" value="building"> <button type="submit">Select Building Laws</button>
+</form>
+
+<form th:action="@{/admin/paginatedLaws}" method="get">
+    <input type="hidden" name="entityType" value="floor"> <button type="submit">Select FLoor Laws</button>
+</form>
+
 </body>
 </html>

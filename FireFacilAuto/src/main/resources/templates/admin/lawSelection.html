@@ -83,10 +83,10 @@
 <!--    <p th:text="${formUtilityMethod.buildingFieldAssociableWithCondition('texas')}">formUtilityMethod</p>-->
 
 <!-- Include building tab -->
-<div th:insert="~{admin/buildingTab.html :: buildingTab (${buildingForm}, ${formUtilityMethod}, ${formUtilityMethod.allBuildingFields()})}"></div>
+<div th:insert="~{admin/buildingTab.html :: buildingTab (${buildingForm}, ${buildingForm.allBuildingFields()})}"></div>
 
 <!-- Include floor tab -->
-<div th:insert="~{admin/floorTab.html :: floorTab (${floorForm}, ${formUtilityMethod}, ${formUtilityMethod.allFloorFields()})}"></div>
+<div th:insert="~{admin/floorTab.html :: floorTab (${floorForm}, ${floorForm.allFloorFields()})}"></div>
 
 <!-- JavaScript function to switch tabs -->
 

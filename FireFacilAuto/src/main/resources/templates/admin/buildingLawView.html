@@ -10,11 +10,31 @@
 
 <!-- Display paginated laws -->
 <div th:each="law : ${laws}">
-    <div th:each="fieldName : ${buildingLawFields}">
-        <p th:text="${fieldName}"></p>
-        <p th:text="${law[fieldName]}"></p>
-        <!-- Repeat for other building law fields as needed -->
-    </div>
+    <p th:text="majorCategoryCode"></p>
+    <p th:text="${law.majorCategoryCode}"></p>
+    <p th:text="minorCategorycode"></p>
+    <p th:text="${law.minorCategoryCode}"></p>
+    <p th:text="totalFloors"></p>
+    <p th:text="${law.totalFloors}"></p>
+    <p th:text="undergroundFloors"></p>
+    <p th:text="${law.undergroundFloors}"></p>
+    <p th:text="overgroundFloors"></p>
+    <p th:text="${law.overgroundFloors}"></p>
+    <p th:text="GFA"></p>
+    <p th:text="${law.GFA}"></p>
+    <p th:text="buildingClassification"></p>
+    <p th:text="${law.buildingClassification}"></p>
+    <p th:text="buildingSpecification"></p>
+    <p th:text="${law.buildingSpecification}"></p>
+    <p th:text="length"></p>
+    <p th:text="${law.length}"></p>
+    <p th:text="dateofApproval"></p>
+    <p th:text="${law.dateofApproval}"></p>
+    <p th:text="buildingHumanCapacity"></p>
+    <p th:text="${law.buildingHumanCapacity}"></p>
+    <p th:text="conditions"></p>
+    <p th:text="${law.conditionsList}"></p>
+    <!-- Repeat for other building law fields as needed -->
 </div>
 
 
@@ -22,7 +42,7 @@
 <div>
     <ul>
         <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
-            <a th:href="@{/admin/paginatedLaws(page=${pageNumber}, entityType='building')}" th:text="${pageNumber} + 1"></a>
+            <a th:href="@{/admin/paginatedLaws(page=${pageNumber}, entityType='building')}" th:text="${pageNumber + 1}"></a>
         </li>
     </ul>
 </div>

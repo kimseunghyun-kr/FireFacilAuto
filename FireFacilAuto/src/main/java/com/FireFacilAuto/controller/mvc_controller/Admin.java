@@ -19,8 +19,12 @@ import java.util.List;
 @Slf4j
 public class Admin {
 
+    public final LawService lawService;
+
     @Autowired
-    public LawService lawService;
+    public Admin(LawService lawService) {
+        this.lawService = lawService;
+    }
 
     @GetMapping("/main")
     public String adminView() {
@@ -55,11 +59,13 @@ public class Admin {
         return "redirect:/admin/main";
     }
 
+
     @GetMapping("/paginatedLaws")
     public String getPaginatedLaws(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size,
                                    @RequestParam String entityType,
                                    Model model) {
+        log.info("paginated laws");
         Class<?> entityClass = getEntityClass(entityType);
 
         Page<?> paginatedLaws = lawService.getPaginatedLaws(page, size, entityClass);
@@ -70,10 +76,13 @@ public class Admin {
         model.addAttribute("totalPages", paginatedLaws.getTotalPages());
 
         if (BuildingLawFields.class.equals(entityClass)) {
-            model.addAttribute("buildingLawFields", BuildingLawForms.allBuildingFields());
+            log.info("building laws {}", paginatedLaws.getContent());
+            List<String> bf = BuildingLawForms.allBuildingFields();
+            model.addAttribute("buildingLawFields", bf);
             return "admin/buildingLawView";  // Use buildingLaws.html view
         } else if (FloorLawFields.class.equals(entityClass)) {
-            model.addAttribute("floorLawFields", FloorLawForms.allFloorFields());
+            List<String> ff = FloorLawForms.allFloorFields();
+            model.addAttribute("floorLawFields", ff);
             return "admin/floorLawView";  // Use floorLaws.html view
         } else {
             throw new IllegalArgumentException("Unsupported entity type: " + entityType);

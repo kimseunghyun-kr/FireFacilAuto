@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<div id="buildingTab" class="tab" th:fragment="buildingTab(buildingForm, formUtilityMethod , fields)">
+<div id="buildingTab" class="tab" th:fragment="buildingTab(buildingForm, fields)">
 
     <h2>Select Building Law Fields</h2>
     <!-- Include input fields for building law fields -->
@@ -22,7 +22,7 @@
         <!-- Iterate over fields -->
         <div th:each="field : ${fields}">
             <!-- Check if the field is associable with a condition -->
-            <div th:if="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">
+            <div th:if="${buildingForm.buildingFieldAssociableWithCondition(field)}">
                 <label th:text="${field}">Field Label:</label>
                 <input type="text" th:id="${field}" th:field="*{__${field}__}" />
                 <div class = "radio-buttons">
@@ -59,7 +59,7 @@
             </div>
 
             <!-- Fields not associable to a condition -->
-            <div th:unless="${formUtilityMethod.buildingFieldAssociableWithCondition(field)}">
+            <div th:unless="${buildingForm.buildingFieldAssociableWithCondition(field)}">
                 <div th:if="${field == 'buildingPurpose'}">
 
                     <h3> 용도 텍스트로 입력 </h3>

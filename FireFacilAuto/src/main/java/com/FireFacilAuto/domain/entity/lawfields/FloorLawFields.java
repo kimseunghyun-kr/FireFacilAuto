@@ -2,6 +2,7 @@ package com.FireFacilAuto.domain.entity.lawfields;
 
 import com.FireFacilAuto.domain.Conditions;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
@@ -11,6 +12,9 @@ import java.util.List;
 @Entity
 public class FloorLawFields {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(nullable = false)
     @Positive
     public Integer majorCategoryCode; //주요시설법 식별코드
@@ -20,14 +24,15 @@ public class FloorLawFields {
     @Column(columnDefinition = "integer default -1")
     @Positive
     public Integer floorNo; //충수
+
     @Column(columnDefinition = "integer default -1")
-    @Positive
     public Boolean isUnderGround; //지하여부
+
     @Column(columnDefinition = "integer default -1")
-    @Positive
+    @Min(value = -1, message = "Value must be at least -1")
     public Integer floorClassification; //층 주용도
     @Column(columnDefinition = "integer default -1")
-    @Positive
+    @Min(value = -1, message = "Value must be at least -1")
     public Integer floorSpecification; //층 세부용도
     @Column(columnDefinition = "integer default -1")
     @Positive
@@ -41,14 +46,9 @@ public class FloorLawFields {
 
 //    아직 미포함인 정보
     @Column(columnDefinition = "boolean default false")
-    @Positive
     public Boolean floorWindowAvailability; //무창층 (무창층에만 1 / 아닐 시 0)
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToMany(mappedBy = "floorLawFields")
+    @OneToMany(mappedBy = "floorLawFields", cascade = CascadeType.ALL)
     public List<Conditions> conditionsList;
 
 }

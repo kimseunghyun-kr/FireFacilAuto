@@ -2,6 +2,7 @@ package com.FireFacilAuto.domain.entity.lawfields;
 
 import com.FireFacilAuto.domain.Conditions;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
@@ -17,6 +18,12 @@ import java.util.Map;
 @Data
 @Entity
 public class BuildingLawFields {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="building_law_field_id")
+    private Long id;
+
     @Column(nullable = false)
     @Positive
     public Integer majorCategoryCode; //주요시설법 식별코드
@@ -36,10 +43,10 @@ public class BuildingLawFields {
     @Positive
     public Double GFA; //연면적
     @Column(columnDefinition = "integer default -1")
-    @Positive
+    @Min(value = -1, message = "Value must be at least -1")
     public Integer buildingClassification; //건물 주용도
     @Column(columnDefinition = "integer default -1")
-    @Positive
+    @Min(value = -1, message = "Value must be at least -1")
     public Integer buildingSpecification; //건물 세부용도
     @Column(columnDefinition = "integer default -1")
     @Positive
@@ -53,12 +60,7 @@ public class BuildingLawFields {
     @Positive
     public Integer buildingHumanCapacity; //수용량
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToMany(mappedBy = "buildingLawFields")
+    @OneToMany(mappedBy = "buildingLawFields", cascade = CascadeType.ALL)
     public List<Conditions> conditionsList;
 
 

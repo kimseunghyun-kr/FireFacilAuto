@@ -114,8 +114,15 @@ public class APICollationService {
     public FloorResponseItem getFloorItemFromTitleForExpos(ExposedInfoResponseItem exposInfoResponseItem, TitleResponseItem titleResponseItem, Address address) {
         List<FloorResponseItem> floorResponseItems = floorApiService.fetchAllFloorData(address).stream().filter(floorObj -> floorObj.getMgmBldrgstPk().equals(titleResponseItem.mgmBldrgstPk)).toList();
         return floorResponseItems.stream()
-                .filter(item -> Integer.parseInt(item.flrGbCd) == Integer.parseInt(exposInfoResponseItem.flrGbCd) &&
-                        Integer.parseInt(item.flrNo) == Integer.parseInt(exposInfoResponseItem.flrNo)).findFirst().orElseThrow();
+                .filter(item -> {
+                    Integer itemflrGbCd = Integer.parseInt(item.flrGbCd);
+                    Integer exposInfoResponseItemflrGbcd = Integer.parseInt(exposInfoResponseItem.flrGbCd);
+                    Integer itemflrNo = Integer.parseInt(item.flrNo);
+                    Integer exposInfoResponseItemFlrno = Integer.parseInt(exposInfoResponseItem.flrNo);
+
+                    return itemflrGbCd.equals(exposInfoResponseItemflrGbcd) && itemflrNo.equals(exposInfoResponseItemFlrno);
+                        }
+                        ).findFirst().orElseThrow();
     }
 }
 

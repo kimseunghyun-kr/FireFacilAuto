@@ -44,7 +44,6 @@ public  class LawService {
 
     public <T> Page<T> getPaginatedLaws(int page, int size, Class<T> entityType) {
         Pageable pageable = PageRequest.of(page, size);
-
         if (BuildingLawFields.class.equals(entityType)) {
             return (Page<T>) blawFieldRepository.findAll(pageable);
         } else if (FloorLawFields.class.equals(entityType)) {
@@ -58,6 +57,7 @@ public  class LawService {
     public List<BuildingLawFields> makeBuildingLaw(BuildingLawForms form, List<String> purposeClass, List<String> purposeSpec) {
         String stringInput = form.buildingPurpose;
         List<Integer[]> purposeList = purposeMapper(stringInput, purposeClass, purposeSpec);
+        log.info("list of purposes: {}", purposeList);
         return lawFactory(form, purposeList, BuildingLawFields.class , blawFieldRepository);
     }
 
@@ -71,13 +71,16 @@ public  class LawService {
     private <T> List<T> lawFactory(Object form, List<Integer[]> purposeList, Class<T> entityType, JpaRepository<T, Long> repository) {
         List<T> result = new LinkedList<>();
         Map<String, ComparisonOperator> conditionMap = getConditions(form);
+        log.info("conditionsMap,   {} ",  conditionMap);
         for (Integer[] purposePair : purposeList) {
             T template = conversionService.convert(form, entityType);
+            log.info("template converted : {}", template);
             assert template != null;
             setPurpose(template, purposePair);
             List<Conditions> conditionsList = conditionMap.entrySet().stream()
                     .map(entry -> createCondition(entry.getKey(), entry.getValue(), template))
                     .toList();
+            log.info("conditionsList , {} " , conditionsList);
             setConditions(template, conditionsList);
             result.add(template);
             saveLaw(template, repository);
@@ -109,6 +112,7 @@ public  class LawService {
         condition.setFieldName(fieldName);
         condition.setOperator(operator);
         if (template instanceof BuildingLawFields) {
+            log.info("set template : {}", template);
             condition.setBuildingLawFields((BuildingLawFields) template);
         } else if (template instanceof FloorLawFields) {
             condition.setFloorLawFields((FloorLawFields) template);
@@ -126,11 +130,13 @@ public  class LawService {
 
     private <T> void saveLaw(T template, JpaRepository<T, Long> repository) {
         repository.save(template);
+        log.info("template saved : {}", blawFieldRepository.findAll());
     }
 
     private List<Integer[]> purposeMapper(String parsable, List<String> purposeClass, List<String> purposeSpec) {
         List<Integer[]> resultList = new LinkedList<>();
         if (parsable != null && !parsable.replace(" ", "").isEmpty()) {
+            log.info("stringparser activated, string : {}", parsable);
             resultList.addAll(parser(parsable));
         }
         resultList.addAll(parser(purposeClass, purposeSpec));
@@ -144,21 +150,24 @@ public  class LawService {
         if(purposeClass.isEmpty() || purposeSpec.isEmpty() || purposeClass.size() != purposeSpec.size()) {
             return resultList;
         }
-        resultList.addAll(IntStream.range(0, purposeClass.size()).mapToObj(i -> new Integer[] {Integer.parseInt(purposeClass.get(i),
-                Integer.parseInt(purposeSpec.get(i)))}).toList());
+        resultList.addAll(IntStream.range(0, purposeClass.size()).mapToObj(i -> new Integer[] {Integer.parseInt(purposeClass.get(i)),
+                Integer.parseInt(purposeSpec.get(i))}).toList());
 
         return resultList;
     }
 
     private List<Integer[]> parser(String parsable) {
         List<Integer[]> result = new LinkedList<>();
-        String[] conditions = parsable.split(",");
+        String[] conditions = parsable.split("&");
         for (String condition : conditions) {
             condition = condition.replace(" ", "");
-            Matcher defaultRegex = Pattern.compile("\\((-?\\d+) ,-?\\d+\\)").matcher(condition);
+            log.info("condition being matched : {}", condition);
+            Matcher defaultRegex = Pattern.compile("\\((-?\\d+),(-?\\d)+\\)").matcher(condition);
             if(defaultRegex.matches()) {
                 Integer[] added = {Integer.parseInt(defaultRegex.group(1)),
                         Integer.parseInt(defaultRegex.group(2))};
+
+                log.info("regex matched, adding : {},  {}", added[0], added[1]);
                 result.add(added);
                 continue;
             }
@@ -169,6 +178,7 @@ public  class LawService {
                 int high = Integer.parseInt(digitwithinBrackets[1]);
                 for(int i = low; i <= high; i++) {
                     Integer[] added = {i, -1};
+                    log.info("regex matched, adding : {},  {}", added[0], added[1]);
                     result.add(added);
                 }
                 continue;
@@ -180,6 +190,7 @@ public  class LawService {
                 int number3 = Integer.parseInt(specRegex.group(3)); // Extracting number3
                 for(int i = number2 ; i <= number3 ; i++) {
                     Integer[] added = {number1 , i};
+                    log.info("regex matched, adding : {},  {}", added[0], added[1]);
                     result.add(added);
                 }
             }

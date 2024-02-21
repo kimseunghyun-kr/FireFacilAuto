@@ -10,10 +10,28 @@
 <!-- Item list -->
 <!-- Display paginated laws-->
 <div th:each="law : ${laws}">
-    <div th:each="fieldName : ${floorLawFields}">
-        <p th:text="${fieldName}"></p>
-        <p th:text="${law[fieldName]}"></p>
-    </div>
+    <p th:text="majorCategoryCode"></p>
+    <p th:text="${law.majorCategoryCode}"></p>
+    <p th:text="minorCategorycode"></p>
+    <p th:text="${law.minorCategoryCode}"></p>
+    <p th:text="floorNo"></p>
+    <p th:text="${law.floorNo}"></p>
+    <p th:text="isUnderGround"></p>
+    <p th:text="${law.isUnderGround}"></p>
+    <p th:text="floorClassification"></p>
+    <p th:text="${law.floorClassification}"></p>
+    <p th:text="floorSpecification"></p>
+    <p th:text="${law.floorSpecification}"></p>
+    <p th:text="floorAreaSum"></p>
+    <p th:text="${law.floorAreaSum}"></p>
+    <p th:text="floorAreaThreshold"></p>
+    <p th:text="${law.floorAreaThreshold}"></p>
+    <p th:text="floorMaterial"></p>
+    <p th:text="${law.floorMaterial}"></p>
+    <p th:text="floorWindowAvailability"></p>
+    <p th:text="${law.floorWindowAvailability}"></p>
+    <p th:text="conditions"></p>
+    <p th:text="${law.conditionsList}"></p>
 </div>
 
 
@@ -21,7 +39,7 @@
 <div>
     <ul>
         <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
-            <a th:href="@{/admin/paginatedLaws(page=${pageNumber}, entityType='floor')}" th:text="${pageNumber} + 1"></a>
+            <a th:href="@{/admin/paginatedLaws(page=${pageNumber}, entityType='floor')}" th:text="${pageNumber + 1}"></a>
         </li>
     </ul>
 </div>
