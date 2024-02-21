@@ -47,6 +47,8 @@ public class BuildingLawExecutionService {
         log.info("part 3");
 //        building setup
         List<BuildingLawFields> candidateBuildingLaw = lawService.getLawsWithApplicablePurpose(building);
+        log.info("candidate law fields building : {}", candidateBuildingLaw);
+//        FOR ALL CANDIDATE BLFS APPLY EACH BLF ONTO BUILDING.
         candidateBuildingLaw.forEach(blf -> buildingConditionComparator(blf, building, floorResultsList));
         log.info("part 4");
 //        해당되는 법령 받아오기
@@ -153,6 +155,7 @@ public class BuildingLawExecutionService {
     }
 
     private void floorResultListMajorCodeMapper(List<FloorResults> floorResultsList, Integer[] target) {
+        log.info("class : {}, spec : {}", target[0], target[1]);
         for (FloorResults survivingResults : floorResultsList) {
             switch (target[0]) {
                 case 1 -> survivingResults.getExtinguisherInstallation().setBooleanValue(target[1]);
@@ -166,29 +169,32 @@ public class BuildingLawExecutionService {
     private void buildingConditionComparator(BuildingLawFields blf, Building building, List<FloorResults> floorResultsList) {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
+//        FOR A SINGLE(THE) BLF, IF ALL MATCH THEN LABEL ALL FLOORS TRUE
         boolean isTrue = true;
-        isTrue &= compareField(blf, building, Building::getGFA, blf.GFA);
-        isTrue &= compareField(blf, building, Building::getDateofApproval, blf.dateofApproval);
-        isTrue &= compareField(blf, building, Building::getBuildingHumanCapacity, blf.buildingHumanCapacity);
-        isTrue &= compareField(blf, building, Building::getLength, blf.length);
-        isTrue &= compareField(blf, building, Building::getTotalFloors, blf.totalFloors);
-        isTrue &= compareField(blf, building, Building::getUndergroundFloors, blf.undergroundFloors);
-        isTrue &= compareField(blf, building, Building::getOvergroundFloors, blf.overgroundFloors);
+        isTrue &= compareField(blf, building, Building::getGFA, blf.GFA, "GFA");
+        isTrue &= compareField(blf, building, Building::getDateofApproval, blf.dateofApproval, "dateofApproval");
+        isTrue &= compareField(blf, building, Building::getBuildingHumanCapacity, blf.buildingHumanCapacity, "buildingHumanCapacity");
+        isTrue &= compareField(blf, building, Building::getLength, blf.length, "length");
+        isTrue &= compareField(blf, building, Building::getTotalFloors, blf.totalFloors, "totalFloors");
+        isTrue &= compareField(blf, building, Building::getUndergroundFloors, blf.undergroundFloors, "undergroundFloors");
+        isTrue &= compareField(blf, building, Building::getOvergroundFloors, blf.overgroundFloors, "overgroundFloors");
 
+        log.info("BLF PASSING ?= {} ", isTrue);
         if (isTrue) {
             floorResultListMajorCodeMapper(floorResultsList, target);
         }
     }
 
     private <T extends Comparable<T>> boolean compareField(BuildingLawFields blf, Building building,
-                                                           Function<Building, T> buildingFieldExtractor, T fieldValue) {
-        if (isActivated(fieldValue)) {
-            T fieldName = buildingFieldExtractor.apply(building);
+                                                           Function<Building, T> buildingFieldExtractor, T value ,String fieldName) {
+
+        log.info("blf fieldName : {} , corresponding value  : {}", fieldName , value);
+        if (isActivated(value)) {
             Conditions condition = blf.conditionsList.stream()
                     .filter(c -> c.getFieldName().equals(fieldName))
                     .findFirst()
                     .orElseThrow();
-            return conditionParser(condition.getOperator(), fieldValue, buildingFieldExtractor.apply(building));
+            return conditionParser(condition.getOperator(), value, buildingFieldExtractor.apply(building));
         }
         return true;
     }
