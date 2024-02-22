@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:inline="javascript">
+        /* Function to toggle the dropdown */
+        function toggleDropdown(button) {
+            let options = button.nextElementSibling;
+            options.style.display = (options.style.display === 'block') ? 'none' : 'block';
+        }
+
+        /* Function to select an option */
+        function selectOption(option) {
+            let selectedText = option.innerText;
+            let selectedValue = option.getAttribute('data-value');
+
+            document.getElementById('selected-classification').innerText = selectedText;
+            document.getElementById('classification').value = parseInt(selectedValue);
+
+
+            // Reset the selected specification when the classification changes
+            resetSelectedSpecification();
+
+            // Call the function to populate the specification dropdown
+            populateSpecificationDropdown(selectedValue);
+
+            // Close the dropdown after selection
+            option.parentElement.style.display = 'none';
+
+            //call in the length input div check
+            showLengthInput()
+        }
+
+        function populateSpecificationDropdown(classificationValue) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', '/main/manualInput/getSpecificationOptions?classificationValue=' + classificationValue, true);
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    let specificationOptions = JSON.parse(xhr.responseText);
+                    updateSpecificationDropdown(specificationOptions);
+                } else {
+                    console.error('Error fetching specification options');
+                    // Handle error gracefully, e.g., display a message to the user
+                }
+            };
+
+            xhr.send();
+        }
+
+
+        function updateSpecificationDropdown(options) {
+            let specificationDropdown = document.getElementById('specification-options');
+            specificationDropdown.innerHTML = '';
+
+            options.forEach(function (spec) {
+                let li = document.createElement('li');
+                li.setAttribute('data-value', spec.number);
+                li.innerText = spec.name.replaceAll('_', ' ');
+                li.onclick = function () {
+                    selectSpecificationOption(this);
+                };
+
+                specificationDropdown.appendChild(li);
+            });
+        }
+
+        function selectSpecificationOption(option) {
+            let selectedText = option.innerText;
+            let selectedValue = option.getAttribute('data-value');
+
+            document.getElementById('selected-specification').innerText = selectedText;
+            document.getElementById('specification').value = parseInt(selectedValue);
+
+            // Close the specification dropdown after selection
+            option.parentElement.style.display = 'none';
+
+            // call in the show length input div check
+            showLengthInput()
+        }
+        
+        function resetSelectedSpecification() {
+            // Reset the selected specification to blank
+            document.getElementById('selected-specification').innerText = '';
+            document.getElementById('specification').value = '';
+        }
+
+        function showLengthInput() {
+            console.log("showlengthInputFired")
+            let classificationValue = parseInt(document.getElementById('classification').value)
+            let specificationValue = parseInt(document.getElementById('specification').value)
+            let lengthInput = document.getElementById('lengthInputdiv');
+
+            console.log('Classification Value:', classificationValue);
+            console.log('Specification Value:', specificationValue);
+
+            if (classificationValue === 28 || (classificationValue === 27 && specificationValue === 2)) {
+                lengthInput.style.display = 'block';
+            } else {
+                lengthInput.style.display = 'none';
+            }
+        }
+
+
+        function simpleValidateForm() {
+            // Get values of the fields
+            let undergroundFloors = document.getElementById("undergroundFloors").value;
+            let overgroundFloors = document.getElementById("overgroundFloors").value;
+            let totalFloors = document.getElementById("floor").value
+            // let requestType = document.getElementById("requestType").value;
+
+            if(Number.parseInt(undergroundFloors) + Number.parseInt(overgroundFloors) !== Number.parseInt(totalFloors)) {
+                alert("지상층수와 지하층수 합이 총 층수와 같아야 합니다")
+                return false
+            }
+
+            // If all fields are non-empty, allow form submission
+            return true;
+        }
+
+    </script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/inputform.css}" />
+    <title>Input Form</title>
+</head>
+<body>
+
+<form th:action="@{/main/manualInput/submitBuilding}" th:object="${input}" method="post" onsubmit="return simpleValidateForm()">
+
+    <label for="detailAdr">주소:</label>
+    <input type="text" id="detailAdr" th:field="*{juso.detailAdr}" />
+
+    <label for="extraAdr">세부주소:</label>
+    <input type="text" id="extraAdr" th:field="*{juso.extraAdr}" />
+
+    <label for="ji">지번주소(지):</label>
+    <input type="text" id="ji" th:field="*{juso.ji}" />
+
+    <label for="doro">지번주소(번):</label>
+    <input type="text" id="doro" th:field="*{juso.bun}" />
+    
+    <label for="gfa">연면적 (m^2):</label>
+    <input type="number" id="gfa" th:field="*{GFA}" />
+
+    <label for="floor">층수:</label>
+    <input type="number" id="floor" th:field="*{floor}" />
+    
+    <label for="undergroundFloors">지하층수:</label>
+    <input type="number" id="undergroundFloors" th:field="*{undergroundFloors}" />
+
+    <label for="overgroundFloors">지상층수:</label>
+    <input type="number" id="overgroundFloors" th:field="*{overgroundFloors}" />
+
+    <div class="select-container" th:classappend="${#fields.hasErrors('classification')} ? 'error' : ''">
+        <label for="classification">용도:</label>
+        <div class="select-button" onclick="toggleDropdown(this)">
+            <span th:text="${#fields.hasErrors('classification')} ? '*' : ''"></span>
+            <span id="selected-classification"></span>
+            <span>&#9662;</span>
+        </div>
+        <ul id="classification-options" class="select-options">
+            <li th:each="classification : ${ClassificationConfig.classifications}"
+                th:attr="data-value=${classification.number}"
+                th:text="${#strings.replace(classification.name, '_', ' ')}"
+                onclick="selectOption(this)">
+            </li>
+        </ul>
+
+        <!--        ajax call      -->
+        <input type="hidden" id="classification" name="classification" th:field="*{classification}" />
+
+    </div>
+
+
+
+    <!-- Specification Dropdown -->
+    <div class="select-container" th:classappend="${#fields.hasErrors('specification')} ? 'error' : ''">
+        <label for="specification">세부용도:</label>
+        <div class="select-button" onclick="toggleDropdown(this)">
+            <span th:text="${#fields.hasErrors('specification')} ? '*' : ''"></span>
+            <span id="selected-specification"></span>
+            <span>&#9662;</span>
+        </div>
+        <ul id="specification-options" class="select-options">
+            <!-- Options will be dynamically populated using JavaScript -->
+        </ul>
+        <input type="hidden" id="specification" name="specification" th:field="*{specification}" />
+    </div>
+
+    <div id = "lengthInputdiv" style="display: none">
+        <label for="lengthInput">지하구/터널 길이:(m)</label>
+        <input type="number" id="lengthInput"  th:value="*{length}"/>
+    </div>
+
+    <label for="dateOfConstruction">시공연월일:</label>
+    <input type="date" id="dateOfConstruction" th:field="*{dateOfApproval}" />
+
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

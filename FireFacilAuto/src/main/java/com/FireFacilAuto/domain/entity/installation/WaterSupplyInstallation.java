@@ -1,6 +1,10 @@
 package com.FireFacilAuto.domain.entity.installation;
 
+import com.FireFacilAuto.domain.entity.building.Floor;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,6 +12,11 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class WaterSupplyInstallation extends BaseInstallation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long UUID;
+
     public Boolean extinguisherWaterSupplyInstallation;
 
     public void setBooleanValue(int number) {

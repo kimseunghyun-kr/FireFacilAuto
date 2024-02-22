@@ -1,0 +1,85 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 20px;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Style the dropdown container */
+.select-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Style the dropdown button */
+.select-button {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+/* Style the dropdown options */
+.select-options {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    min-width: 150px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1;
+    list-style: none
+}
+
+/* Style the dropdown options when hovered */
+.select-options li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Show the options when the button is clicked */
+.select-container.open .select-options {
+    display: block;
+}

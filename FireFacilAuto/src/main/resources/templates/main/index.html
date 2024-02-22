@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" th:href="@{mainpage.css}">
+</head>
+<body>
+<h1>Navigate with buttons</h1>
+<ul>
+    <li>
+        <a th:href="@{/admin/main}" class="btn btn-primary">Admin Main</a>
+    </li>
+    <li>
+        <a th:href="@{/main/addressForm/input}" class="btn btn-secondary">Address Form</a>
+    </li>
+    <li>
+        <a th:href="@{/main/manualInput/input}" class="btn btn-success">Manual Input</a>
+    </li>
+</ul>
+</body>
+</html>

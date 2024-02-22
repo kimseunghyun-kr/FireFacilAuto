@@ -1,6 +1,9 @@
 package com.FireFacilAuto.domain.entity.installation;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,6 +11,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class EscapeRescueInstallation extends BaseInstallation{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long UUID;
+
     public Boolean escapeApparatus;
     public Boolean rescueApparatus;
     public Boolean escapeGuidanceLightingApparatus;

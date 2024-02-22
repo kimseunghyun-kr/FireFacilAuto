@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
+<head>
+    <!-- Add your head content here -->
+    <!-- Include jQuery from a CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            // Show the default form on page load
+            showDefaultForm();
+        });
+
+        function showDefaultForm() {
+            // Use AJAX to load the default form content
+            let doc = document.getElementById("floorSelectionForm")
+            doc.style.display='block'
+        }
+
+
+        function handleFloorSelection() {
+            let doc = document.getElementById("floorSelectionForm")
+            doc.style.display='none'
+
+            let selectedFloors = getSelectedFloors();
+
+            if (selectedFloors.length === 1) {
+                // Load the content for a single selected floor
+                loadSingleFloorContent(selectedFloors[0]);
+            } else if (selectedFloors.length > 1) {
+                // Use AJAX to send selected floors to the server for multiple selections
+                $.ajax({
+                    type: "POST",
+                    url: "main/manualInput/processSelectedFloors",
+                    data: { selectedFloors: selectedFloors.join(",") },
+                    success: function (data) {
+                        // Update the content dynamically without reloading the entire page
+                        $("#selectedFloors").html(data);
+                        let doc = document.getElementById("selectedFloors")
+                        doc.style.display='block'
+                    },
+                    error: function (error) {
+                        console.error("Error:", error);
+                        let doc = document.getElementById("floorSelectionForm")
+                        doc.style.display='block'
+                    }
+                });
+            }
+        }
+
+        function getSelectedFloors() {
+            let selectedFloors = [];
+            let checkboxes = document.getElementsByName("selectedFloors");
+
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selectedFloors.push(checkboxes[i].value);
+                }
+            }
+
+            return selectedFloors;
+        }
+
+        function loadSingleFloorContent(selectedFloor) {
+            // Use AJAX to load content for a single selected floor
+            $.ajax({
+                type: "GET",
+                url: "main/manualInput/loadSingleFloorContent",
+                data: { selectedFloor: selectedFloor },
+                success: function (data) {
+                    // Update the content dynamically without reloading the entire page
+                    $("#selectedFloors").html(data);
+                    let doc = document.getElementById("selectedFloors")
+                    doc.style.display='block'
+
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    let doc = document.getElementById("floorSelectionForm")
+                    doc.style.display='block'
+                }
+            });
+        }
+
+    </script>
+    <title>floor manual input form</title>
+</head>
+
+<body>
+
+<!-- Left Sidebar with Floors Selection -->
+<div>
+    <h2>Floors Selection</h2>
+    <form id="floorSelectionForm" th:action="@{main/manualInput/processSelectedFloors}" method="post" th:object="${floorTargets}">
+        <ul th:each="floorDTO, iterStat : *{listWrapper}">
+            <li>
+                <label th:for="${'floorCheckbox' + iterStat.index}" th:text="'Floor ' + (${floorDTO.isUnderground} ? 'B' : '') + ${floorDTO.floorNo}"> </label>
+                <input type="checkbox" th:id="${'floorCheckbox' + iterStat.index}" name="selectedFloors" th:value="${floorDTO.floorNo}" />
+
+            </li>
+        </ul>
+        <button type="button" onclick="handleFloorSelection()">Handle Floor Selection</button>
+    </form>
+</div>
+
+<!-- Main Form for Floor Input -->
+<div>
+    <h2>Floor Input Form</h2>
+    <form class="floorInputForm" th:action="@{main/manualInput/submitFloors}" th:object="${floorTargets}" method="post">
+        <!-- Add hidden fields for building classification and specification -->
+
+        <div th:each="floorDTO, iterStat : *{listWrapper}">
+            <div th:id="${'floorSection' + iterStat.index}">
+                <h3 th:text="'Floor ' + (${floorDTO.isUnderground} ? 'B' : '') + ${floorDTO.floorNo}"></h3>
+                <!-- Add other input fields based on your requirements -->
+                <label th:for="*{listWrapper[__${iterStat.index}__].floorClassification}">Floor Classification:</label>
+                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorClassification}" />
+
+
+                <label th:for="*{listWrapper[__${iterStat.index}__].floorSpecification}">Floor Specification:</label>
+                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorSpecification}" />
+            </div>
+        </div>
+
+        <button type="submit">Save Floor Details</button>
+    </form>
+    <!-- Add a button to revert back to the default form in the multi-select form -->
+    <button type="button" onclick="showDefaultForm()">Revert to Default Form</button>
+
+    <button type="button" onclick="replicateMultiSelectValues()">Replicate Changes to All Selected Floors</button>
+</div>
+
+<!-- Content when selected -->
+<div id="selectedFloors" th:style="'display:none'"  th:fragment="singleFloorContent">
+    <!-- Load content for a single selected floor here -->
+    <h3 th:text="'Floor ' + ${selectedFloor}"></h3>
+    <!-- Add other content for a single selected floor -->
+</div>
+
+</body>
+</html>

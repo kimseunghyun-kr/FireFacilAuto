@@ -1,15 +1,12 @@
 package com.FireFacilAuto.domain.entity.installation;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.FireFacilAuto.domain.entity.building.Floor;
+import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity
+
 @Data
+@MappedSuperclass
 public class BaseInstallation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long UUID;
+
 }

@@ -1,13 +1,20 @@
 package com.FireFacilAuto.domain.entity.installation;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = false)
 public class AlarmDeviceInstallation extends BaseInstallation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long UUID;
 
     public Boolean AutoFireDectionApparatus;
     public Boolean EmergencyAlarmApparatus;

@@ -1,6 +1,7 @@
 package com.FireFacilAuto.domain.entity.building;
 
 import com.FireFacilAuto.domain.entity.installation.*;
+import com.FireFacilAuto.domain.entity.results.FloorResults;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -29,21 +30,6 @@ public class Floor {
     public Integer floorMaterial; //층 재료
 
 //    아직 미포함인 정보
-
     public Boolean floorWindowAvailability; //무창층
 
-    @OneToOne
-    public AlarmDeviceInstallation alarmDeviceInstallation;
-
-    @OneToOne
-    public EscapeRescueInstallation escapeRescueInstallation;
-
-    @OneToOne
-    public ExtinguisherInstallation extinguisherInstallation;
-
-    @OneToOne
-    public WaterSupplyInstallation waterSupplyInstallation;
-
-    @OneToOne
-    public FireServiceSupportDeviceInstallation fireServiceSupportInstallation;
 }

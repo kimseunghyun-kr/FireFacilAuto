@@ -7,6 +7,10 @@ import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.installation.EscapeRescueInstallation;
+import com.FireFacilAuto.domain.entity.installation.ExtinguisherInstallation;
+import com.FireFacilAuto.domain.entity.installation.FireServiceSupportDeviceInstallation;
+import com.FireFacilAuto.domain.entity.installation.WaterSupplyInstallation;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
@@ -131,6 +135,7 @@ public class BuildingLawExecutionService {
         floorResultsList.removeIf(survivingResults -> survivingResults.getFloor().getFloorWindowAvailability() != flf.getFloorWindowAvailability());
 
         floorResultListMajorCodeMapper(floorResultsList, target);
+
 //             Integer floorNo; //충수
 //             Boolean isUnderGround; //지하여부
 //             Integer floorClassification; //층 주용도
@@ -185,10 +190,12 @@ public class BuildingLawExecutionService {
         }
     }
 
+
     private <T extends Comparable<T>> boolean compareField(BuildingLawFields blf, Building building,
                                                            Function<Building, T> buildingFieldExtractor, T value ,String fieldName) {
 
         log.info("blf fieldName : {} , corresponding value  : {}", fieldName , value);
+        log.info("building value : {}", buildingFieldExtractor.apply(building));
         if (isActivated(value)) {
             Conditions condition = blf.conditionsList.stream()
                     .filter(c -> c.getFieldName().equals(fieldName))
@@ -243,14 +250,8 @@ public class BuildingLawExecutionService {
 
             //TODO -> allocate number for classification based on code
             //Classification, specififation;
-            floor.setFloorClassification(classificationCodeMapper(floorResponseItem, titleResponseItem));
-            floor.setFloorSpecification(specificationCodeMapper(floorResponseItem, titleResponseItem));
 
-            floor.setFloorMaterial(Integer.valueOf(floorResponseItem.getStrctCd()));
-            floor.setIsUnderGround(floorGbCdMapper(floorResponseItem.getFlrGbCd()));
-            floor.setFloorArea(Double.valueOf(floorResponseItem.getArea()));
-            floor.setFloorNo(Integer.valueOf(floorResponseItem.getFlrNo()));
-
+            floorInitializr(titleResponseItem,null, floorResponseItem, floor);
             return floor;
         }).toList();
     }
@@ -295,15 +296,23 @@ public class BuildingLawExecutionService {
 
         Floor floor = new Floor();
         //Todo ;
-        floor.setFloorClassification(classificationCodeMapper(floorResponseItem, titleResponseItem));
-        floor.setFloorSpecification(specificationCodeMapper(floorResponseItem, titleResponseItem));
-
-        floor.setFloorMaterial(Integer.valueOf(floorResponseItem.getStrctCd()));
-        floor.setIsUnderGround(floorGbCdMapper(exposInfoResponseItem.getFlrGbCd()));
-        floor.setFloorArea(Double.valueOf(floorResponseItem.getArea()));
-        floor.setFloorNo(Integer.valueOf(exposInfoResponseItem.getFlrNo()));
+        floorInitializr(titleResponseItem, exposInfoResponseItem, floorResponseItem, floor);
 
         building.setCompositeFloors(List.of(floor));
         return executeLaw(building);
+    }
+
+    private void floorInitializr(TitleResponseItem titleResponseItem, ExposedInfoResponseItem exposInfoResponseItem, FloorResponseItem floorResponseItem, Floor floor) {
+        floor.setFloorClassification(classificationCodeMapper(floorResponseItem, titleResponseItem));
+        floor.setFloorSpecification(specificationCodeMapper(floorResponseItem, titleResponseItem));
+        floor.setFloorMaterial(Integer.valueOf(floorResponseItem.getStrctCd()));
+        floor.setFloorArea(Double.valueOf(floorResponseItem.getArea()));
+        if(exposInfoResponseItem != null) {
+            floor.setIsUnderGround(floorGbCdMapper(exposInfoResponseItem.getFlrGbCd()));
+            floor.setFloorNo(Integer.valueOf(exposInfoResponseItem.getFlrNo()));
+        } else {
+            floor.setIsUnderGround(floorGbCdMapper(floorResponseItem.getFlrGbCd()));
+            floor.setFloorNo(Integer.valueOf(floorResponseItem.getFlrNo()));
+        }
     }
 }

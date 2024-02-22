@@ -37,7 +37,7 @@ public class ConditionalComparator {
     }
 
     public static <T extends Comparable<T>> boolean conditionParser(ComparisonOperator operator, T fieldValue, T appliedValue) {
-        return evaluate(fieldValue, operator.sqlText(), appliedValue) && isActivated(fieldValue);
+        return evaluate(appliedValue, operator.sqlText(), fieldValue) && isActivated(fieldValue);
     }
 
     public static <T> boolean isActivated(T value) {
