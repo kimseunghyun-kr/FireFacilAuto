@@ -1,21 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="kr">
 <head>
+    <link rel="stylesheet" type="text/css" th:href="@{/floorInputForm.css}">
     <!-- Add your head content here -->
     <!-- Include jQuery from a CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script defer src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <script>
+    <script defer>
 
-        $(document).ready(function () {
-            // Show the default form on page load
-            showDefaultForm();
-        });
-
+    let selectedFloors = []
         function showDefaultForm() {
-            // Use AJAX to load the default form content
-            let doc = document.getElementById("floorSelectionForm")
-            doc.style.display='block'
+            window.location.reload();
+        }
+
+
+        function displayReplicationForm() {
+            document.getElementById("selectedFloors").style.display='none';
+            document.getElementById("replicationForm").style.display='block';
+        }
+
+        function replicationSubmission() {
+
+            // Get form data
+            let floorClassification = document.getElementById("floorClassification").value;
+            let floorSpecification = document.getElementById("floorSpecification").value;
+            let floorArea = document.getElementById("floorArea").value;
+            let floorMaterial = document.getElementById("floorMaterial").value;
+            let floorWindowAvailability = document.getElementById("floorWindowAvailability").checked;
+
+            // Create data object
+            let data = {
+                selectedFloors: selectedFloors,
+                floorForm: {
+                    floorClassification: floorClassification,
+                    floorSpecification: floorSpecification,
+                    floorArea: floorArea,
+                    floorMaterial: floorMaterial,
+                    floorWindowAvailability: floorWindowAvailability
+                }
+            };
+
+
+            $.ajax({
+                type: "POST",
+                url: "/main/manualInput/replicateFloorFields",
+                contentType: "application/json", // Explicitly set content type
+                data: JSON.stringify(data),
+                success: function () {
+                    selectedFloors = []
+                    showDefaultForm();
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                }
+            });
         }
 
 
@@ -23,7 +61,7 @@
             let doc = document.getElementById("floorSelectionForm")
             doc.style.display='none'
 
-            let selectedFloors = getSelectedFloors();
+            selectedFloors = getSelectedFloors();
 
             if (selectedFloors.length === 1) {
                 // Load the content for a single selected floor
@@ -31,31 +69,43 @@
             } else if (selectedFloors.length > 1) {
                 // Use AJAX to send selected floors to the server for multiple selections
                 $.ajax({
-                    type: "POST",
-                    url: "main/manualInput/processSelectedFloors",
+                    type: "GET",
+                    url: "/main/manualInput/getSelectedFloors",
                     data: { selectedFloors: selectedFloors.join(",") },
                     success: function (data) {
                         // Update the content dynamically without reloading the entire page
-                        $("#selectedFloors").html(data);
-                        let doc = document.getElementById("selectedFloors")
-                        doc.style.display='block'
+                        let floorHtml = data.map(floor => `<div>
+                                                <p>Floor No: ${floor.floorNo}</p>
+                                                <p>Is Underground: ${floor.isUnderground}</p>
+                                                <p>Floor Classification: ${floor.floorClassification}</p>
+                                                <p>Floor Specification: ${floor.floorSpecification}</p>
+                                                <p>Floor Area: ${floor.floorArea}</p>
+                                                <p>Floor Material: ${floor.floorMaterial}</p>
+                                                <p>Floor window Availability: ${floor.floorWindowAvailability}</p>
+                                                <!-- Add more properties as needed -->
+                                                </div>
+                                                `).join('');
+                        $("#selectedFloors").prepend(floorHtml);
+                        let doc1 = document.getElementById("floorInputForm")
+                        doc1.style.display='none'
+                        let doc2 = document.getElementById("selectedFloors")
+                        doc2.style.display='block'
                     },
                     error: function (error) {
                         console.error("Error:", error);
-                        let doc = document.getElementById("floorSelectionForm")
-                        doc.style.display='block'
                     }
                 });
             }
         }
 
         function getSelectedFloors() {
-            let selectedFloors = [];
+            selectedFloors = [];
             let checkboxes = document.getElementsByName("selectedFloors");
 
             for (let i = 0; i < checkboxes.length; i++) {
                 if (checkboxes[i].checked) {
-                    selectedFloors.push(checkboxes[i].value);
+                    console.log(checkboxes[i].getAttribute("idx"))
+                    selectedFloors.push(checkboxes[i].getAttribute("idx"));
                 }
             }
 
@@ -66,19 +116,29 @@
             // Use AJAX to load content for a single selected floor
             $.ajax({
                 type: "GET",
-                url: "main/manualInput/loadSingleFloorContent",
+                url: "/main/manualInput/loadSingleFloorContent",
                 data: { selectedFloor: selectedFloor },
                 success: function (data) {
+                    let floorHtml = `  <div class="input-group">
+                                                <p>Floor No: ${data.floorNo}</p>
+                                                <p>Is Underground: ${data.isUnderground}</p>
+                                                <p>Floor Classification: ${data.floorClassification}</p>
+                                                <p>Floor Specification: ${data.floorSpecification}</p>
+                                                <p>Floor Area: ${data.floorArea}</p>
+                                                <p>Floor Material: ${data.floorMaterial}</p>
+                                                <p>Floor window Availability: ${data.floorWindowAvailability}</p>
+                                                <!-- Add more properties as needed -->
+                                                </div>
+                                                `;
                     // Update the content dynamically without reloading the entire page
-                    $("#selectedFloors").html(data);
-                    let doc = document.getElementById("selectedFloors")
-                    doc.style.display='block'
-
+                    $("#selectedFloors").prepend(floorHtml);
+                    let doc1 = document.getElementById("floorInputForm")
+                    doc1.style.display='none'
+                    let doc2 = document.getElementById("selectedFloors")
+                    doc2.style.display='block'
                 },
                 error: function (error) {
                     console.error("Error:", error);
-                    let doc = document.getElementById("floorSelectionForm")
-                    doc.style.display='block'
                 }
             });
         }
@@ -96,7 +156,7 @@
         <ul th:each="floorDTO, iterStat : *{listWrapper}">
             <li>
                 <label th:for="${'floorCheckbox' + iterStat.index}" th:text="'Floor ' + (${floorDTO.isUnderground} ? 'B' : '') + ${floorDTO.floorNo}"> </label>
-                <input type="checkbox" th:id="${'floorCheckbox' + iterStat.index}" name="selectedFloors" th:value="${floorDTO.floorNo}" />
+                <input type="checkbox" th:id="${'floorCheckbox' + iterStat.index}" name="selectedFloors" th:value="${floorDTO.floorNo}" th:idx="${iterStat.index}"/>
 
             </li>
         </ul>
@@ -107,7 +167,7 @@
 <!-- Main Form for Floor Input -->
 <div>
     <h2>Floor Input Form</h2>
-    <form class="floorInputForm" th:action="@{main/manualInput/submitFloors}" th:object="${floorTargets}" method="post">
+    <form id="floorInputForm" th:action="@{/main/manualInput/submitFloors}" th:object="${floorTargets}" method="post">
         <!-- Add hidden fields for building classification and specification -->
 
         <div th:each="floorDTO, iterStat : *{listWrapper}">
@@ -117,25 +177,57 @@
                 <label th:for="*{listWrapper[__${iterStat.index}__].floorClassification}">Floor Classification:</label>
                 <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorClassification}" />
 
-
                 <label th:for="*{listWrapper[__${iterStat.index}__].floorSpecification}">Floor Specification:</label>
                 <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorSpecification}" />
+
+                <label th:for="*{listWrapper[__${iterStat.index}__].floorArea}">Floor area:</label>
+                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorArea}" />
+
+                <label th:for="*{listWrapper[__${iterStat.index}__].floorMaterial}">Floor material:</label>
+                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorMaterial}" />
+
+                <label th:for="*{listWrapper[__${iterStat.index}__].floorWindowAvailability}">Floor window availability:</label>
+                <input type="checkbox" th:field="*{listWrapper[__${iterStat.index}__].floorWindowAvailability}" />
+
             </div>
         </div>
 
-        <button type="submit">Save Floor Details</button>
+        <button type="submit">전체저장 후 이동</button>
     </form>
-    <!-- Add a button to revert back to the default form in the multi-select form -->
-    <button type="button" onclick="showDefaultForm()">Revert to Default Form</button>
-
-    <button type="button" onclick="replicateMultiSelectValues()">Replicate Changes to All Selected Floors</button>
 </div>
 
 <!-- Content when selected -->
 <div id="selectedFloors" th:style="'display:none'"  th:fragment="singleFloorContent">
+
+    <!-- Add a button to revert back to the default form in the multi-select form -->
+    <button type="button" onclick="showDefaultForm()">Revert to Default Form</button>
+    <button type="button" onclick="displayReplicationForm()">Replicate Changes to All Selected Floors</button>
+</div>
+
+<div id="replicationForm" th:style="'display:none'"  th:fragment="singleFloorContent">
     <!-- Load content for a single selected floor here -->
-    <h3 th:text="'Floor ' + ${selectedFloor}"></h3>
-    <!-- Add other content for a single selected floor -->
+    <h3 th:text="'다중변환'"></h3>
+    <form class="replicationForm" method="post" onsubmit="replicationSubmission()">
+
+        <label for="floorClassification"> floor classification </label>
+        <input id="floorClassification" name="floorClassification" type="number">
+
+        <label for="floorSpecification"> floor Specification </label>
+        <input id="floorSpecification" name="floorSpecification" type="number">
+
+        <label for="floorArea">floor Area </label>
+        <input id="floorArea" name="floorArea" type="number">
+
+        <label for="floorMaterial"> floor Material </label>
+        <input id="floorMaterial" name="floorMaterial" type="number">
+
+        <label for="floorWindowAvailability"> floor window availability </label>
+        <input id="floorWindowAvailability" name="floorWindowAvailability" type="checkbox">
+
+        <button type="button" onclick="showDefaultForm()">Revert to Default Form</button>
+        <button type="button" onclick="replicationSubmission()">Replicate Changes to All Selected Floors</button>
+    </form>
+
 </div>
 
 </body>

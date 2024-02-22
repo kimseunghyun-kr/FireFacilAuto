@@ -2,5 +2,7 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$/FireFacilAuto" libraries="{jquery-3.6.4}" />
+    <file url="file://$PROJECT_DIR$/FireFacilAuto/src/main" libraries="{jquery-3.6.4}" />
+    <file url="file://$PROJECT_DIR$/FireFacilAuto/src/test" libraries="{jquery-3.6.4}" />
   </component>
 </project>
