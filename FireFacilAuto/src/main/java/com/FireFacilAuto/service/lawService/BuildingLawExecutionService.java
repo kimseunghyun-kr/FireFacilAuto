@@ -40,13 +40,11 @@ public class BuildingLawExecutionService {
         }
 
         log.info("initializing result sheets");
-        ResultSheet resultSheet = new ResultSheet();
-        resultSheet.setBuilding(building);
-        List<FloorResults> floorResultsList = building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
+        ResultSheet resultSheet = resultSheetInitializr(building);
 
+        List<FloorResults> floorResultsList = floorResultSheetBuilder(building);
         log.info("executing building laws");
         buildingLawExecute(building, floorResultsList);
-
 
         Set<Pair> floorResultStore = new HashSet<>();
         List<FloorLawFields> candidateFloorLaw = new LinkedList<>();
@@ -56,12 +54,25 @@ public class BuildingLawExecutionService {
         floorLawCandidacyResolver(floorResultsList, floorResultStore, candidateFloorLaw);
 
         log.info("applying floor laws");
-        candidateFloorLaw.forEach(flf -> floorConditionComparator(flf, new LinkedList<>(floorResultsList), building));
+        floorLawExecute(building, floorResultsList, candidateFloorLaw);
 
         resultSheet.setFloorResultsList(floorResultsList);
 
         return resultSheet;
+    }
 
+    private void floorLawExecute(Building building, List<FloorResults> floorResultsList, List<FloorLawFields> candidateFloorLaw) {
+        candidateFloorLaw.forEach(flf -> floorConditionComparator(flf, new LinkedList<>(floorResultsList), building));
+    }
+
+    private List<FloorResults> floorResultSheetBuilder(Building building) {
+        return building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
+    }
+
+    private ResultSheet resultSheetInitializr(Building building) {
+        ResultSheet resultSheet = new ResultSheet();
+        resultSheet.setBuilding(building);
+        return resultSheet;
     }
 
     private void floorLawCandidacyResolver(List<FloorResults> floorResultsList, Set<Pair> floorResultStore, List<FloorLawFields> candidateFloorLaw) {
@@ -81,8 +92,8 @@ public class BuildingLawExecutionService {
 
         log.info("applying candidate laws onto building");
 //        FOR ALL CANDIDATE BLFS APPLY EACH BLF ONTO BUILDING.
+//        FloorResultList modified based on the building parameters
         candidateBuildingLaw.forEach(blf -> buildingConditionComparator(blf, building, floorResultsList));
-//        floorResultList modified based on the building parameters
 
         log.info("building laws applied");
     }
@@ -102,7 +113,7 @@ public class BuildingLawExecutionService {
                 if ((flf.isUnderGround && building.undergroundFloors < flf.floorNo) || (!flf.isUnderGround && building.overgroundFloors < flf.floorNo)) {
                     return;
                 }
-                floorResultsList.removeIf(survivingResults -> !conditionParser(conditional.getOperator(), survivingResults.getFloor().floorNo, flf.floorNo));
+                floorResultsList.removeIf(survivingResults -> !conditionParser(conditional.getOperator(), flf.floorNo, survivingResults.getFloor().floorNo));
             }
 
         }
@@ -113,9 +124,9 @@ public class BuildingLawExecutionService {
 //      Surviving inputs are all satisfyign the conditonal requirement of floorNo
 //      floorAreaSum
         if (isActivated(flf.floorAreaSum)) {
-            Conditions conditional = getCondition(conditions, "floorArea");
+            Conditions conditional = getCondition(conditions, "floorAreaSum");
             double floorAreaSum = calculateFloorAreaSum(floorResultsList, flf);
-            if (!conditionParser(conditional.getOperator(), floorAreaSum, flf.floorAreaSum)) {
+            if (!conditionParser(conditional.getOperator(), flf.floorAreaSum, floorAreaSum)) {
                 floorResultsList.clear();
             }
         }
@@ -125,8 +136,8 @@ public class BuildingLawExecutionService {
 //      Surviving inputs are all satisfying the conditonal requirement of floorNo
 //      floorAreaThreshold
         if (isActivated(flf.floorAreaThreshold)) {
-            Conditions conditional = getCondition(conditions, "floorThreshold");
-            floorResultsList.removeIf(survivingResults -> !conditionParser(conditional.getOperator(), survivingResults.getFloor().getFloorArea(), flf.floorAreaThreshold));
+            Conditions conditional = getCondition(conditions, "floorAreaThreshold");
+            floorResultsList.removeIf(survivingResults -> !conditionParser(conditional.getOperator(), flf.floorAreaThreshold, survivingResults.getFloor().getFloorArea()));
         }
         if (floorResultsList.isEmpty()) {
             return;
@@ -143,7 +154,9 @@ public class BuildingLawExecutionService {
 
 //        surviving inputs have floor materials as designated by flf
 //        floorWindowAvailability
-        floorResultsList.removeIf(survivingResults -> survivingResults.getFloor().getFloorWindowAvailability() != flf.getFloorWindowAvailability());
+        if(isActivated(flf.floorWindowAvailability)) {
+            floorResultsList.removeIf(survivingResults -> survivingResults.getFloor().getFloorWindowAvailability() != flf.getFloorWindowAvailability());
+        }
 
         floorResultListMajorCodeMapper(floorResultsList, target);
 
@@ -173,13 +186,7 @@ public class BuildingLawExecutionService {
     private void floorResultListMajorCodeMapper(List<FloorResults> floorResultsList, Integer[] target) {
         log.info("class : {}, spec : {}", target[0], target[1]);
         for (FloorResults survivingResults : floorResultsList) {
-            switch (target[0]) {
-                case 1 -> survivingResults.getExtinguisherInstallation().setBooleanValue(target[1]);
-                case 2 -> survivingResults.getAlarmDeviceInstallation().setBooleanValues(target[1]);
-                case 3 -> survivingResults.getFireServiceSupportDeviceInstallation().setBooleanValue(target[1]);
-                case 4 -> survivingResults.getWaterSupplyInstallation().setBooleanValue(target[1]);
-                case 5 -> survivingResults.getEscapeRescueInstallation().setBooleanValue(target[1]);
-            }
+            survivingResults.numericSetter(target[0], target[1]);
         }
     }
     private void buildingConditionComparator(BuildingLawFields blf, Building building, List<FloorResults> floorResultsList) {

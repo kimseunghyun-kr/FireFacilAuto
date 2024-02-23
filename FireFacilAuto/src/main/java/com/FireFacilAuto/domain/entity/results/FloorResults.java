@@ -15,22 +15,22 @@ public class FloorResults {
     private Long id;
 
     @OneToOne
-    Floor floor;
+    private Floor floor;
 
     @OneToOne
-    ExtinguisherInstallation extinguisherInstallation;
+    private ExtinguisherInstallation extinguisherInstallation;
 
     @OneToOne
-    AlarmDeviceInstallation alarmDeviceInstallation;
+    private AlarmDeviceInstallation alarmDeviceInstallation;
 
     @OneToOne
-    EscapeRescueInstallation escapeRescueInstallation;
+    private EscapeRescueInstallation escapeRescueInstallation;
 
     @OneToOne
-    FireServiceSupportDeviceInstallation fireServiceSupportDeviceInstallation;
+    private FireServiceSupportDeviceInstallation fireServiceSupportDeviceInstallation;
 
     @OneToOne
-    WaterSupplyInstallation waterSupplyInstallation;
+    private WaterSupplyInstallation waterSupplyInstallation;
 
     public static FloorResults floorFactory(Floor floor) {
         FloorResults floorResults = new FloorResults();
@@ -43,6 +43,16 @@ public class FloorResults {
         floorResults.waterSupplyInstallation = new WaterSupplyInstallation();
 
         return floorResults;
+    }
+
+    public void numericSetter (int current, int child) {
+        switch (current) {
+            case 1 -> this.getExtinguisherInstallation().setBooleanValue(child);
+            case 2 -> this.getAlarmDeviceInstallation().setBooleanValue(child);
+            case 3 -> this.getFireServiceSupportDeviceInstallation().setBooleanValue(child);
+            case 4 -> this.getWaterSupplyInstallation().setBooleanValue(child);
+            case 5 -> this.getEscapeRescueInstallation().setBooleanValue(child);
+        }
     }
 
 }

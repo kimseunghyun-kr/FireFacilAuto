@@ -7,6 +7,6 @@ import lombok.Data;
 
 @Data
 @MappedSuperclass
-public class BaseInstallation {
-
+public abstract class BaseInstallation {
+    public abstract void setBooleanValue(int number);
 }

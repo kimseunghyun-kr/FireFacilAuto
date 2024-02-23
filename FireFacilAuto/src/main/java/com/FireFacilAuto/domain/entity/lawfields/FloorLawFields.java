@@ -45,8 +45,8 @@ public class FloorLawFields {
     public Integer floorMaterial; //층 재료
 
 //    아직 미포함인 정보
-    @Column(columnDefinition = "boolean default false")
-    public Boolean floorWindowAvailability; //무창층 (무창층에만 1 / 아닐 시 0)
+    @Column(nullable = true, columnDefinition = "boolean default NULL")
+    public Boolean floorWindowAvailability; // 창문 있어야 함 -> true / 없어야 함(무창층) -> false / 상관없음 -> NULL
 
     @OneToMany(mappedBy = "floorLawFields", cascade = CascadeType.ALL)
     public List<Conditions> conditionsList;

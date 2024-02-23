@@ -1,34 +1,43 @@
 package com.FireFacilAuto.FireFacilAuto.service.lawservice;
 
+import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
-import com.FireFacilAuto.domain.entity.installation.*;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
-import com.FireFacilAuto.domain.entity.results.FloorResults;
+import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
 import com.FireFacilAuto.service.lawService.LawService;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.sqm.ComparisonOperator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@Slf4j
 public class BuildingLawExecutionServiceTest {
+    @InjectMocks
     private final BuildingLawExecutionService buildingLawExecutionService;
-    private Building building;
-    @Mock
-    private LawService lawService;
 
+    @MockBean
+    private LawService lawService;
+    private Building testBuilding1;
+    private BuildingLawFields Blaw1;
+    private FloorLawFields Flaw1;
 
     @Autowired
     public BuildingLawExecutionServiceTest(BuildingLawExecutionService buildingLawExecutionService) {
@@ -45,37 +54,125 @@ public class BuildingLawExecutionServiceTest {
         address.setBcode("10800");
         address.setJi("0011");
         address.setBun("0024");
+
+        this.testBuilding1 = new Building();
+        testBuilding1.setJuso(address);
+        testBuilding1.setBuildingHumanCapacity(100);
+        testBuilding1.setBuildingClassification(1);
+        testBuilding1.setBuildingSpecification(1);
+        testBuilding1.setUndergroundFloors(1);
+        testBuilding1.setOvergroundFloors(1);
+        testBuilding1.setTotalFloors(2);
+        testBuilding1.setGFA(1000.0);
+
+
+        Floor testBuilding1Composed1F = new Floor();
+        testBuilding1Composed1F.setBuilding(testBuilding1);
+        testBuilding1Composed1F.setFloorNo(1);
+        testBuilding1Composed1F.setIsUnderGround(false);
+        testBuilding1Composed1F.setFloorClassification(1);
+        testBuilding1Composed1F.setFloorSpecification(1);
+        testBuilding1Composed1F.setFloorArea(700.0);
+        testBuilding1Composed1F.setFloorWindowAvailability(true);
+        testBuilding1Composed1F.setFloorMaterial(1);
+
+        Floor testBuilding1ComposedB1F = new Floor();
+        testBuilding1ComposedB1F.setBuilding(testBuilding1);
+        testBuilding1ComposedB1F.setFloorNo(1);
+        testBuilding1ComposedB1F.setIsUnderGround(true);
+        testBuilding1ComposedB1F.setFloorClassification(2);
+        testBuilding1ComposedB1F.setFloorSpecification(2);
+        testBuilding1ComposedB1F.setFloorArea(300.0);
+        testBuilding1ComposedB1F.setFloorWindowAvailability(false);
+        testBuilding1ComposedB1F.setFloorMaterial(1);
+
+        testBuilding1.setCompositeFloors(List.of(new Floor[]{testBuilding1Composed1F, testBuilding1ComposedB1F}));
+
+        this.Blaw1 = new BuildingLawFields();
+        Blaw1.setBuildingClassification(-1);
+        Blaw1.setBuildingSpecification(-1);
+        Blaw1.setGFA(33.0);
+        Blaw1.setMajorCategoryCode(1);
+        Blaw1.setMinorCategoryCode(1);
+
+        Conditions Blaw1Condition = new Conditions();
+        Blaw1Condition.setBuildingLawFields(Blaw1);
+        Blaw1Condition.setFieldName("GFA");
+        Blaw1Condition.setOperator(ComparisonOperator.GREATER_THAN_OR_EQUAL);
+
+        Blaw1.setConditionsList(List.of(new Conditions[]{Blaw1Condition}));
+
+        this.Flaw1 = new FloorLawFields();
+        Flaw1.setFloorClassification(-1);
+        Flaw1.setFloorSpecification(-1);
+        Flaw1.setMajorCategoryCode(2);
+        Flaw1.setMinorCategoryCode(1);
+        Flaw1.setFloorAreaThreshold(500.0);
+
+        Conditions Flaw1Condition = new Conditions();
+        Flaw1Condition.setFloorLawFields(Flaw1);
+        Flaw1Condition.setFieldName("floorAreaThreshold");
+        Flaw1Condition.setOperator(ComparisonOperator.GREATER_THAN_OR_EQUAL);
+
+        Flaw1.setConditionsList(List.of(new Conditions[]{Flaw1Condition}));
+
+
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testBuildingLawExecute() {
-        // Arrange
-        Building building = mock(Building.class);  // Mock a Building instance
-        List<FloorResults> floorResultsList = new ArrayList<>();  // Initialize floorResultsList as needed
-        List<BuildingLawFields> candidateBuildingLaw = new ArrayList<>();  // Initialize candidateBuildingLaw as needed
+    public void testLawExecuteTestBuilding1UpToBuildingLawOnly() {
+        MockitoAnnotations.openMocks(this);
+
+        // Given
+        List<BuildingLawFields> candidateBuildingLaw = new ArrayList<>(List.of(new BuildingLawFields[]{this.Blaw1}));
 
         // Mock the behavior of the lawService
-        when(lawService.getLawsWithApplicablePurpose(building)).thenReturn(candidateBuildingLaw);
-
-        // Mock a BuildingLawFields instance
-        BuildingLawFields buildingLawFields = mock(BuildingLawFields.class);
-        when(buildingLawFields.getTotalFloors()).thenReturn(3);  // Set up specific behavior as needed
+        when(lawService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
+        when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(new LinkedList<>());
 
         // Act
-//        buildingLawExecutionService.buildingLawExecute(building, floorResultsList);
+        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(testBuilding1);
 
-        // Assert
+        log.info("resultSheet : {}", resultSheet);
+        assertThat(resultSheet).isNotNull();
+        assertThat(resultSheet.getFloorResultsList())
+                .extracting(floorResults -> floorResults.getExtinguisherInstallation().getExtinguisherApparatus())
+                .containsOnly(true);
 
-        // Verify that laws are retrieved from lawService
-        verify(lawService, times(1)).getLawsWithApplicablePurpose(building);
+    }
 
-        // Verify that buildingConditionComparator is called for each candidate law
-        for (BuildingLawFields blf : candidateBuildingLaw) {
-//            verify(yourClass, times(1)).buildingConditionComparator(blf, building, floorResultsList);
-        }
+    @Test
+    public void testLawExecuteTestBuildingFull() {
+        MockitoAnnotations.openMocks(this);
 
-        // Add assertions based on the expected behavior of buildingLawExecute
-        // For example, check that floorResultsList has been modified as expected
+        // Given
+        List<BuildingLawFields> candidateBuildingLaw = new ArrayList<>(List.of(new BuildingLawFields[]{this.Blaw1}));
+        List<FloorLawFields> candidateFloorLaw = new ArrayList<>(List.of(new FloorLawFields[]{this.Flaw1}));
+
+        // Mock the behavior of the lawService
+        when(lawService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
+        when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(candidateFloorLaw);
+
+        // Act
+        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(testBuilding1);
+
+        log.info("resultSheet : {}", resultSheet);
+        assertThat(resultSheet).isNotNull();
+        assertThat(resultSheet.getFloorResultsList())
+                .extracting(floorResults -> floorResults.getExtinguisherInstallation().getExtinguisherApparatus())
+                .containsOnly(true);
+
+        assertThat(resultSheet.getFloorResultsList().get(0).getAlarmDeviceInstallation().getAutoFireDectionApparatus())
+                .isEqualTo(true);
+
+//        to be null or to be false -> to ask.
+//        this really depends on being fully confident that all cases are covered
+//        if all cases are covered, those that are not shown as true can be denoted false.
+//        If that is not the case, can only guarantee those that are affected ==> show true values only.
+        assertThat(resultSheet.getFloorResultsList().get(1).getAlarmDeviceInstallation().getAutoFireDectionApparatus())
+                .isEqualTo(null);
+
     }
 
 

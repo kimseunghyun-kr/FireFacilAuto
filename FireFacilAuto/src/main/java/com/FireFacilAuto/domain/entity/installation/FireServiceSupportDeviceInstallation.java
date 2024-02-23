@@ -22,6 +22,7 @@ public class FireServiceSupportDeviceInstallation extends BaseInstallation{
     public Boolean emergencyElectricalSupplyApparatus;
     public Boolean wirelessCommunicationsSupportApparatus;
     public Boolean combustionPreventionApparatus;
+    @Override
     public void setBooleanValue(int number) {
         switch (number) {
             case 1 -> setSmokeControlApparatus(true);

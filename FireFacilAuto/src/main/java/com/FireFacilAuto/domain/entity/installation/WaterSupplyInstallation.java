@@ -18,7 +18,7 @@ public class WaterSupplyInstallation extends BaseInstallation {
     public Long UUID;
 
     public Boolean extinguisherWaterSupplyInstallation;
-
+    @Override
     public void setBooleanValue(int number) {
         if (number == 1) {
             setExtinguisherWaterSupplyInstallation(true);

@@ -21,6 +21,7 @@ public class EscapeRescueInstallation extends BaseInstallation{
     public Boolean emergencyLightingApparatus;
     public Boolean emergencyHandlightApparatus;
 
+    @Override
     public void setBooleanValue(int number) {
         switch (number) {
             case 1 -> setEscapeApparatus(true);

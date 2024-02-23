@@ -25,7 +25,8 @@ public class AlarmDeviceInstallation extends BaseInstallation {
     public Boolean VisualAlarmApparatus;
     public Boolean GasLeakageAlarmApparatus;
 
-    public void setBooleanValues(int number) {
+    @Override
+    public void setBooleanValue(int number) {
         switch (number) {
             case 1 -> setAutoFireDectionApparatus(true);
             case 2 -> setEmergencyAlarmApparatus(true);

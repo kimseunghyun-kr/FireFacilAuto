@@ -25,7 +25,7 @@ public class ExtinguisherInstallation extends BaseInstallation {
     public Boolean SimplfiedSprinklerApparatus;
     public Boolean waterSprayerEtCeteraApparatus;
 
-
+    @Override
     public void setBooleanValue(int number) {
         switch (number) {
             case 1 -> setExtinguisherApparatus(true);

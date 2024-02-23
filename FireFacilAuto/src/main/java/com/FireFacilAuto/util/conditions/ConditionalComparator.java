@@ -25,6 +25,7 @@ public class ConditionalComparator {
     }
 
     public static <T extends Comparable<T>> boolean evaluate(T operand1, String operator, T operand2) {
+        log.info("operand1 : {} {} operand2: {}", operand1, operator, operand2);
         return switch (operator) {
             case "=" -> operand1.equals(operand2);
             case "<>" -> !operand1.equals(operand2);
@@ -44,6 +45,10 @@ public class ConditionalComparator {
         // Customize this method based on your criteria for activated (non-default) values
         if(value != null) {
             log.info("defaultValue = {} , value = {}, match = {}", getDefaultValue(value.getClass()), value, value.equals(getDefaultValue(value.getClass())));
+        }
+
+        if(value instanceof Boolean) {
+            return true;
         }
         return value != null && !value.equals(getDefaultValue(value.getClass()));
     }
