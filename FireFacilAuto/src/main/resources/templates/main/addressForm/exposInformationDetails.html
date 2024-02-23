@@ -19,7 +19,7 @@
 <div class="container">
     <h2>Expos Info Response Item Details</h2>
 
-    <form th:action="@{/main/continueWithTitleObj}" method="post">
+    <form th:action="@{/main/addressForm/continueWithTitleObj}" method="post">
         <button type="submit" class="submit-button">표제부로 계속</button>
     </form>
 
@@ -40,7 +40,7 @@
             <td><span th:text="${obj.hoNm}"></span></td>
             <td><span th:text="${obj.mgmBldrgstPk}"></span></td>
             <td>
-                <form th:action= "@{/main/submitExposInfoObj}" th:object="${obj}" method="post">
+                <form th:action= "@{/main/addressForm/submitExposInfoObj}" th:object="${obj}" method="post">
                     <input type="hidden" th:id="exposInfoPk" th:name="exposInfoPk" th:value="${obj.mgmBldrgstPk}"/>
                     <button type="submit" class="submit-button" style="display: none;">Submit</button>
                 </form>

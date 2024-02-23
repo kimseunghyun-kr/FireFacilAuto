@@ -7,10 +7,6 @@ import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
-import com.FireFacilAuto.domain.entity.installation.EscapeRescueInstallation;
-import com.FireFacilAuto.domain.entity.installation.ExtinguisherInstallation;
-import com.FireFacilAuto.domain.entity.installation.FireServiceSupportDeviceInstallation;
-import com.FireFacilAuto.domain.entity.installation.WaterSupplyInstallation;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
@@ -21,8 +17,6 @@ import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 
@@ -32,11 +26,12 @@ import static com.FireFacilAuto.util.conditions.ConditionalComparator.*;
 @Slf4j
 public class BuildingLawExecutionService {
     private final LawService lawService;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private final ApiObjectToLawApplicableEntityService apiObjectConverter;
 
     @Autowired
-    public BuildingLawExecutionService(LawService lawService) {
+    public BuildingLawExecutionService(LawService lawService, ApiObjectToLawApplicableEntityService apiObjectConverter) {
         this.lawService = lawService;
+        this.apiObjectConverter = apiObjectConverter;
     }
 
     public ResultSheet executeLaw(Building building) {
@@ -44,22 +39,32 @@ public class BuildingLawExecutionService {
             throw new IllegalArgumentException("Input parameters cannot be null");
         }
 
+        log.info("initializing result sheets");
         ResultSheet resultSheet = new ResultSheet();
         resultSheet.setBuilding(building);
         List<FloorResults> floorResultsList = building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
 
-        log.info("part 3");
-//        building setup
-        List<BuildingLawFields> candidateBuildingLaw = lawService.getLawsWithApplicablePurpose(building);
-        log.info("candidate law fields building : {}", candidateBuildingLaw);
-//        FOR ALL CANDIDATE BLFS APPLY EACH BLF ONTO BUILDING.
-        candidateBuildingLaw.forEach(blf -> buildingConditionComparator(blf, building, floorResultsList));
-        log.info("part 4");
-//        해당되는 법령 받아오기
+        log.info("executing building laws");
+        buildingLawExecute(building, floorResultsList);
+
+
         Set<Pair> floorResultStore = new HashSet<>();
         List<FloorLawFields> candidateFloorLaw = new LinkedList<>();
 
-        log.info("part 5");
+        log.info("receiving all appicable candidate for floor laws," +
+                " floors may have differing classification and specification from building");
+        floorLawCandidacyResolver(floorResultsList, floorResultStore, candidateFloorLaw);
+
+        log.info("applying floor laws");
+        candidateFloorLaw.forEach(flf -> floorConditionComparator(flf, new LinkedList<>(floorResultsList), building));
+
+        resultSheet.setFloorResultsList(floorResultsList);
+
+        return resultSheet;
+
+    }
+
+    private void floorLawCandidacyResolver(List<FloorResults> floorResultsList, Set<Pair> floorResultStore, List<FloorLawFields> candidateFloorLaw) {
         for (FloorResults floorResults : floorResultsList) {
             Floor floor = floorResults.getFloor();
             Pair p = new Pair(floor.floorClassification, floor.floorClassification);
@@ -67,13 +72,19 @@ public class BuildingLawExecutionService {
                 candidateFloorLaw.addAll(lawService.getLawsWithApplicablePurpose(floor));
             }
         }
+    }
 
-        candidateFloorLaw.forEach(flf -> floorConditionComparator(flf, new LinkedList<>(floorResultsList), building));
+    private void buildingLawExecute(Building building, List<FloorResults> floorResultsList) {
+        log.info("initializing candidate laws");
+        List<BuildingLawFields> candidateBuildingLaw = lawService.getLawsWithApplicablePurpose(building);
+        log.info("candidate law fields building : {}", candidateBuildingLaw);
 
-        resultSheet.setFloorResultsList(floorResultsList);
+        log.info("applying candidate laws onto building");
+//        FOR ALL CANDIDATE BLFS APPLY EACH BLF ONTO BUILDING.
+        candidateBuildingLaw.forEach(blf -> buildingConditionComparator(blf, building, floorResultsList));
+//        floorResultList modified based on the building parameters
 
-        return resultSheet;
-
+        log.info("building laws applied");
     }
 
     private void floorConditionComparator(FloorLawFields flf, List<FloorResults> floorResultsList, Building building) {
@@ -111,7 +122,7 @@ public class BuildingLawExecutionService {
         if (floorResultsList.isEmpty()) {
             return;
         }
-//      Surviving inputs are all satisfyign the conditonal requirement of floorNo
+//      Surviving inputs are all satisfying the conditonal requirement of floorNo
 //      floorAreaThreshold
         if (isActivated(flf.floorAreaThreshold)) {
             Conditions conditional = getCondition(conditions, "floorThreshold");
@@ -215,7 +226,7 @@ public class BuildingLawExecutionService {
 
     public ResultSheet buildingBuildAndExecuteLaw(Address address, TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems) {
         Building building = new Building();
-        buildingInitializr(address, titleResponseItem, building);
+        apiObjectConverter.buildingInitializr(address, titleResponseItem, building);
 
         List<Floor> floors = floorResponseItemListToFloorListConverter(titleResponseItem, floorResponseItems, building);
         building.setCompositeFloors(floors);
@@ -223,24 +234,6 @@ public class BuildingLawExecutionService {
         return executeLaw(building);
     }
 
-    private void buildingInitializr(Address address, TitleResponseItem titleResponseItem, Building building) {
-        //TODO -> allocate number for classification based on code
-        log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem);
-
-        building.setBuildingClassification(classificationCodeMapper(titleResponseItem));
-        building.setBuildingSpecification(specificationCodeMapper(titleResponseItem));
-
-        building.setJuso(address);
-
-        log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem.getPmsDay());
-        building.setDateofApproval(titleResponseItem.getPmsDay().isEmpty() ? LocalDate.now() :LocalDate.parse(titleResponseItem.getPmsDay(),formatter));
-        building.setGFA(Double.valueOf(titleResponseItem.getTotArea()));
-        building.setUndergroundFloors(Integer.valueOf(titleResponseItem.getUgrndFlrCnt()));
-        building.setOvergroundFloors(Integer.valueOf(titleResponseItem.getGrndFlrCnt()));
-        building.setTotalFloors(building.overgroundFloors + building.undergroundFloors);
-        //TODO -> calculate capacity
-        building.setBuildingHumanCapacity(getBuildingCapacity(titleResponseItem));
-    }
 
 
     private List<Floor> floorResponseItemListToFloorListConverter(TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems, Building building) {
@@ -251,68 +244,23 @@ public class BuildingLawExecutionService {
             //TODO -> allocate number for classification based on code
             //Classification, specififation;
 
-            floorInitializr(titleResponseItem,null, floorResponseItem, floor);
+            apiObjectConverter.floorInitializr(titleResponseItem,null, floorResponseItem, floor);
             return floor;
         }).toList();
     }
 
-    private Boolean floorGbCdMapper(String flrGbCd) {
-        int target = Integer.parseInt(flrGbCd);
-        if(target == 20) {
-            return false;
-        } else if (target == 10) {
-            return true;
-        }
-        throw new RuntimeException("Invalid Mapping");
-    }
 
-    private Integer getBuildingCapacity(TitleResponseItem titleResponseItem) {
-        return Integer.valueOf(titleResponseItem.getHhldCnt());
-    }
-
-    //TODO
-    private Integer classificationCodeMapper(FloorResponseItem floor, TitleResponseItem title) {
-        return 1;
-    }
-    //TODO
-    private Integer classificationCodeMapper(TitleResponseItem title) {
-        return 1;
-    }
-
-    //TODO
-    private Integer specificationCodeMapper(FloorResponseItem floor, TitleResponseItem title) {
-        return 1;
-    }
-    //TODO
-    private Integer specificationCodeMapper(TitleResponseItem title) {
-        return 1;
-    }
 
     public ResultSheet floorBuildAndExecuteLaw(Address address, TitleResponseItem titleResponseItem,
                                                ExposedInfoResponseItem exposInfoResponseItem,
                                                FloorResponseItem floorResponseItem) {
         Building building = new Building();
-        buildingInitializr(address, titleResponseItem, building);
-
+        apiObjectConverter.buildingInitializr(address, titleResponseItem, building);
         Floor floor = new Floor();
-        //Todo ;
-        floorInitializr(titleResponseItem, exposInfoResponseItem, floorResponseItem, floor);
-
+        apiObjectConverter.floorInitializr(titleResponseItem, exposInfoResponseItem, floorResponseItem, floor);
         building.setCompositeFloors(List.of(floor));
         return executeLaw(building);
     }
 
-    private void floorInitializr(TitleResponseItem titleResponseItem, ExposedInfoResponseItem exposInfoResponseItem, FloorResponseItem floorResponseItem, Floor floor) {
-        floor.setFloorClassification(classificationCodeMapper(floorResponseItem, titleResponseItem));
-        floor.setFloorSpecification(specificationCodeMapper(floorResponseItem, titleResponseItem));
-        floor.setFloorMaterial(Integer.valueOf(floorResponseItem.getStrctCd()));
-        floor.setFloorArea(Double.valueOf(floorResponseItem.getArea()));
-        if(exposInfoResponseItem != null) {
-            floor.setIsUnderGround(floorGbCdMapper(exposInfoResponseItem.getFlrGbCd()));
-            floor.setFloorNo(Integer.valueOf(exposInfoResponseItem.getFlrNo()));
-        } else {
-            floor.setIsUnderGround(floorGbCdMapper(floorResponseItem.getFlrGbCd()));
-            floor.setFloorNo(Integer.valueOf(floorResponseItem.getFlrNo()));
-        }
-    }
+
 }

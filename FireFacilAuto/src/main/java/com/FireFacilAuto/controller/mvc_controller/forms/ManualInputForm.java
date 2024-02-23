@@ -1,15 +1,22 @@
 package com.FireFacilAuto.controller.mvc_controller.forms;
 
+import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
+import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.DTO.form.FormBuildingDTO;
 import com.FireFacilAuto.domain.DTO.form.FormFloorDTO;
 import com.FireFacilAuto.domain.DTO.form.FormFloorDTOWrapper;
 import com.FireFacilAuto.domain.configImport.ClassificationList;
 import com.FireFacilAuto.domain.configImport.Specification;
-import com.FireFacilAuto.service.formResolver.FormResolverService;
+import com.FireFacilAuto.domain.entity.Address;
+import com.FireFacilAuto.domain.entity.building.Building;
+import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.results.ResultSheet;
+import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,25 +26,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 @Controller
 @Slf4j
 @RequestMapping("/main/manualInput")
 public class ManualInputForm {
     private final ClassificationList classificationList;
-    private final FormResolverService formResolverService;
+    private final ConversionService conversionService;
     private final ObjectMapper objectMapper;
+    private final BuildingLawExecutionService buildingLawExecutionService;
+
+
 
     @Autowired
-    public ManualInputForm(ClassificationList classificationList, FormResolverService formResolverService, ObjectMapper objectMapper) {
+    public ManualInputForm(ClassificationList classificationList, ConversionService conversionService, ObjectMapper objectMapper, BuildingLawExecutionService buildingLawExecutionService) {
         this.classificationList = classificationList;
-        this.formResolverService = formResolverService;
+        this.conversionService = conversionService;
         this.objectMapper = objectMapper;
+        this.buildingLawExecutionService = buildingLawExecutionService;
     }
 
     @GetMapping("/input")
-    public String showForm(Model model) {
+    public String showForm(Model model, HttpSession httpSession) {
+        httpSession.invalidate();
         log.info("classificationList: {}", classificationList.getClassifications());
         model.addAttribute("input", new FormBuildingDTO());
         model.addAttribute("ClassificationConfig", classificationList);
@@ -145,11 +156,23 @@ public class ManualInputForm {
     }
 
     @PostMapping("/submitFloors")
-    public String submitFormFloors(HttpSession httpSession, @ModelAttribute FormBuildingDTO inputDTO, Model model) {
-        httpSession.setAttribute("buildTargetInfo", inputDTO);
+    public String submitFormFloors(HttpSession httpSession, @ModelAttribute List<FormFloorDTO> inputDTO, Model model) {
+        Building building = conversionService.convert(httpSession.getAttribute("buildTargetInfo"), Building.class);
+        log.info("building : {}", building);
+        List<Floor> floors = inputDTO.stream().map(dto -> {
+            Floor floor = conversionService.convert(dto,Floor.class);
+            floor.setBuilding(building);
+            return floor;
+        }).toList();
+        log.info("floors : {}", floors);
+        building.setCompositeFloors(floors);
+        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(building);
+
+        log.info("resultsheet, {}", resultSheet);
         // Redirect or show success page
         return "redirect:/main/manualInput/input/floors";
     }
+
 
 
 

@@ -43,7 +43,7 @@
             <td><span th:text="${obj.regstrKindCd}"></span></td>
             <td><span th:text="${obj.regstrKindCdNm}"></span></td>
             <td th:if="${flag == true}">
-                <form th:action= "@{/main/submitBaseObject}" th:object="${obj}" method="post">
+                <form th:action= "@{/main/addressForm/submitBaseObject}" th:object="${obj}" method="post">
                     <input type="hidden" th:id= "baseResponsePk" th:name="baseResponsePk" th:value="${obj.mgmBldrgstPk}"/>
                     <button type="submit" class="submit-button" style="display: none;">Submit</button>
                 </form>
@@ -53,7 +53,7 @@
     </table>
 
     <div th:unless="${flag == true}">
-        <form th:action= "@{/main/input}" method="post">
+        <form th:action= "@{/main/addressForm/input}" method="post">
             <button type="submit" class="submit-button">메인 화면으로 돌아가기</button>
         </form>
     </div>

@@ -8,7 +8,7 @@
 
     <script defer>
 
-    let selectedFloors = []
+        let selectedFloors = []
         function showDefaultForm() {
             window.location.reload();
         }
@@ -74,7 +74,9 @@
                     data: { selectedFloors: selectedFloors.join(",") },
                     success: function (data) {
                         // Update the content dynamically without reloading the entire page
-                        let floorHtml = data.map(floor => `<div>
+                        let floorHtml = data.map(floor => `<div class = "dynamic-floor">
+                                                <div class="dynamic-floor-content">
+
                                                 <p>Floor No: ${floor.floorNo}</p>
                                                 <p>Is Underground: ${floor.isUnderground}</p>
                                                 <p>Floor Classification: ${floor.floorClassification}</p>
@@ -82,10 +84,10 @@
                                                 <p>Floor Area: ${floor.floorArea}</p>
                                                 <p>Floor Material: ${floor.floorMaterial}</p>
                                                 <p>Floor window Availability: ${floor.floorWindowAvailability}</p>
-                                                <!-- Add more properties as needed -->
+                                                </div>
                                                 </div>
                                                 `).join('');
-                        $("#selectedFloors").prepend(floorHtml);
+                        $("#dynamicFloorContent").prepend(floorHtml);
                         let doc1 = document.getElementById("floorInputForm")
                         doc1.style.display='none'
                         let doc2 = document.getElementById("selectedFloors")
@@ -119,7 +121,8 @@
                 url: "/main/manualInput/loadSingleFloorContent",
                 data: { selectedFloor: selectedFloor },
                 success: function (data) {
-                    let floorHtml = `  <div class="input-group">
+                    let floorHtml = `  <div class = "dynamic-floor">
+                                                <div class="dynamic-floor-content">
                                                 <p>Floor No: ${data.floorNo}</p>
                                                 <p>Is Underground: ${data.isUnderground}</p>
                                                 <p>Floor Classification: ${data.floorClassification}</p>
@@ -129,9 +132,10 @@
                                                 <p>Floor window Availability: ${data.floorWindowAvailability}</p>
                                                 <!-- Add more properties as needed -->
                                                 </div>
+                                                </div>
                                                 `;
                     // Update the content dynamically without reloading the entire page
-                    $("#selectedFloors").prepend(floorHtml);
+                    $("#dynamicFloorContent").prepend(floorHtml);
                     let doc1 = document.getElementById("floorInputForm")
                     doc1.style.display='none'
                     let doc2 = document.getElementById("selectedFloors")
@@ -150,8 +154,10 @@
 <body>
 
 <!-- Left Sidebar with Floors Selection -->
-<div>
-    <h2>Floors Selection</h2>
+<aside id="floorSelectionContainer" class="ornate-sidebar">
+    <div class="sidebar-header">
+        <h2>Floors Selection</h2>
+    </div>
     <form id="floorSelectionForm" th:action="@{main/manualInput/processSelectedFloors}" method="post" th:object="${floorTargets}">
         <ul th:each="floorDTO, iterStat : *{listWrapper}">
             <li>
@@ -162,73 +168,108 @@
         </ul>
         <button type="button" onclick="handleFloorSelection()">Handle Floor Selection</button>
     </form>
-</div>
+    <div class="sidebar-footer">
+        <p>Tip: Check the floors you want to handle, then click "Handle Floor Selection".</p>
+    </div>
+</aside>
 
 <!-- Main Form for Floor Input -->
-<div>
-    <h2>Floor Input Form</h2>
-    <form id="floorInputForm" th:action="@{/main/manualInput/submitFloors}" th:object="${floorTargets}" method="post">
-        <!-- Add hidden fields for building classification and specification -->
+<div id="mainContentContainer">
+    <!-- Enhanced HTML and Styles for Floor Input Form -->
+    <div id="floorInputContainer">
+        <h2>Floor Input Form</h2>
+        <form id="floorInputForm" th:action="@{/main/manualInput/submitFloors}" th:object="${floorTargets}" method="post">
+            <!-- Add hidden fields for building classification and specification -->
 
-        <div th:each="floorDTO, iterStat : *{listWrapper}">
-            <div th:id="${'floorSection' + iterStat.index}">
-                <h3 th:text="'Floor ' + (${floorDTO.isUnderground} ? 'B' : '') + ${floorDTO.floorNo}"></h3>
-                <!-- Add other input fields based on your requirements -->
-                <label th:for="*{listWrapper[__${iterStat.index}__].floorClassification}">Floor Classification:</label>
-                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorClassification}" />
+            <div th:each="floorDTO, iterStat : *{listWrapper}" class="floor-section">
+                <div th:id="${'floorSection' + iterStat.index}" class="floor-section-inner">
+                    <h3 th:text="'Floor ' + (${floorDTO.isUnderground} ? 'B' : '') + ${floorDTO.floorNo}"></h3>
+                    <!-- Add other input fields based on your requirements -->
+                    <div class="form-group">
+                        <label th:for="*{listWrapper[__${iterStat.index}__].floorClassification}">Floor Classification:</label>
+                        <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorClassification}" />
+                    </div>
 
-                <label th:for="*{listWrapper[__${iterStat.index}__].floorSpecification}">Floor Specification:</label>
-                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorSpecification}" />
+                    <div class="form-group">
+                        <label th:for="*{listWrapper[__${iterStat.index}__].floorSpecification}">Floor Specification:</label>
+                        <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorSpecification}" />
+                    </div>
 
-                <label th:for="*{listWrapper[__${iterStat.index}__].floorArea}">Floor area:</label>
-                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorArea}" />
+                    <div class="form-group">
+                        <label th:for="*{listWrapper[__${iterStat.index}__].floorArea}">Floor area:</label>
+                        <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorArea}" />
+                    </div>
 
-                <label th:for="*{listWrapper[__${iterStat.index}__].floorMaterial}">Floor material:</label>
-                <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorMaterial}" />
+                    <div class="form-group">
+                        <label th:for="*{listWrapper[__${iterStat.index}__].floorMaterial}">Floor material:</label>
+                        <input type="text" th:field="*{listWrapper[__${iterStat.index}__].floorMaterial}" />
+                    </div>
 
-                <label th:for="*{listWrapper[__${iterStat.index}__].floorWindowAvailability}">Floor window availability:</label>
-                <input type="checkbox" th:field="*{listWrapper[__${iterStat.index}__].floorWindowAvailability}" />
-
+                    <div class="form-group">
+                        <label th:for="*{listWrapper[__${iterStat.index}__].floorWindowAvailability}">Floor window availability:</label>
+                        <input type="checkbox" th:field="*{listWrapper[__${iterStat.index}__].floorWindowAvailability}" />
+                    </div>
+                </div>
             </div>
+
+            <button type="submit" class="submit-btn">Save and Move</button>
+        </form>
+    </div>
+
+
+    <!-- Content when selected -->
+    <!-- Content when selected -->
+    <div id="selectedFloors" th:style="'display:none'" class="selected-floors-container">
+
+        <!-- Add a button to revert back to the default form in the multi-select form -->
+        <button type="button" class="btn-revert" onclick="showDefaultForm()">Revert to Default Form</button>
+        <button type="button" class="btn-replicate" onclick="displayReplicationForm()">Replicate Changes to All Selected Floors</button>
+
+        <!-- Dynamic floor content will be added here -->
+        <div id="dynamicFloorContent" class="dynamic-floor-container"></div>
+    </div>
+
+
+    <div id="replicationForm" th:style="'display:none'" th:fragment="singleFloorContent" class="ornate-replication-form">
+        <!-- Load content for a single selected floor here -->
+        <div class="ornate-header">
+            <h3 th:text="'다중변환'"></h3>
         </div>
+        <form class="replicationForm" method="post" onsubmit="replicationSubmission()">
 
-        <button type="submit">전체저장 후 이동</button>
-    </form>
+            <div class="input-group">
+                <label for="floorClassification"> Floor Classification </label>
+                <input id="floorClassification" name="floorClassification" type="number" class="input-field">
+            </div>
+
+            <div class="input-group">
+                <label for="floorSpecification"> Floor Specification </label>
+                <input id="floorSpecification" name="floorSpecification" type="number" class="input-field">
+            </div>
+
+            <div class="input-group">
+                <label for="floorArea"> Floor Area </label>
+                <input id="floorArea" name="floorArea" type="number" class="input-field">
+            </div>
+
+            <div class="input-group">
+                <label for="floorMaterial"> Floor Material </label>
+                <input id="floorMaterial" name="floorMaterial" type="number" class="input-field">
+            </div>
+
+            <div class="checkbox-group">
+                <input id="floorWindowAvailability" name="floorWindowAvailability" type="checkbox">
+                <label for="floorWindowAvailability"> Floor window availability </label>
+            </div>
+
+            <div class="button-group">
+                <button type="button" onclick="showDefaultForm()" class="btn-revert">Revert to Default Form</button>
+                <button type="button" onclick="replicationSubmission()" class="btn-replicate">Replicate Changes to All Selected Floors</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<!-- Content when selected -->
-<div id="selectedFloors" th:style="'display:none'"  th:fragment="singleFloorContent">
-
-    <!-- Add a button to revert back to the default form in the multi-select form -->
-    <button type="button" onclick="showDefaultForm()">Revert to Default Form</button>
-    <button type="button" onclick="displayReplicationForm()">Replicate Changes to All Selected Floors</button>
-</div>
-
-<div id="replicationForm" th:style="'display:none'"  th:fragment="singleFloorContent">
-    <!-- Load content for a single selected floor here -->
-    <h3 th:text="'다중변환'"></h3>
-    <form class="replicationForm" method="post" onsubmit="replicationSubmission()">
-
-        <label for="floorClassification"> floor classification </label>
-        <input id="floorClassification" name="floorClassification" type="number">
-
-        <label for="floorSpecification"> floor Specification </label>
-        <input id="floorSpecification" name="floorSpecification" type="number">
-
-        <label for="floorArea">floor Area </label>
-        <input id="floorArea" name="floorArea" type="number">
-
-        <label for="floorMaterial"> floor Material </label>
-        <input id="floorMaterial" name="floorMaterial" type="number">
-
-        <label for="floorWindowAvailability"> floor window availability </label>
-        <input id="floorWindowAvailability" name="floorWindowAvailability" type="checkbox">
-
-        <button type="button" onclick="showDefaultForm()">Revert to Default Form</button>
-        <button type="button" onclick="replicationSubmission()">Replicate Changes to All Selected Floors</button>
-    </form>
-
-</div>
 
 </body>
 </html>

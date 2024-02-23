@@ -12,5 +12,7 @@ public class ConverterConfig implements WebMvcConfigurer {
         registry.addConverter(new BuildingLawFormsToBuildingLawFieldsConverter());
         registry.addConverter(new FloorLawFormsToFloorLawFieldsConverter());
         registry.addConverter(new ApiResponseItemToBuildingConverter());
+        registry.addConverter(new FormBuildingDTOToBuildingConverter());
+        registry.addConverter(new FormFloorDTOToFloorConverter());
     }
 }
