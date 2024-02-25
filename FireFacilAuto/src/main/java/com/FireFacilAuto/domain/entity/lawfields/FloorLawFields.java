@@ -8,47 +8,96 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * Represents the legal conditions applicable to individual floors within a building.
+ * Each field represents a condition, and these conditions have an AND relationship.
+ * For example, if floorClassification = 1 AND floorNo > 3 AND floorWindowAvailability = false,
+ * the law applies to floors with classification 1, higher than the 3rd floor, and without windows.
+ */
 @Data
 @Entity
 public class FloorLawFields {
 
+    /**
+     * Internal system identification code for the floor law fields.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * Major category code representing the installation that the law is trying to enforce.
+     */
     @Column(nullable = false)
     @Positive
-    public Integer majorCategoryCode; //주요시설법 식별코드
+    public Integer majorCategoryCode;
+
+    /**
+     * Minor category code representing the installation that the law is trying to enforce.
+     */
     @Column(nullable = false)
     @Positive
-    public Integer minorCategoryCode; //세부시설법 식별코드
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Integer floorNo; //충수
+    public Integer minorCategoryCode;
 
-    @Column(columnDefinition = "integer default -1")
-    public Boolean isUnderGround; //지하여부
-
+    /**
+     * Classification code for the primary purpose of the floor.
+     */
     @Column(columnDefinition = "integer default -1")
     @Min(value = -1, message = "Value must be at least -1")
-    public Integer floorClassification; //층 주용도
+    public Integer floorClassification;
+
+    /**
+     * Specification code for additional details about the floor.
+     */
     @Column(columnDefinition = "integer default -1")
     @Min(value = -1, message = "Value must be at least -1")
-    public Integer floorSpecification; //층 세부용도
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Double floorAreaSum; //층 바닥면적 합
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Double floorAreaThreshold; //층 바닥면적 합
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Integer floorMaterial; //층 재료
+    public Integer floorSpecification;
 
-//    아직 미포함인 정보
-    @Column(nullable = true, columnDefinition = "boolean default NULL")
-    public Boolean floorWindowAvailability; // 창문 있어야 함 -> true / 없어야 함(무창층) -> false / 상관없음 -> NULL
+    /**
+     * Floor number field for laws related to floors
+     */
+    @Column(columnDefinition = "integer default -1")
+    @Positive
+    public Integer floorNo;
 
+    /**
+     * Indicates whether the law to be applied is applicable to underground floors
+     */
+    @Column(columnDefinition = "boolean default NULL")
+    public Boolean isUnderGround;
+
+    /**
+     * law field regarding the total floor area of the floor.
+     */
+    @Column(columnDefinition = "integer default -1")
+    @Positive
+    public Double floorAreaSum;
+
+    /**
+     * law field for the Threshold floor area of floors.
+     */
+    @Column(columnDefinition = "integer default -1")
+    @Positive
+    public Double floorAreaThreshold;
+
+    /**
+     * law fields relating Material code for the floor.
+     */
+    @Column(columnDefinition = "integer default -1")
+    @Positive
+    public Integer floorMaterial;
+
+    /**
+     * Indicates the availability of windows on the floor.
+     * TRUE: Windows are required, FALSE: No windows (non-window floor), NULL: to be ignored.
+     */
+    @Column(columnDefinition = "boolean default NULL")
+    public Boolean floorWindowAvailability;
+
+    /**
+     * List of conditions associated with the floor law fields.
+     */
     @OneToMany(mappedBy = "floorLawFields", cascade = CascadeType.ALL)
     public List<Conditions> conditionsList;
-
 }
+

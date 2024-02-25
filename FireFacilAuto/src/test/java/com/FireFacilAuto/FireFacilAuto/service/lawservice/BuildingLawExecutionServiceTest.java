@@ -1,5 +1,7 @@
 package com.FireFacilAuto.FireFacilAuto.service.lawservice;
 
+import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.BuildingAttributes;
+import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.TestBuildingObjectBuilder;
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
@@ -7,7 +9,8 @@ import com.FireFacilAuto.domain.entity.building.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
-import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
+import com.FireFacilAuto.service.lawService.BuildingAndFloorLawExecutionFacadeService;
+
 import com.FireFacilAuto.service.lawService.LawService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -31,7 +34,7 @@ import static org.mockito.Mockito.*;
 @Slf4j
 public class BuildingLawExecutionServiceTest {
     @InjectMocks
-    private final BuildingLawExecutionService buildingLawExecutionService;
+    private final BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService;
 
     @MockBean
     private LawService lawService;
@@ -39,9 +42,11 @@ public class BuildingLawExecutionServiceTest {
     private BuildingLawFields Blaw1;
     private FloorLawFields Flaw1;
 
+    private final TestBuildingObjectBuilder buildingGenerator = new TestBuildingObjectBuilder();
+
     @Autowired
-    public BuildingLawExecutionServiceTest(BuildingLawExecutionService buildingLawExecutionService) {
-        this.buildingLawExecutionService = buildingLawExecutionService;
+    public BuildingLawExecutionServiceTest(BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService) {
+        this.lawExecutionFacadeService = lawExecutionFacadeService;
     }
 
     @BeforeEach
@@ -132,7 +137,7 @@ public class BuildingLawExecutionServiceTest {
         when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(new LinkedList<>());
 
         // Act
-        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(testBuilding1);
+        ResultSheet resultSheet = lawExecutionFacadeService.executeLaw(testBuilding1);
 
         log.info("resultSheet : {}", resultSheet);
         assertThat(resultSheet).isNotNull();
@@ -143,7 +148,7 @@ public class BuildingLawExecutionServiceTest {
     }
 
     @Test
-    public void testLawExecuteTestBuildingFull() {
+    public void testLawExecuteTestBuilding1Full() {
         MockitoAnnotations.openMocks(this);
 
         // Given
@@ -155,7 +160,7 @@ public class BuildingLawExecutionServiceTest {
         when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(candidateFloorLaw);
 
         // Act
-        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(testBuilding1);
+        ResultSheet resultSheet = lawExecutionFacadeService.executeLaw(testBuilding1);
 
         log.info("resultSheet : {}", resultSheet);
         assertThat(resultSheet).isNotNull();
@@ -173,6 +178,13 @@ public class BuildingLawExecutionServiceTest {
         assertThat(resultSheet.getFloorResultsList().get(1).getAlarmDeviceInstallation().getAutoFireDectionApparatus())
                 .isEqualTo(null);
 
+    }
+
+    @Test
+    public void RandomGeneratedBuildingTest() {
+        BuildingAttributes ba = BuildingAttributes.automatedBuild();
+        Building building = buildingGenerator.buildingObjectBuilder(ba);
+        log.info("Building {}, ", building);
     }
 
 

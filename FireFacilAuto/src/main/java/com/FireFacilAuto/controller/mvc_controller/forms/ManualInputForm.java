@@ -1,13 +1,11 @@
 package com.FireFacilAuto.controller.mvc_controller.forms;
 
-import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
-import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
+
 import com.FireFacilAuto.domain.DTO.form.FormBuildingDTO;
 import com.FireFacilAuto.domain.DTO.form.FormFloorDTO;
 import com.FireFacilAuto.domain.DTO.form.FormFloorDTOWrapper;
 import com.FireFacilAuto.domain.configImport.ClassificationList;
 import com.FireFacilAuto.domain.configImport.Specification;
-import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
@@ -156,10 +154,10 @@ public class ManualInputForm {
     }
 
     @PostMapping("/submitFloors")
-    public String submitFormFloors(HttpSession httpSession, @ModelAttribute List<FormFloorDTO> inputDTO, Model model) {
+    public String submitFormFloors(HttpSession httpSession, @ModelAttribute FormFloorDTOWrapper inputDTO, Model model) {
         Building building = conversionService.convert(httpSession.getAttribute("buildTargetInfo"), Building.class);
         log.info("building : {}", building);
-        List<Floor> floors = inputDTO.stream().map(dto -> {
+        List<Floor> floors = inputDTO.listWrapper.stream().map(dto -> {
             Floor floor = conversionService.convert(dto,Floor.class);
             floor.setBuilding(building);
             return floor;
@@ -170,7 +168,7 @@ public class ManualInputForm {
 
         log.info("resultsheet, {}", resultSheet);
         // Redirect or show success page
-        return "redirect:/main/manualInput/input/floors";
+        return "redirect:/main/manualInput/input";
     }
 
 

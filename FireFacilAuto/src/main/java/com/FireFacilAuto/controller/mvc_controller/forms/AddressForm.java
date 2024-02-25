@@ -7,7 +7,7 @@ import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.service.WebClient.api.APICollationService;
-import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
+import com.FireFacilAuto.service.lawService.BuildingAndFloorLawExecutionFacadeService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,12 @@ import java.util.List;
 @RequestMapping("/main/addressForm")
 @Slf4j
 public class AddressForm {
-    private final BuildingLawExecutionService buildingLawExecutionService;
+    private final BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService;
     private final APICollationService apiCollationService;
 
     @Autowired
-    public AddressForm(BuildingLawExecutionService buildingLawExecutionService, APICollationService apiCollationService) {
-        this.buildingLawExecutionService = buildingLawExecutionService;
+    public AddressForm(BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService, APICollationService apiCollationService) {
+        this.lawExecutionFacadeService = lawExecutionFacadeService;
         this.apiCollationService = apiCollationService;
     }
 
@@ -82,6 +82,7 @@ public class AddressForm {
         return "main/addressForm/baseInformationDetails";
     }
 
+    @SuppressWarnings("unchecked")
     @GetMapping("/baseInformationDetails")
     public String baseSelectFormShow (HttpSession session, Model model) {
         // get list from session attributes
@@ -99,8 +100,9 @@ public class AddressForm {
         return "redirect:/main/addressForm/input";
     }
 
+    @SuppressWarnings("unchecked")
     @PostMapping("/submitBaseObject")
-    public String baseSelectItemReceiveAndFindExposInfo (HttpSession session, Model model, @ModelAttribute("baseResponsePk") String baseResponsePk) {
+    public String baseSelectItemReceiveAndFindExposInfo (HttpSession session, @ModelAttribute("baseResponsePk") String baseResponsePk) {
         List<BaseResponseItem> baseResponseItemList = (List<BaseResponseItem>)session.getAttribute("response");
         log.debug("baseItemResponseListCheck at submitBaseObject, {}", baseResponseItemList);
         BaseResponseItem baseResponseItem = baseResponseItemList.stream().filter(obj -> obj.getMgmBldrgstPk().equals(baseResponsePk)).findFirst().orElseThrow();
@@ -116,11 +118,12 @@ public class AddressForm {
         return "redirect:/main/addressForm/showExpos";
     }
 
+    @SuppressWarnings("unchecked")
     @GetMapping("/showExpos")
     public String exposSelectFormShow (Model model, HttpSession session) {
         List<ExposedInfoResponseItem> exposedInfoResponseItemList = (List<ExposedInfoResponseItem>) session.getAttribute("exposInfoList");
         assert exposedInfoResponseItemList != null;
-        log.debug("exposInfo check at exposFormshow {}", (List<ExposedInfoResponseItem>)session.getAttribute("exposInfoList"));
+        log.debug("exposInfo check at exposFormshow {}", exposedInfoResponseItemList);
         if(exposedInfoResponseItemList.isEmpty()) {
             return "redirect:/main/addressForm/floorDetails"; // to modify later into process.
         }
@@ -128,8 +131,9 @@ public class AddressForm {
         return "main/addressForm/exposInformationDetails";
     }
 
+    @SuppressWarnings("unchecked")
     @PostMapping("/submitExposInfoObj")
-    public String continueWithExposInfoObj (Model model, HttpSession session, @ModelAttribute("exposInfoPk") String exposInfoPk){
+    public String continueWithExposInfoObj (HttpSession session, @ModelAttribute("exposInfoPk") String exposInfoPk){
         log.debug("exposInfoPk, {}", exposInfoPk);
         List<ExposedInfoResponseItem> exposInfoList = (List<ExposedInfoResponseItem>) session.getAttribute("exposInfoList");
         ExposedInfoResponseItem exposedInfoResponseItem = exposInfoList.stream().filter(exposObj -> exposObj.mgmBldrgstPk.equals(exposInfoPk)).findFirst().orElseThrow();
@@ -141,7 +145,7 @@ public class AddressForm {
     }
 
     @PostMapping("/continueWithTitleObj")
-    public String continueWithTitleObj (Model model, HttpSession session) {
+    public String continueWithTitleObj () {
         return "redirect:/main/addressForm/floorDetails";
     }
 
@@ -190,7 +194,7 @@ public class AddressForm {
         List<FloorResponseItem> floorResponseItems = (List<FloorResponseItem>) session.getAttribute("floorResponseItemList");
         Address address = (Address)session.getAttribute("address");
 
-        ResultSheet resultSheet = buildingLawExecutionService.buildingBuildAndExecuteLaw(address, titleResponseItem, floorResponseItems);
+        ResultSheet resultSheet = lawExecutionFacadeService.buildingBuildAndExecuteLaw(address, titleResponseItem, floorResponseItems);
         log.info("resultSheet, {}", resultSheet);
         // Populate model attributes if needed
         model.addAttribute("resultSheet", resultSheet);
@@ -205,7 +209,7 @@ public class AddressForm {
         ExposedInfoResponseItem exposInfoResponseItem = (ExposedInfoResponseItem) session.getAttribute("selectedExposItem");
         Address address = (Address)session.getAttribute("address");
         FloorResponseItem floorResponseItem = apiCollationService.getFloorItemFromTitleForExpos(exposInfoResponseItem, titleResponseItem, address);
-        ResultSheet resultSheet = buildingLawExecutionService.floorBuildAndExecuteLaw(address, titleResponseItem, exposInfoResponseItem, floorResponseItem);
+        ResultSheet resultSheet = lawExecutionFacadeService.floorBuildAndExecuteLaw(address, titleResponseItem, exposInfoResponseItem, floorResponseItem);
 
 
         log.info("resultSheet, {}", resultSheet);

@@ -17,6 +17,7 @@ public class FormBuildingDTO implements Serializable {
     public Integer overgroundFloors;
     public Integer undergroundFloors;
     public Integer floor;
+    public Integer buildingMaterial;
     public Double GFA;
     public Integer classification;
     public Integer specification;

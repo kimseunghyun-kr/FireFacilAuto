@@ -153,6 +153,9 @@
     <label for="overgroundFloors">지상층수:</label>
     <input type="number" id="overgroundFloors" th:field="*{overgroundFloors}" />
 
+    <label for="buildingMaterial">건물 주 구조:</label>
+    <input type="number" id="buildingMaterial" th:field="*{buildingMaterial}" />
+
     <div class="select-container" th:classappend="${#fields.hasErrors('classification')} ? 'error' : ''">
         <label for="classification">용도:</label>
         <div class="select-button" onclick="toggleDropdown(this)">

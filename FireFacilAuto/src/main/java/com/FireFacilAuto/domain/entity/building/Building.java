@@ -3,44 +3,87 @@ package com.FireFacilAuto.domain.entity.building;
 import com.FireFacilAuto.domain.entity.Address;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Represents a building entity in the system.
+ */
 @Entity
 @Data
 public class Building {
 
+    /**
+     * Internal system identification code for the building.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long UUID; //내부 시스템용 식별코드
+    public Long UUID;
 
+    /**
+     * Address information for the building.
+     */
     @Embedded
-    public Address juso; //건물 주소
+    public Address juso;
 
+    /**
+     * List of floors within the building.
+     */
     @OneToMany(mappedBy = "building")
-    public List<Floor> compositeFloors; //건물 내 층 정보
+    public List<Floor> compositeFloors;
 
-    public Integer totalFloors; //건물 내 총 층수
+    /**
+     * Total number of floors in the building.
+     */
+    public Integer totalFloors;
 
-    public Integer undergroundFloors; //건물 내 총 지하층
+    /**
+     * Number of underground floors in the building.
+     */
+    public Integer undergroundFloors;
 
-    public Integer overgroundFloors; //건물 내 총 지상층
+    /**
+     * Number of overground floors in the building.
+     */
+    public Integer overgroundFloors;
 
-    public Double GFA; //연면적
+    /**
+     * Gross floor area of the building.
+     */
+    public Double GFA;
 
-    public Integer buildingClassification; //건물 주용도
+    /**
+     * Classification code indicating the primary use of the building.
+     */
+    public Integer buildingClassification;
 
-    public Integer buildingSpecification; //건물 세부용도
+    /**
+     * Specific code indicating the detailed use of the building.
+     */
+    public Integer buildingSpecification;
 
-    public Double length; //터널 등 지하구 거리
+    /**
+     * Code indicating the primary structural material of the building.
+     */
+    public Integer BuildingMaterial;
 
-    public LocalDate dateofApproval; //사용승인일
+    /**
+     * Distance from the building to underground structures like tunnels.
+     */
+    public Double length;
 
-//    아직 미포함 정보
+    /**
+     * Date when the building received approval for use.
+     */
+    public LocalDate dateofApproval;
 
+    // Unspecified information (you can update these comments as needed)
+
+    /**
+     * Capacity of humans within the building (not yet included).
+     */
     public Integer buildingHumanCapacity;
 
-
+    // Additional information or context if needed
 }

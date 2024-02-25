@@ -1,35 +1,67 @@
 package com.FireFacilAuto.domain.entity.building;
 
-import com.FireFacilAuto.domain.entity.installation.*;
-import com.FireFacilAuto.domain.entity.results.FloorResults;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+/**
+ * Represents a floor within a building in the system.
+ */
 @Entity
 @Data
 @ToString(exclude = "building")
 public class Floor {
+
+    /**
+     * Internal system identification code for the floor.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long UUID; //내부 시스템용 식별코드
+    public Long UUID;
 
+    /**
+     * The building associated with the floor.
+     */
     @ManyToOne
-    public Building building; //연관된 건물
+    public Building building;
 
-    public Integer floorNo; //충수
+    /**
+     * Floor number or level within the building.
+     */
+    public Integer floorNo;
 
-    public Boolean isUnderGround; //지하여부
+    /**
+     * Indicates whether the floor is underground or above ground.
+     */
+    public Boolean isUnderGround;
 
-    public Integer floorClassification; //층 주용도
+    /**
+     * Code indicating the primary use of the floor.
+     */
+    public Integer floorClassification;
 
-    public Integer floorSpecification; //층 세부용도
+    /**
+     * Specific code indicating the detailed use of the floor.
+     */
+    public Integer floorSpecification;
 
-    public Double floorArea; //층 바닥면적
+    /**
+     * Area of the floor's surface.
+     */
+    public Double floorArea;
 
-    public Integer floorMaterial; //층 재료
+    /**
+     * Code indicating the primary material of the floor.
+     */
+    public Integer floorMaterial;
 
-//    아직 미포함인 정보
-    public Boolean floorWindowAvailability; //무창층
+    // information not yet included due to absence from address api
 
+    /**
+     * Availability of windows on the floor (not yet included).
+     */
+    public Boolean floorWindowAvailability;
+
+    // Additional information or context if needed
 }
+

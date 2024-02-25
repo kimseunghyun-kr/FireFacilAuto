@@ -42,6 +42,7 @@ public  class LawService {
         this.flawFieldRepository = flawFieldRepository;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> Page<T> getPaginatedLaws(int page, int size, Class<T> entityType) {
         Pageable pageable = PageRequest.of(page, size);
         if (BuildingLawFields.class.equals(entityType)) {

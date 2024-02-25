@@ -20,6 +20,8 @@ public class BuildingLawForms {
 
     public Integer totalFloors; //건물 내 총 층수
 
+    public Integer buildingMaterial;
+
     public Integer undergroundFloors; //건물 내 총 지하층
 
     public Integer overgroundFloors; //건물 내 총 지상층
