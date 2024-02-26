@@ -77,8 +77,7 @@
                         let floorHtml = data.map(floor => `<div class = "dynamic-floor">
                                                 <div class="dynamic-floor-content">
 
-                                                <p>Floor No: ${floor.floorNo}</p>
-                                                <p>Is Underground: ${floor.isUnderground}</p>
+                                                <p>Floor No: ${floor.isUnderground? 'B' : ''} ${floor.floorNo}</p>
                                                 <p>Floor Classification: ${floor.floorClassification}</p>
                                                 <p>Floor Specification: ${floor.floorSpecification}</p>
                                                 <p>Floor Area: ${floor.floorArea}</p>
@@ -123,8 +122,7 @@
                 success: function (data) {
                     let floorHtml = `  <div class = "dynamic-floor">
                                                 <div class="dynamic-floor-content">
-                                                <p>Floor No: ${data.floorNo}</p>
-                                                <p>Is Underground: ${data.isUnderground}</p>
+                                                <p>Floor No: ${data.isUnderground? 'B' : ''} ${data.floorNo}</p>
                                                 <p>Floor Classification: ${data.floorClassification}</p>
                                                 <p>Floor Specification: ${data.floorSpecification}</p>
                                                 <p>Floor Area: ${data.floorArea}</p>
@@ -184,6 +182,8 @@
             <div th:each="floorDTO, iterStat : *{listWrapper}" class="floor-section">
                 <div th:id="${'floorSection' + iterStat.index}" class="floor-section-inner">
                     <h3 th:text="'Floor ' + (${floorDTO.isUnderground} ? 'B' : '') + ${floorDTO.floorNo}"></h3>
+                    <input type="hidden" th:field="*{listWrapper[__${iterStat.index}__].floorNo}" />
+                    <input type="hidden" th:field="*{listWrapper[__${iterStat.index}__].isUnderground}" />
                     <!-- Add other input fields based on your requirements -->
                     <div class="form-group">
                         <label th:for="*{listWrapper[__${iterStat.index}__].floorClassification}">Floor Classification:</label>

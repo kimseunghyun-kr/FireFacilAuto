@@ -15,6 +15,7 @@ public class LawMappingUtils {
         log.info("class : {}, spec : {}", target[0], target[1]);
         for (FloorResults survivingResults : floorResultsList) {
             survivingResults.numericSetter(target[0], target[1]);
+            log.info("surviving at FloorResulTMajorCodeMapper, {}", survivingResults);
         }
     }
 

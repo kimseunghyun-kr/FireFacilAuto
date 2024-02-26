@@ -75,11 +75,12 @@ public class BuildingAndFloorLawExecutionFacadeService {
         ResultSheet resultSheet = resultSheetInitializr(building);
 
         List<FloorResults> floorResultsList = floorResultSheetBuilder(building);
+        resultSheet.setFloorResultsList(floorResultsList);
 
         log.info("executing building laws");
         buildingLawExecutionService.buildingLawExecute(building, floorResultsList);
 
-        resultSheet.setFloorResultsList(floorResultsList);
+        log.info("executing floor laws");
         floorLawExecutionService.floorLawExecute(building, floorResultsList);
 
         return resultSheet;

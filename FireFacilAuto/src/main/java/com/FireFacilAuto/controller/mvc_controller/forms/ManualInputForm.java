@@ -9,6 +9,7 @@ import com.FireFacilAuto.domain.configImport.Specification;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
+import com.FireFacilAuto.service.lawService.BuildingAndFloorLawExecutionFacadeService;
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
@@ -32,16 +33,16 @@ public class ManualInputForm {
     private final ClassificationList classificationList;
     private final ConversionService conversionService;
     private final ObjectMapper objectMapper;
-    private final BuildingLawExecutionService buildingLawExecutionService;
+    private final BuildingAndFloorLawExecutionFacadeService buildingAndFloorLawExecutionFacadeService;
 
 
 
     @Autowired
-    public ManualInputForm(ClassificationList classificationList, ConversionService conversionService, ObjectMapper objectMapper, BuildingLawExecutionService buildingLawExecutionService) {
+    public ManualInputForm(ClassificationList classificationList, ConversionService conversionService, ObjectMapper objectMapper, BuildingAndFloorLawExecutionFacadeService buildingAndFloorLawExecutionFacadeService) {
         this.classificationList = classificationList;
         this.conversionService = conversionService;
         this.objectMapper = objectMapper;
-        this.buildingLawExecutionService = buildingLawExecutionService;
+        this.buildingAndFloorLawExecutionFacadeService = buildingAndFloorLawExecutionFacadeService;
     }
 
     @GetMapping("/input")
@@ -66,6 +67,7 @@ public class ManualInputForm {
     public String submitFormBuilding(HttpSession httpSession, @ModelAttribute FormBuildingDTO inputDTO, Model model) {
         httpSession.setAttribute("buildTargetInfo", inputDTO);
         FormFloorDTOWrapper dtoWrapper = buildFloorFormDTO(inputDTO);
+        log.info("dtoWrapper, submit building:  {}",dtoWrapper);
         httpSession.setAttribute("floorDTOWrapper", dtoWrapper);
         // Redirect or show success page
         return "redirect:/main/manualInput/input/floors";
@@ -148,7 +150,7 @@ public class ManualInputForm {
             }
         }
 
-        log.info("dto at {} " , dtoWrapper.listWrapper);
+        log.info("dto at replicatefloorFields {} " , dtoWrapper.listWrapper);
         session.setAttribute("floorDTOWrapper", dtoWrapper);
         return new ResponseEntity<>("data sent successfully gucci", HttpStatus.OK);
     }
@@ -157,6 +159,7 @@ public class ManualInputForm {
     public String submitFormFloors(HttpSession httpSession, @ModelAttribute FormFloorDTOWrapper inputDTO, Model model) {
         Building building = conversionService.convert(httpSession.getAttribute("buildTargetInfo"), Building.class);
         log.info("building : {}", building);
+        log.info("formFloorDTOWrapper at submitFloors {}", inputDTO);
         List<Floor> floors = inputDTO.listWrapper.stream().map(dto -> {
             Floor floor = conversionService.convert(dto,Floor.class);
             floor.setBuilding(building);
@@ -164,7 +167,7 @@ public class ManualInputForm {
         }).toList();
         log.info("floors : {}", floors);
         building.setCompositeFloors(floors);
-        ResultSheet resultSheet = buildingLawExecutionService.executeLaw(building);
+        ResultSheet resultSheet = buildingAndFloorLawExecutionFacadeService.executeLaw(building);
 
         log.info("resultsheet, {}", resultSheet);
         // Redirect or show success page

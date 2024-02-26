@@ -59,6 +59,8 @@ public class ConditionalComparator {
             return (T) LocalDate.MIN;
         } else if (Number.class.isAssignableFrom(clazz)) {
             return (T) Double.valueOf(-1); // Assuming -1 is the default value for Double
+        } else if (clazz.equals(Boolean.class)) {
+            return null;
         } else {
             throw new IllegalArgumentException("Unsupported type: " + clazz);
         }

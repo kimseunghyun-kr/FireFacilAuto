@@ -1,7 +1,6 @@
 package com.FireFacilAuto.FireFacilAuto.service.lawservice;
 
-import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.BuildingAttributes;
-import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.TestBuildingObjectBuilder;
+import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.*;
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
@@ -43,6 +42,9 @@ public class BuildingLawExecutionServiceTest {
     private FloorLawFields Flaw1;
 
     private final TestBuildingObjectBuilder buildingGenerator = new TestBuildingObjectBuilder();
+    private final TestFloorObjectBuilder floorObjectBuilder = new TestFloorObjectBuilder();
+    private final TestBuildingLawObjectBuilder buildingLawObjectBuilder = new TestBuildingLawObjectBuilder();
+    private final TestFloorLawObjectBuilder floorLawObjectBuilder = new TestFloorLawObjectBuilder();
 
     @Autowired
     public BuildingLawExecutionServiceTest(BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService) {
@@ -51,6 +53,13 @@ public class BuildingLawExecutionServiceTest {
 
     @BeforeEach
     public void mockBuildingBuilder() {
+        setTestBuildingtestcase1();
+
+
+        MockitoAnnotations.openMocks(this);
+    }
+
+    private void setTestBuildingtestcase1() {
         Address address = new Address();
         address.setDetailAdr("");
         address.setStreetAdr("서울 강남구 학동로11길 29");
@@ -120,9 +129,6 @@ public class BuildingLawExecutionServiceTest {
         Flaw1Condition.setOperator(ComparisonOperator.GREATER_THAN_OR_EQUAL);
 
         Flaw1.setConditionsList(List.of(new Conditions[]{Flaw1Condition}));
-
-
-        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -185,6 +191,11 @@ public class BuildingLawExecutionServiceTest {
         BuildingAttributes ba = BuildingAttributes.automatedBuild();
         Building building = buildingGenerator.buildingObjectBuilder(ba);
         log.info("Building {}, ", building);
+    }
+
+    @Test
+    public void RandomGeneratedLawTest() {
+        Building
     }
 
 

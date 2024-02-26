@@ -52,7 +52,11 @@ public class FloorLawExecutionService {
 
 
     private void floorLawExecute(Building building, List<FloorResults> floorResultsList, List<FloorLawFields> candidateFloorLaw) {
-        candidateFloorLaw.forEach(flf -> floorConditionComparator(flf, new LinkedList<>(floorResultsList), building));
+        candidateFloorLaw.forEach(flf -> {
+            log.info("----------------------------------------------------------------");
+            floorConditionComparator(flf, new LinkedList<>(floorResultsList), building);
+            log.info("floorResultList check at floorLawExecute {}", floorResultsList);
+        });
     }
 
     private void floorConditionComparator(FloorLawFields flf, List<FloorResults> floorResultsList, Building building) {
@@ -63,6 +67,7 @@ public class FloorLawExecutionService {
         Integer[] target = {flf.majorCategoryCode, flf.minorCategoryCode};
         List<Conditions> conditions = flf.conditionsList;
 
+        log.info("surviving list beginning {}",floorResultsList );
 //      floorNo && isUnderground
         if (isActivated(flf.floorNo)) {
             Conditions conditional = getCondition(conditions, "floorNo");
@@ -78,6 +83,7 @@ public class FloorLawExecutionService {
             return;
         }
 
+        log.info("surviving list past floorNo {}",floorResultsList );
 //      Surviving inputs are all satisfyign the conditonal requirement of floorNo
 //      floorAreaSum
         if (isActivated(flf.floorAreaSum)) {
@@ -90,6 +96,8 @@ public class FloorLawExecutionService {
         if (floorResultsList.isEmpty()) {
             return;
         }
+
+        log.info("surviving list past floorAreaSum {}",floorResultsList );
 //      Surviving inputs are all satisfying the conditonal requirement of floorNo
 //      floorAreaThreshold
         if (isActivated(flf.floorAreaThreshold)) {
@@ -100,6 +108,7 @@ public class FloorLawExecutionService {
             return;
         }
 
+        log.info("surviving list past floorAreaThreshold {}",floorResultsList );
 //      surviving inputs has floor area sum of given classification, specifiation meeting condition
 //      floorMaterial
         if (isActivated(flf.floorMaterial)) {
@@ -109,11 +118,13 @@ public class FloorLawExecutionService {
             }
         }
 
+        log.info("surviving list past floorWindowAvailability {}",floorResultsList );
 //        surviving inputs have floor materials as designated by flf
 //        floorWindowAvailability
         if(isActivated(flf.floorWindowAvailability)) {
             floorResultsList.removeIf(survivingResults -> survivingResults.getFloor().getFloorWindowAvailability() != flf.getFloorWindowAvailability());
         }
+
 
         floorResultListMajorCodeMapper(floorResultsList, target);
 
@@ -121,15 +132,26 @@ public class FloorLawExecutionService {
 
     private double calculateFloorAreaSum(List<FloorResults> floorResultsList, FloorLawFields flf) {
         double floorAreaSum = 0.0;
-        for (FloorResults survivingResults : floorResultsList) {
+        Iterator<FloorResults> iterator = floorResultsList.iterator();
+        while(iterator.hasNext()) {
+            FloorResults survivingResults = iterator.next();
             if (flf.floorClassification == -1 ||
                     (flf.floorClassification.equals(survivingResults.getFloor().getFloorClassification()) && flf.floorSpecification == -1) ||
                     (flf.floorClassification.equals(survivingResults.getFloor().getFloorClassification()) && flf.floorSpecification.equals(survivingResults.getFloor().getFloorSpecification()))) {
                 floorAreaSum += survivingResults.getFloor().floorArea;
             } else {
-                floorResultsList.remove(survivingResults);
+                iterator.remove();
             }
         }
+//        for (FloorResults survivingResults : floorResultsList) {
+//            if (flf.floorClassification == -1 ||
+//                    (flf.floorClassification.equals(survivingResults.getFloor().getFloorClassification()) && flf.floorSpecification == -1) ||
+//                    (flf.floorClassification.equals(survivingResults.getFloor().getFloorClassification()) && flf.floorSpecification.equals(survivingResults.getFloor().getFloorSpecification()))) {
+//                floorAreaSum += survivingResults.getFloor().floorArea;
+//            } else {
+//                floorResultsList.remove(survivingResults);
+//            }
+//        }
         return floorAreaSum;
     }
 }
