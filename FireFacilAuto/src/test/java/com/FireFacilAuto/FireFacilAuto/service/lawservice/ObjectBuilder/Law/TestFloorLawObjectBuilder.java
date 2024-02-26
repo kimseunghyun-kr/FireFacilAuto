@@ -1,4 +1,4 @@
-package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder;
+package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law;
 
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.installation.*;
@@ -8,7 +8,7 @@ import org.hibernate.query.sqm.ComparisonOperator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.LawObjectBuilderUtils.*;
+import static com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.LawObjectBuilderUtils.*;
 import static com.FireFacilAuto.util.conditions.ConditionalComparator.isActivated;
 
 public class TestFloorLawObjectBuilder {
@@ -68,6 +68,13 @@ public class TestFloorLawObjectBuilder {
         Flaw.setFloorAreaSum(floorAreaSum);
         Flaw.setFloorWindowAvailability(floorWindowAvailability);
 
+        if( COList != null &&  !COList.isEmpty()) {
+            setConditionsListFromComparisonOperatorList(COList, Flaw, conditionsList);
+        }
+        return Flaw;
+    }
+
+    private void setConditionsListFromComparisonOperatorList(List<ComparisonOperator> COList, FloorLawFields Flaw, List<Conditions> conditionsList) {
         if(isActivated(Flaw.floorNo)) {
             Conditions condition = this.conditionBuilder(Flaw, "floorNo", COList.get(0));
             conditionsList.add(condition);
@@ -93,11 +100,9 @@ public class TestFloorLawObjectBuilder {
             conditionsList.add(condition);
         }
         Flaw.setConditionsList(conditionsList);
-
-        return Flaw;
     }
 
-    private Conditions conditionBuilder (FloorLawFields flf, String field, ComparisonOperator co) {
+    public Conditions conditionBuilder (FloorLawFields flf, String field, ComparisonOperator co) {
         Conditions condition = new Conditions();
         condition.setFloorLawFields(flf);
         condition.setFieldName(field);

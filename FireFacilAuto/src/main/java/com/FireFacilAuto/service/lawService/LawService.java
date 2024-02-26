@@ -129,9 +129,9 @@ public  class LawService {
         }
     }
 
-    private <T> void saveLaw(T template, JpaRepository<T, Long> repository) {
+    public <T> void saveLaw(T template, JpaRepository<T, Long> repository) {
         repository.save(template);
-        log.info("template saved : {}", blawFieldRepository.findAll());
+        log.info("template saved : {}", repository.findAll());
     }
 
     private List<Integer[]> purposeMapper(String parsable, List<String> purposeClass, List<String> purposeSpec) {

@@ -1,4 +1,4 @@
-package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder;
+package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building;
 
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
@@ -33,7 +33,7 @@ public class TestBuildingObjectBuilder {
         LocalDate endDate = LocalDate.of(2022, 12, 31);
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         long randomDays = ThreadLocalRandom.current().nextLong(daysBetween + 1);
-        attributes.randomDate = startDate.plusDays(randomDays);
+        attributes.localdate = startDate.plusDays(randomDays);
 
         return attributes;
     }
@@ -63,7 +63,7 @@ public class TestBuildingObjectBuilder {
         building.setOvergroundFloors(attributes.ogf);
         building.setTotalFloors(attributes.tf);
         building.setGFA(attributes.gfa);
-        building.setDateofApproval(attributes.randomDate);
+        building.setDateofApproval(attributes.localdate);
 
         if(!buildingAttributes.manaualBuildFlag) {
             // Generate floors and set them in the building

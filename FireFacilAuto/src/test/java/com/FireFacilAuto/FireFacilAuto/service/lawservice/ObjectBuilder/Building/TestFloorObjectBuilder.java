@@ -1,4 +1,4 @@
-package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder;
+package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building;
 
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
@@ -62,7 +62,7 @@ public class TestFloorObjectBuilder {
      * @param availableGroundLimit: available floor area limit
      */
     private void generateFloors(Building building, List<Floor> floors, int floorCount, boolean isUnderGround, double availableGroundLimit) {
-        for (int i = 0; i < floorCount; i++) {
+        for (int i = 1; i <= floorCount; i++) {
             Floor floor = new Floor();
             floor.setBuilding(building);
             floor.setFloorNo(i);

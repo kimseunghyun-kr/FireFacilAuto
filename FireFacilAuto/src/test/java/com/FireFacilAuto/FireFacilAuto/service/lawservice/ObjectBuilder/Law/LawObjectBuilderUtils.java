@@ -1,4 +1,4 @@
-package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder;
+package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law;
 
 import org.hibernate.query.sqm.ComparisonOperator;
 
@@ -10,7 +10,7 @@ public class LawObjectBuilderUtils {
 
     static int randomPositiveIntWithDefault() {
         return random.nextBoolean() ?
-                ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE) :
+                ThreadLocalRandom.current().nextInt(1, 50) :
                 -1;
     }
 
@@ -22,7 +22,7 @@ public class LawObjectBuilderUtils {
 
     static double randomPositiveDoubleWithDefault() {
         return random.nextBoolean() ?
-                ThreadLocalRandom.current().nextDouble(1, Double.MAX_VALUE) :
+                ThreadLocalRandom.current().nextDouble(1, 10000.0) :
                 -1;
     }
 

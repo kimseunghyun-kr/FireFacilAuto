@@ -57,6 +57,8 @@ public class ConditionalComparator {
         // Provide default values based on the type
         if (clazz.equals(LocalDate.class)) {
             return (T) LocalDate.MIN;
+        } else if (clazz.equals(Integer.class)) {
+            return (T) Integer.valueOf(-1);
         } else if (Number.class.isAssignableFrom(clazz)) {
             return (T) Double.valueOf(-1); // Assuming -1 is the default value for Double
         } else if (clazz.equals(Boolean.class)) {

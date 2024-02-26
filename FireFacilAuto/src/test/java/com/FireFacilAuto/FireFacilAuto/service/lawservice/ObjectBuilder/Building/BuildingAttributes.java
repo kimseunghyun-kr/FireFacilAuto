@@ -1,4 +1,4 @@
-package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder;
+package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building;
 
 import lombok.Data;
 
@@ -17,7 +17,7 @@ public class BuildingAttributes {
     int ogf;
     int tf;
     double gfa;
-    LocalDate randomDate;
+    LocalDate localdate;
 
     public BuildingAttributes() {
     }
@@ -26,7 +26,7 @@ public class BuildingAttributes {
         this.setManaualBuildFlag(false);
     }
 
-    public BuildingAttributes(int bhc, int bc, int bs, int bm, int ugf, int ogf, double gfa, LocalDate randomDate) {
+    public BuildingAttributes(int bhc, int bc, int bs, int bm, int ugf, int ogf, double gfa, LocalDate localdate , boolean manualBuildFlag) {
         this.bhc = bhc;
         this.bc = bc;
         this.bs = bs;
@@ -35,7 +35,8 @@ public class BuildingAttributes {
         this.ogf = ogf;
         this.tf = ugf + ogf;
         this.gfa = gfa;
-        this.randomDate = randomDate;
+        this.localdate = localdate;
+        this.manaualBuildFlag = manualBuildFlag;
     }
 
     public static BuildingAttributes automatedBuild() {
