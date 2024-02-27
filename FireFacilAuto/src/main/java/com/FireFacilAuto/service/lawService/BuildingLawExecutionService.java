@@ -86,6 +86,7 @@ public class BuildingLawExecutionService {
     private <T extends Comparable<T>,U> boolean compareField(Clause<?> clause, Building building) {
         Object lawValue = clause.getValue();
         String lawField = clause.getFieldname();
+//        change this to actual mapping between building field and law
         Field<?> field = BuildingUtils.getBuildingFieldByName(building, lawField);
         Class<?> clazz = field.valueType();
 
