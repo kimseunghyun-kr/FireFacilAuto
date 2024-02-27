@@ -5,6 +5,7 @@ import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
+import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.util.records.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -12,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.FireFacilAuto.service.lawService.BuildingLawExecutionService.resultSheetInitializr;
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.floorResultListMajorCodeMapper;
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.getCondition;
+import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.floorResultSheetBuilder;
+import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.resultSheetInitializr;
 import static com.FireFacilAuto.util.conditions.ConditionalComparator.conditionParser;
 import static com.FireFacilAuto.util.conditions.ConditionalComparator.isActivated;
 
@@ -26,8 +30,22 @@ public class FloorLawExecutionService {
         this.lawService = lawService;
     }
 
+    public ResultSheet executeLaw(Building building) {
+        if (building == null) {
+            throw new IllegalArgumentException("Input parameters cannot be null");
+        }
 
-    public void floorLawExecute(Building building, List<FloorResults> floorResultsList) {
+        log.info("initializing result sheets");
+        ResultSheet resultSheet = resultSheetInitializr(building);
+
+        List<FloorResults> floorResultsList = floorResultSheetBuilder(building);
+        log.info("executing floor laws");
+        resolveFloorLawThenExecute(building, floorResultsList);
+
+        return resultSheet;
+    }
+
+    protected void resolveFloorLawThenExecute(Building building, List<FloorResults> floorResultsList) {
         Set<Pair> floorResultStore = new HashSet<>();
         List<FloorLawFields> candidateFloorLaw = new LinkedList<>();
 

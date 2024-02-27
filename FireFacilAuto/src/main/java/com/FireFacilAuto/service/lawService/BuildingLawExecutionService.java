@@ -15,6 +15,8 @@ import java.util.function.Function;
 
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.floorResultListMajorCodeMapper;
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.getCondition;
+import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.floorResultSheetBuilder;
+import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.resultSheetInitializr;
 import static com.FireFacilAuto.util.conditions.ConditionalComparator.*;
 
 @Service
@@ -44,19 +46,6 @@ public class BuildingLawExecutionService {
 
         return resultSheet;
     }
-
-
-
-    private List<FloorResults> floorResultSheetBuilder(Building building) {
-        return building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
-    }
-
-    private ResultSheet resultSheetInitializr(Building building) {
-        ResultSheet resultSheet = new ResultSheet();
-        resultSheet.setBuilding(building);
-        return resultSheet;
-    }
-
 
 
     protected void buildingLawExecute(Building building, List<FloorResults> floorResultsList) {

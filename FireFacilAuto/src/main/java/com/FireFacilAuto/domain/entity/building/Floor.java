@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.List;
+
 /**
  * Represents a floor within a building in the system.
  */
@@ -25,43 +27,8 @@ public class Floor {
     @ManyToOne
     public Building building;
 
-    /**
-     * Floor number or level within the building.
-     */
-    public Integer floorNo;
-
-    /**
-     * Indicates whether the floor is underground or above ground.
-     */
-    public Boolean isUnderGround;
-
-    /**
-     * Code indicating the primary use of the floor.
-     */
-    public Integer floorClassification;
-
-    /**
-     * Specific code indicating the detailed use of the floor.
-     */
-    public Integer floorSpecification;
-
-    /**
-     * Area of the floor's surface.
-     */
-    public Double floorArea;
-
-    /**
-     * Code indicating the primary material of the floor.
-     */
-    public Integer floorMaterial;
-
-    // information not yet included due to absence from address api
-
-    /**
-     * Availability of windows on the floor (not yet included).
-     */
-    public Boolean floorWindowAvailability;
-
-    // Additional information or context if needed
+    @ElementCollection
+    @CollectionTable(name = "floor_field_list", joinColumns = @JoinColumn(name = "floor_UUID"))
+    public List<Field<?>> floorFieldList;
 }
 

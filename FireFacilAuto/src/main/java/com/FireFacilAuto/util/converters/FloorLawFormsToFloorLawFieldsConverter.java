@@ -11,19 +11,8 @@ public class FloorLawFormsToFloorLawFieldsConverter implements Converter<FloorLa
     @Override
     public FloorLawFields convert(FloorLawForms source) {
         FloorLawFields target = new FloorLawFields();
-
         target.setMajorCategoryCode(source.getMajorCategoryCode());
         target.setMinorCategoryCode(source.getMinorCategoryCode());
-        target.setFloorNo(source.getFloorNo());
-        target.setIsUnderGround(source.getIsUnderGround());
-        target.setFloorClassification(-1); // Set a default value, adjust as needed
-        target.setFloorSpecification(-1); // Set a default value, adjust as needed
-        target.setFloorAreaSum(source.getFloorAreaSum());
-        target.setFloorMaterial(source.getFloorMaterial());
-
-        // Set default values for fields not present in FloorLawForms
-        target.setFloorWindowAvailability(false); // Set a default value, adjust as needed
-
         return target;
     }
 }

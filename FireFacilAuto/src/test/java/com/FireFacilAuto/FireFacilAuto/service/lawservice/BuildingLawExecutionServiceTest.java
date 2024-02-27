@@ -14,6 +14,7 @@ import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.service.lawService.BuildingAndFloorLawExecutionFacadeService;
 
+import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
 import com.FireFacilAuto.service.lawService.LawService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -38,7 +39,7 @@ import static org.mockito.Mockito.*;
 @Slf4j
 public class BuildingLawExecutionServiceTest {
     @InjectMocks
-    private final BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService;
+    private final BuildingLawExecutionService lawExecutionService;
 
     @MockBean
     private LawService lawService;
@@ -47,13 +48,12 @@ public class BuildingLawExecutionServiceTest {
     private FloorLawFields Flaw1;
 
     private final TestBuildingObjectBuilder buildingGenerator = new TestBuildingObjectBuilder();
-    private final TestFloorObjectBuilder floorObjectBuilder = new TestFloorObjectBuilder();
     private final TestBuildingLawObjectBuilder buildingLawObjectBuilder = new TestBuildingLawObjectBuilder();
-    private final TestFloorLawObjectBuilder floorLawObjectBuilder = new TestFloorLawObjectBuilder();
+
 
     @Autowired
-    public BuildingLawExecutionServiceTest(BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService) {
-        this.lawExecutionFacadeService = lawExecutionFacadeService;
+    public BuildingLawExecutionServiceTest(BuildingLawExecutionService lawExecutionService) {
+        this.lawExecutionService = lawExecutionService;
     }
 
     @BeforeEach
@@ -62,6 +62,43 @@ public class BuildingLawExecutionServiceTest {
 
 
         MockitoAnnotations.openMocks(this);
+    }
+
+
+    @Test
+    public void manuallyMadeBuildingLawTest() {
+        MockitoAnnotations.openMocks(this);
+
+        // Given
+        List<BuildingLawFields> candidateBuildingLaw = new ArrayList<>(List.of(new BuildingLawFields[]{this.Blaw1}));
+
+        // Mock the behavior of the lawService
+        when(lawService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
+        when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(new LinkedList<>());
+
+        // Act
+        ResultSheet resultSheet = lawExecutionService.executeLaw(testBuilding1);
+
+        log.info("resultSheet : {}", resultSheet);
+        assertThat(resultSheet).isNotNull();
+        assertThat(resultSheet.getFloorResultsList())
+                .extracting(floorResults -> floorResults.getExtinguisherInstallation().getExtinguisherApparatus())
+                .containsOnly(true);
+
+    }
+
+
+    @Test
+    public void RandomGeneratedBuildingTest() {
+        BuildingAttributes ba = BuildingAttributes.automatedBuild();
+        Building building = buildingGenerator.buildingObjectBuilder(ba);
+        log.info("Building {}, ", building);
+    }
+
+    @Test
+    public void RandomGeneratedLawTest() {
+        List<BuildingLawFields> blf = buildingLawObjectBuilder.randomBuildingLawsBuilder(1);
+        log.info("blf test {}", blf);
     }
 
     private void setTestBuildingtestcase1() {
@@ -136,75 +173,6 @@ public class BuildingLawExecutionServiceTest {
         Flaw1.setConditionsList(List.of(new Conditions[]{Flaw1Condition}));
     }
 
-    @Test
-    public void manuallyMadeBuildingLawTest() {
-        MockitoAnnotations.openMocks(this);
-
-        // Given
-        List<BuildingLawFields> candidateBuildingLaw = new ArrayList<>(List.of(new BuildingLawFields[]{this.Blaw1}));
-
-        // Mock the behavior of the lawService
-        when(lawService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
-        when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(new LinkedList<>());
-
-        // Act
-        ResultSheet resultSheet = lawExecutionFacadeService.executeLaw(testBuilding1);
-
-        log.info("resultSheet : {}", resultSheet);
-        assertThat(resultSheet).isNotNull();
-        assertThat(resultSheet.getFloorResultsList())
-                .extracting(floorResults -> floorResults.getExtinguisherInstallation().getExtinguisherApparatus())
-                .containsOnly(true);
-
-    }
-
-    @Test
-    public void manuallyMadeBuildingAndFloorLawTest() {
-        MockitoAnnotations.openMocks(this);
-
-        // Given
-        List<BuildingLawFields> candidateBuildingLaw = new ArrayList<>(List.of(new BuildingLawFields[]{this.Blaw1}));
-        List<FloorLawFields> candidateFloorLaw = new ArrayList<>(List.of(new FloorLawFields[]{this.Flaw1}));
-
-        // Mock the behavior of the lawService
-        when(lawService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
-        when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(candidateFloorLaw);
-
-        // Act
-        ResultSheet resultSheet = lawExecutionFacadeService.executeLaw(testBuilding1);
-
-        log.info("resultSheet : {}", resultSheet);
-        assertThat(resultSheet).isNotNull();
-        assertThat(resultSheet.getFloorResultsList())
-                .extracting(floorResults -> floorResults.getExtinguisherInstallation().getExtinguisherApparatus())
-                .containsOnly(true);
-
-        assertThat(resultSheet.getFloorResultsList().get(0).getAlarmDeviceInstallation().getAutoFireDectionApparatus())
-                .isEqualTo(true);
-
-//        to be null or to be false -> to ask.
-//        this really depends on being fully confident that all cases are covered
-//        if all cases are covered, those that are not shown as true can be denoted false.
-//        If that is not the case, can only guarantee those that are affected ==> show true values only.
-        assertThat(resultSheet.getFloorResultsList().get(1).getAlarmDeviceInstallation().getAutoFireDectionApparatus())
-                .isEqualTo(null);
-
-    }
-
-
-
-    @Test
-    public void RandomGeneratedBuildingTest() {
-        BuildingAttributes ba = BuildingAttributes.automatedBuild();
-        Building building = buildingGenerator.buildingObjectBuilder(ba);
-        log.info("Building {}, ", building);
-    }
-
-    @Test
-    public void RandomGeneratedLawTest() {
-        List<BuildingLawFields> blf = buildingLawObjectBuilder.randomBuildingLawsBuilder(1);
-        log.info("blf test {}", blf);
-    }
 
 
 }

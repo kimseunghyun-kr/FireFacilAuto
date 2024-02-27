@@ -81,7 +81,7 @@ public class BuildingAndFloorLawExecutionFacadeService {
         buildingLawExecutionService.buildingLawExecute(building, floorResultsList);
 
         log.info("executing floor laws");
-        floorLawExecutionService.floorLawExecute(building, floorResultsList);
+        floorLawExecutionService.resolveFloorLawThenExecute(building, floorResultsList);
 
         return resultSheet;
     }

@@ -1,6 +1,6 @@
 package com.FireFacilAuto.domain.entity.lawfields;
 
-import com.FireFacilAuto.domain.Conditions;
+import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
@@ -53,51 +53,9 @@ public class FloorLawFields {
     @Min(value = -1, message = "Value must be at least -1")
     public Integer floorSpecification;
 
-    /**
-     * Floor number field for laws related to floors
-     */
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Integer floorNo;
+    @ElementCollection
+    @CollectionTable(name = "floor_clauses", joinColumns = @JoinColumn(name = "floor_id"))
+    public List<Clause<?>> clauses;
 
-    /**
-     * Indicates whether the law to be applied is applicable to underground floors
-     */
-    @Column(columnDefinition = "boolean default NULL")
-    public Boolean isUnderGround;
-
-    /**
-     * law field regarding the total floor area of the floor.
-     */
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Double floorAreaSum;
-
-    /**
-     * law field for the Threshold floor area of floors.
-     */
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Double floorAreaThreshold;
-
-    /**
-     * law fields relating Material code for the floor.
-     */
-    @Column(columnDefinition = "integer default -1")
-    @Positive
-    public Integer floorMaterial;
-
-    /**
-     * Indicates the availability of windows on the floor.
-     * TRUE: Windows are required, FALSE: No windows (non-window floor), NULL: to be ignored.
-     */
-    @Column(columnDefinition = "boolean default NULL")
-    public Boolean floorWindowAvailability;
-
-    /**
-     * List of conditions associated with the floor law fields.
-     */
-    @OneToMany(mappedBy = "floorLawFields", cascade = CascadeType.ALL)
-    public List<Conditions> conditionsList;
 }
 

@@ -14,14 +14,7 @@ public class BuildingLawFormsToBuildingLawFieldsConverter implements Converter<B
 
         target.setMajorCategoryCode(source.getMajorCategoryCode());
         target.setMinorCategoryCode(source.getMinorCategoryCode());
-        target.setTotalFloors(source.getTotalFloors());
-        target.setUndergroundFloors(source.getUndergroundFloors());
-        target.setOvergroundFloors(source.getOvergroundFloors());
-        target.setGFA(source.getGFA());
-        target.setBuildingMaterials(source.buildingMaterial);
-        target.setLength(source.getLength());
-        target.setDateofApproval(source.getDateofApproval());
-        target.setBuildingHumanCapacity(source.getBuildingHumanCapacity());
+
 
         return target;
     }

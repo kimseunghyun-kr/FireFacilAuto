@@ -7,6 +7,7 @@ import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.repository.BuildingLawFieldsRepository;
 import com.FireFacilAuto.repository.FloorLawFieldsRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -78,8 +79,8 @@ public  class LawService {
             log.info("template converted : {}", template);
             assert template != null;
             setPurpose(template, purposePair);
-            List<Conditions> conditionsList = conditionMap.entrySet().stream()
-                    .map(entry -> createCondition(entry.getKey(), entry.getValue(), template))
+            List<Clause<?>> clauseList = conditionMap.entrySet().stream()
+                    .map(entry -> Clause.clauseFactory(entry.getKey(), entry.getValue(),))
                     .toList();
             log.info("conditionsList , {} " , conditionsList);
             setConditions(template, conditionsList);
