@@ -1,5 +1,10 @@
 package com.FireFacilAuto.domain.DTO.law;
 
+import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
 
@@ -11,28 +16,41 @@ import java.util.Map;
 @Data
 public class FloorLawForms {
 
-    public Integer majorCategoryCode; //주요시설법 식별코드
+    @Positive
+    private Integer majorCategoryCode;
 
-    public Integer minorCategoryCode; //세부시설법 식별코드
+    @Positive
+    private Integer minorCategoryCode;
 
-    public Integer floorNo; //충수 조건
+    @Min(value = -1, message = "Value must be at least -1")
+    private Integer floorClassification;
 
-    public Boolean isUnderGround; //지하여부
+    @Min(value = -1, message = "Value must be at least -1")
+    private Integer floorSpecification;
 
-    public String floorPurpose; //층 용도
+    private List<Clause<?>> clauses;
 
-    public Double floorAreaSum; //층 바닥면적 합
+    public static FloorLawForms fromEntity(FloorLawFields entity) {
+        FloorLawForms dto = new FloorLawForms();
+        // Map fields from entity to dto
+        dto.setMajorCategoryCode(entity.getMajorCategoryCode());
+        dto.setMinorCategoryCode(entity.getMinorCategoryCode());
+        dto.setFloorClassification(entity.getFloorClassification());
+        dto.setFloorSpecification(entity.getFloorSpecification());
+        dto.setClauses(entity.getClauses());
+        return dto;
+    }
 
-    public Double floorAreaThreshold; //층 바닥면적 임계
-
-    public Integer floorMaterial; //층 재료
-
-//    아직 미포함인 정보
-
-    public Boolean floorWindowAvailability; //무창층
-
-    // "조건" 식 저장
-    private Map<String, ComparisonOperator> conditions = new HashMap<>();
+    public FloorLawFields toEntity() {
+        FloorLawFields entity = new FloorLawFields();
+        // Map fields from dto to entity
+        this.setMajorCategoryCode(entity.getMajorCategoryCode());
+        this.setMinorCategoryCode(entity.getMinorCategoryCode());
+        this.setFloorClassification(entity.getFloorClassification());
+        this.setFloorSpecification(entity.getFloorSpecification());
+        this.setClauses(entity.getClauses());
+        return entity;
+    }
 
     public static List<String> allFloorFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo",

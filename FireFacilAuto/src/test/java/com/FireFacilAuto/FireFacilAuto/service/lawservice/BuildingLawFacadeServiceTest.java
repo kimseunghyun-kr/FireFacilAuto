@@ -7,12 +7,12 @@ import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.Test
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.TestFloorLawObjectBuilder;
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.service.lawService.BuildingAndFloorLawExecutionFacadeService;
-import com.FireFacilAuto.service.lawService.LawService;
+import com.FireFacilAuto.util.ControllerPurposeInputSpringParser;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class BuildingLawFacadeServiceTest {
     private final BuildingAndFloorLawExecutionFacadeService lawExecutionFacadeService;
 
     @MockBean
-    private LawService lawService;
+    private ControllerPurposeInputSpringParser lawService;
 
 
     private final TestBuildingObjectBuilder buildingGenerator = new TestBuildingObjectBuilder();

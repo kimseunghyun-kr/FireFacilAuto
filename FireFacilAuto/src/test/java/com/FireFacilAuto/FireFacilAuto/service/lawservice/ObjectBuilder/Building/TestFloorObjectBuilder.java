@@ -1,7 +1,7 @@
 package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building;
 
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 
 import java.util.LinkedList;
 import java.util.List;

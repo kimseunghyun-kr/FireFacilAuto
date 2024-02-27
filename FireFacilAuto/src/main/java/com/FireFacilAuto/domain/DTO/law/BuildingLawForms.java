@@ -1,46 +1,55 @@
 package com.FireFacilAuto.domain.DTO.law;
 
+import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import org.hibernate.query.sqm.ComparisonOperator;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
-public class BuildingLawForms {
+public class BuildingLawForms implements Serializable {
 
+    @Positive
+    private Integer majorCategoryCode;
 
-    public Integer majorCategoryCode; //주요시설법 식별코드
+    @Positive
+    private Integer minorCategoryCode;
 
-    public Integer minorCategoryCode; //세부시설법 식별코드
+    @Min(value = -1, message = "Value must be at least -1")
+    private Integer buildingClassification;
 
-    public Integer totalFloors; //건물 내 총 층수
+    @Min(value = -1, message = "Value must be at least -1")
+    private Integer buildingSpecification;
 
-    public Integer buildingMaterial;
+    private List<Clause<?>> clauses;
 
-    public Integer undergroundFloors; //건물 내 총 지하층
+    // Additional constructors or methods as needed
 
-    public Integer overgroundFloors; //건물 내 총 지상층
+    public static BuildingLawForms fromEntity(BuildingLawFields entity) {
+        BuildingLawForms dto = new BuildingLawForms();
+        // Map fields from entity to dto
+        dto.setMajorCategoryCode(entity.getMajorCategoryCode());
+        dto.setMinorCategoryCode(entity.getMinorCategoryCode());
+        dto.setBuildingClassification(entity.getBuildingClassification());
+        dto.setBuildingSpecification(entity.getBuildingSpecification());
+        dto.setClauses(entity.getClauses());
+        return dto;
+    }
 
-    public Double GFA; //연면적
-
-    public String buildingPurpose; //건물 용도
-
-    public Double length; //터널 등 지하구 거리
-
-    public LocalDate dateofApproval; //사용승인일
-
-
-//    아직 미포함 정보
-    public Integer buildingHumanCapacity; //수용량
-
-
-    // "조건" 식 저장
-    private Map<String, ComparisonOperator> conditions = new HashMap<>();
+    public BuildingLawFields toEntity() {
+        BuildingLawFields entity = new BuildingLawFields();
+        // Map fields from dto to entity
+        this.setMajorCategoryCode(entity.getMajorCategoryCode());
+        this.setMinorCategoryCode(entity.getMinorCategoryCode());
+        this.setBuildingClassification(entity.getBuildingClassification());
+        this.setBuildingSpecification(entity.getBuildingSpecification());
+        this.setClauses(entity.getClauses());
+        return entity;
+    }
 
     public static List<String> allBuildingFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "totalFloors",

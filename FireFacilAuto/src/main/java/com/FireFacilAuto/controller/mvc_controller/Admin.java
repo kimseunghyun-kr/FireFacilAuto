@@ -4,7 +4,7 @@ import com.FireFacilAuto.domain.DTO.law.BuildingLawForms;
 import com.FireFacilAuto.domain.DTO.law.FloorLawForms;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
-import com.FireFacilAuto.service.lawService.LawService;
+import com.FireFacilAuto.util.ControllerPurposeInputSpringParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +19,10 @@ import java.util.List;
 @Slf4j
 public class Admin {
 
-    public final LawService lawService;
+    public final ControllerPurposeInputSpringParser lawService;
 
     @Autowired
-    public Admin(LawService lawService) {
+    public Admin(ControllerPurposeInputSpringParser lawService) {
         this.lawService = lawService;
     }
 

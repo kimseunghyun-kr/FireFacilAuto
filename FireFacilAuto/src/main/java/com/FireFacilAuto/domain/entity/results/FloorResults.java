@@ -1,6 +1,6 @@
 package com.FireFacilAuto.domain.entity.results;
 
-import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.installation.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

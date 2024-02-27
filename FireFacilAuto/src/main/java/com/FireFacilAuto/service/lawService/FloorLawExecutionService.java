@@ -2,8 +2,13 @@ package com.FireFacilAuto.service.lawService;
 
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.building.BuildingUtils;
+import com.FireFacilAuto.domain.entity.building.Field;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
+import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.ComparableComparisonStrategy;
+import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.NonComparableComparisonStrategy;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.util.records.Pair;
@@ -13,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.FireFacilAuto.service.lawService.BuildingLawExecutionService.resultSheetInitializr;
+import static com.FireFacilAuto.domain.entity.floors.FloorUtils.*;
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.floorResultListMajorCodeMapper;
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.getCondition;
 import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.floorResultSheetBuilder;
@@ -24,9 +29,9 @@ import static com.FireFacilAuto.util.conditions.ConditionalComparator.isActivate
 @Service
 @Slf4j
 public class FloorLawExecutionService {
-    private final LawService lawService;
+    private final FloorLawService lawService;
 
-    public FloorLawExecutionService(LawService lawService) {
+    public FloorLawExecutionService(FloorLawService lawService) {
         this.lawService = lawService;
     }
 
@@ -61,7 +66,7 @@ public class FloorLawExecutionService {
     private void floorLawCandidacyResolver(List<FloorResults> floorResultsList, Set<Pair> floorResultStore, List<FloorLawFields> candidateFloorLaw) {
         for (FloorResults floorResults : floorResultsList) {
             Floor floor = floorResults.getFloor();
-            Pair p = new Pair(floor.floorClassification, floor.floorClassification);
+            Pair p = new Pair(getFloorClassification(floor), getFloorSpecification(floor));
             if (floorResultStore.add(p)) {
                 candidateFloorLaw.addAll(lawService.getLawsWithApplicablePurpose(floor));
             }
@@ -77,15 +82,43 @@ public class FloorLawExecutionService {
         });
     }
 
+    private <T extends Comparable<T>,U> boolean compareField(Clause<?> clause, Floor floor) {
+        Object lawValue = clause.getValue();
+        String lawField = clause.getFieldname();
+        Field<?> field = getFloorFieldByName(floor, lawField);
+        Class<?> clazz = field.valueType();
+
+        log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
+                lawField, clazz.getSimpleName(), lawValue, lawValue.getClass().getSimpleName());
+
+        if (lawValue instanceof String && clazz.equals(String.class)) {
+            return lawValue.equals(field.value());
+        }
+        if (Comparable.class.isAssignableFrom(clazz) && lawValue.getClass().equals(clazz)) {
+            ComparableComparisonStrategy<T> strategy = new ComparableComparisonStrategy<>();
+
+            // Compare using the strategy
+            return strategy.compare((T) field.value(), (T) lawValue, clause.getComparisonOperator());
+        }
+        else {
+            NonComparableComparisonStrategy<U> strategy = new NonComparableComparisonStrategy<>();
+            return strategy.compare((U)field.value(), (U)lawValue, clause.getComparisonOperator());
+        }
+    }
+
     private void floorConditionComparator(FloorLawFields flf, List<FloorResults> floorResultsList, Building building) {
         if (building == null || floorResultsList == null || floorResultsList.isEmpty()) {
             return;
         }
 
         Integer[] target = {flf.majorCategoryCode, flf.minorCategoryCode};
-        List<Conditions> conditions = flf.conditionsList;
 
         log.info("surviving list beginning {}",floorResultsList );
+        for(Clause<?> clause : flf.getClauses()) {
+            if(clause.getFieldname().equals("floorNo")) {
+
+            }
+        }
 //      floorNo && isUnderground
         if (isActivated(flf.floorNo)) {
             Conditions conditional = getCondition(conditions, "floorNo");

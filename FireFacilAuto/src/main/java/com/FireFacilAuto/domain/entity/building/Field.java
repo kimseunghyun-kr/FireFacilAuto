@@ -7,5 +7,5 @@ import lombok.extern.slf4j.Slf4j;
 
 @Embeddable
 @Slf4j
-public record Field<T>(String fieldName, T value) {
+public record Field<T>(String fieldName, T value, Class<?> valueType) {
 }

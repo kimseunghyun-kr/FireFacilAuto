@@ -3,13 +3,11 @@ package com.FireFacilAuto.FireFacilAuto.service.lawservice;
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building.TestFloorObjectBuilder;
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.TestFloorLawObjectBuilder;
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.Floor;
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
-import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
-import com.FireFacilAuto.service.lawService.LawService;
+import com.FireFacilAuto.util.ControllerPurposeInputSpringParser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,7 +32,7 @@ public class FloorLawExecutionServiceTest {
     private final BuildingLawExecutionService lawExecutionService;
 
     @MockBean
-    private LawService lawService;
+    private ControllerPurposeInputSpringParser lawService;
 
     public FloorLawExecutionServiceTest(BuildingLawExecutionService lawExecutionService) {
         this.lawExecutionService = lawExecutionService;

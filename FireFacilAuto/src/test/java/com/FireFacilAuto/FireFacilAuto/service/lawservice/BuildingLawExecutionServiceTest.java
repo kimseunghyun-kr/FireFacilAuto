@@ -2,20 +2,17 @@ package com.FireFacilAuto.FireFacilAuto.service.lawservice;
 
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building.BuildingAttributes;
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building.TestBuildingObjectBuilder;
-import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building.TestFloorObjectBuilder;
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.TestBuildingLawObjectBuilder;
-import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.TestFloorLawObjectBuilder;
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
-import com.FireFacilAuto.service.lawService.BuildingAndFloorLawExecutionFacadeService;
 
 import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
-import com.FireFacilAuto.service.lawService.LawService;
+import com.FireFacilAuto.util.ControllerPurposeInputSpringParser;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +38,7 @@ public class BuildingLawExecutionServiceTest {
     private final BuildingLawExecutionService lawExecutionService;
 
     @MockBean
-    private LawService lawService;
+    private ControllerPurposeInputSpringParser lawService;
     private Building testBuilding1;
     private BuildingLawFields Blaw1;
     private FloorLawFields Flaw1;

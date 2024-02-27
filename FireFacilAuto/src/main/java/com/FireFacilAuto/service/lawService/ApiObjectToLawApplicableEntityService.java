@@ -5,17 +5,25 @@ import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
 import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.Floor;
+import com.FireFacilAuto.domain.entity.building.Field;
+import com.FireFacilAuto.domain.entity.building.PossibleBuildingFields;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import static com.FireFacilAuto.domain.entity.building.PossibleBuildingFields.getBuildingClass;
+import static com.FireFacilAuto.domain.entity.floors.PossibleFloorFields.getFloorClass;
 
 @Service
 @Slf4j
 public class ApiObjectToLawApplicableEntityService {
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
 
     /**
      * Map TitleResponseItem information to initialize a Building object.
@@ -28,21 +36,25 @@ public class ApiObjectToLawApplicableEntityService {
         // TODO: allocate number for classification based on code
         log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem);
 
-        building.setBuildingClassification(classificationCodeMapper(titleResponseItem));
-        building.setBuildingSpecification(specificationCodeMapper(titleResponseItem));
-
-        building.setJuso(address);
+        Field<Integer> buildingClassification = new Field<>("buildingClassification",classificationCodeMapper(titleResponseItem), PossibleBuildingFields.getBuildingClass("buildingClassification"));
+        Field<Integer> buildingSpecification = new Field<>("buildingSpecification",specificationCodeMapper(titleResponseItem), PossibleBuildingFields.getBuildingClass("buildingSpecification"));
 
         log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem.getPmsDay());
-        building.setDateofApproval(titleResponseItem.getPmsDay().trim().isEmpty() ? LocalDate.now() :
-                LocalDate.parse(titleResponseItem.getPmsDay(), formatter));
-        building.setGFA(Double.valueOf(titleResponseItem.getTotArea()));
-        building.setUndergroundFloors(Integer.valueOf(titleResponseItem.getUgrndFlrCnt()));
-        building.setOvergroundFloors(Integer.valueOf(titleResponseItem.getGrndFlrCnt()));
-        building.setTotalFloors(building.getOvergroundFloors() + building.getUndergroundFloors());
-        building.setBuildingMaterial(Integer.valueOf(titleResponseItem.getStrctCd()));
+        Field<LocalDate> dateOfApproval = new Field<>("dateOfApproval",
+                (titleResponseItem.getPmsDay().trim().isEmpty() ? LocalDate.now() : LocalDate.parse(titleResponseItem.getPmsDay(), formatter)),getBuildingClass("dateOfApproval"));
+
+        Field<Double> GFA = new Field<>("GFA",Double.valueOf(titleResponseItem.getTotArea()), getBuildingClass("GFA"));
+        Field<Integer> undergroundFloors = new Field<>("undergroundFloors",Integer.valueOf(titleResponseItem.getUgrndFlrCnt()),getBuildingClass("undergroundFloors"));
+        Field<Integer> overgroundFloors = new Field<>("overgroundFloors",Integer.valueOf(titleResponseItem.getGrndFlrCnt()),getBuildingClass("overgroundFloors"));
+        Field<Integer> totalFloors = new Field<>("totalFloors", undergroundFloors.value()+ overgroundFloors.value(),getBuildingClass("totalFloors"));
+        Field<Integer> buildingMaterial = new Field<>("buildingMaterial", Integer.valueOf(titleResponseItem.getStrctCd()),getBuildingClass("buildingMaterial"));
         // TODO: calculate capacity
-        building.setBuildingHumanCapacity(getBuildingCapacity(titleResponseItem));
+
+        Field<Integer> buildingHumanCapacity = new Field<>("buildingHumanCapacity", getBuildingCapacity(titleResponseItem), getBuildingClass("buildingHumanCapacity"));
+
+        building.setJuso(address);
+        building.setBuildingFieldList(List.of(buildingClassification,buildingSpecification,dateOfApproval
+                ,GFA,undergroundFloors,overgroundFloors,totalFloors,buildingMaterial,buildingHumanCapacity));
     }
 
     /**
@@ -55,17 +67,23 @@ public class ApiObjectToLawApplicableEntityService {
      */
     public void floorInitializr(TitleResponseItem titleResponseItem, ExposedInfoResponseItem exposInfoResponseItem,
                                  FloorResponseItem floorResponseItem, Floor floor) {
-        floor.setFloorClassification(classificationCodeMapper(floorResponseItem, titleResponseItem));
-        floor.setFloorSpecification(specificationCodeMapper(floorResponseItem, titleResponseItem));
-        floor.setFloorMaterial(Integer.valueOf(floorResponseItem.getStrctCd()));
-        floor.setFloorArea(Double.valueOf(floorResponseItem.getArea()));
+        Field<Integer> floorClassification = new Field<>("floorClassification",classificationCodeMapper(floorResponseItem, titleResponseItem), getFloorClass("floorClassification"));
+        Field<Integer> floorSpecification = new Field<>("floorSpecification",specificationCodeMapper(floorResponseItem, titleResponseItem), getFloorClass("floorSpecification"));
+
+        Field<Integer> floorMaterial = new Field<>("floorMaterial", Integer.valueOf(floorResponseItem.getStrctCd()), getFloorClass("floorMaterial"));
+        Field<Double> floorArea = new Field<>("floorArea", Double.valueOf(floorResponseItem.getArea()), getFloorClass("floorArea"));
+
+        Field<Boolean> isUnderGround;
+        Field<Integer> floorNo;
         if (exposInfoResponseItem != null) {
-            floor.setIsUnderGround(floorGbCdMapper(exposInfoResponseItem.getFlrGbCd()));
-            floor.setFloorNo(Integer.valueOf(exposInfoResponseItem.getFlrNo()));
+            isUnderGround = new Field<>("isUnderGround", floorGbCdMapper(exposInfoResponseItem.getFlrGbCd()),getFloorClass("isUnderGround"));
+            floorNo = new Field<>("floorNo", Integer.valueOf(exposInfoResponseItem.getFlrNo()),getFloorClass("floorNo"));
         } else {
-            floor.setIsUnderGround(floorGbCdMapper(floorResponseItem.getFlrGbCd()));
-            floor.setFloorNo(Integer.valueOf(floorResponseItem.getFlrNo()));
+            isUnderGround = new Field<>("isUnderGround", floorGbCdMapper(floorResponseItem.getFlrGbCd()),getFloorClass("isUnderGround"));
+            floorNo = new Field<>("floorNo", Integer.valueOf(floorResponseItem.getFlrNo()),getFloorClass("floorNo"));
         }
+
+        floor.setFloorFieldList(List.of(floorClassification,floorSpecification,floorArea,floorNo,floorMaterial,isUnderGround));
     }
 
     /**

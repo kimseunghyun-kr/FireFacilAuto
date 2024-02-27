@@ -1,10 +1,10 @@
 package com.FireFacilAuto.domain.entity.building;
 
 import com.FireFacilAuto.domain.entity.Address;
+import com.FireFacilAuto.domain.entity.floors.Floor;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -21,9 +21,15 @@ public class Building {
     @Embedded
     private Address juso;
 
+    /**
+     * composite floors present within the building
+     */
     @OneToMany(mappedBy = "building")
     private List<Floor> compositeFloors;
 
+    /**
+     * fields that are to be included to describe the building
+     */
     @ElementCollection
     @CollectionTable(name = "building_field_list", joinColumns = @JoinColumn(name = "building_UUID"))
     private List<Field<?>> buildingFieldList;

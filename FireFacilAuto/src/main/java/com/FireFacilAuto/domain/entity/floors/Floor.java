@@ -1,5 +1,7 @@
-package com.FireFacilAuto.domain.entity.building;
+package com.FireFacilAuto.domain.entity.floors;
 
+import com.FireFacilAuto.domain.entity.building.Building;
+import com.FireFacilAuto.domain.entity.building.Field;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;

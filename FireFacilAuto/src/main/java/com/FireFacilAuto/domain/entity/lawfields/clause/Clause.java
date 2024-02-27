@@ -1,6 +1,5 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
-import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.ComparisonStrategy;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +9,6 @@ import org.hibernate.query.sqm.ComparisonOperator;
 @Data
 @Slf4j
 public class Clause<T>{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     String fieldname;
     ComparisonOperator comparisonOperator;
