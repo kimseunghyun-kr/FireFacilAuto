@@ -1,4 +1,4 @@
-package com.FireFacilAuto.service.lawService;
+package com.FireFacilAuto.service.lawService.buildinglaws;
 
 import com.FireFacilAuto.domain.entity.building.Building;
 
@@ -25,10 +25,10 @@ import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.
 @Service
 @Slf4j
 public class BuildingLawExecutionService {
-    private final BuildingLawService lawService;
+    private final BuildingLawRepositoryService lawService;
 
     @Autowired
-    public BuildingLawExecutionService(BuildingLawService lawService) {
+    public BuildingLawExecutionService(BuildingLawRepositoryService lawService) {
         this.lawService = lawService;
 
     }
@@ -51,7 +51,7 @@ public class BuildingLawExecutionService {
     }
 
 
-    protected void buildingLawExecute(Building building, List<FloorResults> floorResultsList) {
+    public void buildingLawExecute(Building building, List<FloorResults> floorResultsList) {
         log.info("initializing candidate laws");
         List<BuildingLawFields> candidateBuildingLaw = lawService.getLawsWithApplicablePurpose(building);
         log.info("candidate law fields building : {}", candidateBuildingLaw);

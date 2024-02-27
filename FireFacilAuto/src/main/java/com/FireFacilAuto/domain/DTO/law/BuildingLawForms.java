@@ -29,27 +29,6 @@ public class BuildingLawForms implements Serializable {
 
     // Additional constructors or methods as needed
 
-    public static BuildingLawForms fromEntity(BuildingLawFields entity) {
-        BuildingLawForms dto = new BuildingLawForms();
-        // Map fields from entity to dto
-        dto.setMajorCategoryCode(entity.getMajorCategoryCode());
-        dto.setMinorCategoryCode(entity.getMinorCategoryCode());
-        dto.setBuildingClassification(entity.getBuildingClassification());
-        dto.setBuildingSpecification(entity.getBuildingSpecification());
-        dto.setClauses(entity.getClauses());
-        return dto;
-    }
-
-    public BuildingLawFields toEntity() {
-        BuildingLawFields entity = new BuildingLawFields();
-        // Map fields from dto to entity
-        this.setMajorCategoryCode(entity.getMajorCategoryCode());
-        this.setMinorCategoryCode(entity.getMinorCategoryCode());
-        this.setBuildingClassification(entity.getBuildingClassification());
-        this.setBuildingSpecification(entity.getBuildingSpecification());
-        this.setClauses(entity.getClauses());
-        return entity;
-    }
 
     public static List<String> allBuildingFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "totalFloors",

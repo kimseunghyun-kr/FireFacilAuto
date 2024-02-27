@@ -10,19 +10,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class ConditionalComparator {
 
-    public static <T extends Comparable<T>> boolean evaluate(T operand1, ComparisonOperator operator, T operand2) {
-        // Implementation of the evaluation logic
-        // You may replace this with your actual comparison logic
-        return switch (operator) {
-            case EQUAL -> operand1.equals(operand2);
-            case NOT_EQUAL -> !operand1.equals(operand2);
-            case GREATER_THAN -> operand1.compareTo(operand2) > 0;
-            case LESS_THAN -> operand1.compareTo(operand2) < 0;
-            case GREATER_THAN_OR_EQUAL -> operand1.compareTo(operand2) >= 0;
-            case LESS_THAN_OR_EQUAL -> operand1.compareTo(operand2) <= 0;
-            default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
-        };
-    }
+
 
     public static <T extends Comparable<T>> boolean evaluate(T operand1, String operator, T operand2) {
         log.info("operand1 : {} {} operand2: {}", operand1, operator, operand2);

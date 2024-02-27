@@ -8,6 +8,8 @@ import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
+import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawExecutionService;
+import com.FireFacilAuto.service.lawService.floorLaws.FloorLawExecutionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

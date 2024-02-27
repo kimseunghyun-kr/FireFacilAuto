@@ -11,8 +11,8 @@ import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 
-import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
-import com.FireFacilAuto.util.ControllerPurposeInputSpringParser;
+import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawExecutionService;
+import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawFormToFieldParser;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +38,7 @@ public class BuildingLawExecutionServiceTest {
     private final BuildingLawExecutionService lawExecutionService;
 
     @MockBean
-    private ControllerPurposeInputSpringParser lawService;
+    private BuildingLawFormToFieldParser lawService;
     private Building testBuilding1;
     private BuildingLawFields Blaw1;
     private FloorLawFields Flaw1;

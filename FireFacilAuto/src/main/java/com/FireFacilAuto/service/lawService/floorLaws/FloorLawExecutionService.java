@@ -1,8 +1,7 @@
-package com.FireFacilAuto.service.lawService;
+package com.FireFacilAuto.service.lawService.floorLaws;
 
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.BuildingUtils;
 import com.FireFacilAuto.domain.entity.building.Field;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
@@ -50,7 +49,7 @@ public class FloorLawExecutionService {
         return resultSheet;
     }
 
-    protected void resolveFloorLawThenExecute(Building building, List<FloorResults> floorResultsList) {
+    public void resolveFloorLawThenExecute(Building building, List<FloorResults> floorResultsList) {
         Set<Pair> floorResultStore = new HashSet<>();
         List<FloorLawFields> candidateFloorLaw = new LinkedList<>();
 

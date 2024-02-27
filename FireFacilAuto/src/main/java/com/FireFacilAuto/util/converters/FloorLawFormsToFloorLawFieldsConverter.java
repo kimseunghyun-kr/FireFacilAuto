@@ -9,10 +9,14 @@ import org.springframework.stereotype.Component;
 public class FloorLawFormsToFloorLawFieldsConverter implements Converter<FloorLawForms, FloorLawFields> {
 
     @Override
-    public FloorLawFields convert(FloorLawForms source) {
-        FloorLawFields target = new FloorLawFields();
-        target.setMajorCategoryCode(source.getMajorCategoryCode());
-        target.setMinorCategoryCode(source.getMinorCategoryCode());
-        return target;
+    public FloorLawFields convert(FloorLawForms forms) {
+        FloorLawFields entity = new FloorLawFields();
+        // Map fields from dto to entity
+        forms.setMajorCategoryCode(entity.getMajorCategoryCode());
+        forms.setMinorCategoryCode(entity.getMinorCategoryCode());
+        forms.setFloorClassification(entity.getFloorClassification());
+        forms.setFloorSpecification(entity.getFloorSpecification());
+        forms.setClauses(entity.getClauses());
+        return entity;
     }
 }

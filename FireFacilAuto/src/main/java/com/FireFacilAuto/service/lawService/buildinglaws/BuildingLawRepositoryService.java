@@ -1,4 +1,4 @@
-package com.FireFacilAuto.service.lawService;
+package com.FireFacilAuto.service.lawService.buildinglaws;
 
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class BuildingLawService {
+public class BuildingLawRepositoryService {
     private final BuildingLawFieldsRepository blawFieldRepository;
 
     @Autowired
-    public BuildingLawService(BuildingLawFieldsRepository blawFieldRepository) {
+    public BuildingLawRepositoryService(BuildingLawFieldsRepository blawFieldRepository) {
         this.blawFieldRepository = blawFieldRepository;
     }
 

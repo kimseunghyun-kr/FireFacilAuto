@@ -9,14 +9,15 @@ import org.springframework.stereotype.Component;
 public class BuildingLawFormsToBuildingLawFieldsConverter implements Converter<BuildingLawForms, BuildingLawFields> {
 
     @Override
-    public BuildingLawFields convert(BuildingLawForms source) {
-        BuildingLawFields target = new BuildingLawFields();
-
-        target.setMajorCategoryCode(source.getMajorCategoryCode());
-        target.setMinorCategoryCode(source.getMinorCategoryCode());
-
-
-        return target;
+    public BuildingLawFields convert(BuildingLawForms forms) {
+        BuildingLawFields entity = new BuildingLawFields();
+        // Map fields from dto to entity
+        forms.setMajorCategoryCode(entity.getMajorCategoryCode());
+        forms.setMinorCategoryCode(entity.getMinorCategoryCode());
+        forms.setBuildingClassification(entity.getBuildingClassification());
+        forms.setBuildingSpecification(entity.getBuildingSpecification());
+        forms.setClauses(entity.getClauses());
+        return entity;
     }
 
 }

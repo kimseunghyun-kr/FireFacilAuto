@@ -4,7 +4,7 @@ import com.FireFacilAuto.domain.DTO.law.BuildingLawForms;
 import com.FireFacilAuto.domain.DTO.law.FloorLawForms;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
-import com.FireFacilAuto.util.ControllerPurposeInputSpringParser;
+import com.FireFacilAuto.service.lawService.LawService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +19,10 @@ import java.util.List;
 @Slf4j
 public class Admin {
 
-    public final ControllerPurposeInputSpringParser lawService;
+    public final LawService lawService;
 
     @Autowired
-    public Admin(ControllerPurposeInputSpringParser lawService) {
+    public Admin(LawService lawService) {
         this.lawService = lawService;
     }
 
@@ -43,6 +43,7 @@ public class Admin {
                                       @RequestParam("formType") String formType,
                                       @RequestParam("purposesFirst") List<String> purposesFirst,
                                       @RequestParam("purposesSecond") List<String> purposesSecond,
+                                      @RequestParam("purposeString") String purposeString,
                                       @ModelAttribute("buildingForm") BuildingLawForms buildingForm,
                                       @ModelAttribute("floorForm") FloorLawForms floorForm) {
 
@@ -50,10 +51,10 @@ public class Admin {
 
         if ("building".equalsIgnoreCase(formType)) {
             log.info("BuildingForm: {}", buildingForm);
-            List<BuildingLawFields> buildingFields = lawService.makeBuildingLaw(buildingForm, purposesFirst, purposesSecond);
+            List<BuildingLawFields> buildingFields = lawService.makeBuildingLaw(buildingForm,purposeString, purposesFirst, purposesSecond);
         } else if ("floor".equalsIgnoreCase(formType)) {
             log.info("FloorForm: {}", floorForm);
-            List<FloorLawFields> floorFields = lawService.makeFloorLaw(floorForm, purposesFirst, purposesSecond);
+            List<FloorLawFields> floorFields = lawService.makeFloorLaw(floorForm,purposeString, purposesFirst, purposesSecond);
         }
 
         return "redirect:/admin/main";

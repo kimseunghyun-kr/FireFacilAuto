@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 public class LawMappingUtils {
 
-    static void floorResultListMajorCodeMapper(List<FloorResults> floorResultsList, Integer[] target) {
+    public static void floorResultListMajorCodeMapper(List<FloorResults> floorResultsList, Integer[] target) {
         log.info("class : {}, spec : {}", target[0], target[1]);
         for (FloorResults survivingResults : floorResultsList) {
             survivingResults.numericSetter(target[0], target[1]);
@@ -19,7 +19,7 @@ public class LawMappingUtils {
         }
     }
 
-    static Conditions getCondition(List<Conditions> conditions, String fieldName) {
+    public static Conditions getCondition(List<Conditions> conditions, String fieldName) {
         return conditions.stream()
                 .filter(c -> c.getFieldName().equals(fieldName))
                 .findFirst()

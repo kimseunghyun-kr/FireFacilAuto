@@ -7,11 +7,11 @@ import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import java.util.List;
 
 public class ResultSheetInitializingUtils {
-    static List<FloorResults> floorResultSheetBuilder(Building building) {
+    public static List<FloorResults> floorResultSheetBuilder(Building building) {
         return building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
     }
 
-    static ResultSheet resultSheetInitializr(Building building) {
+    public static ResultSheet resultSheetInitializr(Building building) {
         ResultSheet resultSheet = new ResultSheet();
         resultSheet.setBuilding(building);
         return resultSheet;

@@ -1,4 +1,4 @@
-package com.FireFacilAuto.service.lawService;
+package com.FireFacilAuto.service.lawService.floorLaws;
 
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;

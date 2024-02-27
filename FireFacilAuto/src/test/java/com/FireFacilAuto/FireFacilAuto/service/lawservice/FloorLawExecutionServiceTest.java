@@ -6,8 +6,8 @@ import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
-import com.FireFacilAuto.service.lawService.BuildingLawExecutionService;
-import com.FireFacilAuto.util.ControllerPurposeInputSpringParser;
+import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawExecutionService;
+import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawFormToFieldParser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,7 +32,7 @@ public class FloorLawExecutionServiceTest {
     private final BuildingLawExecutionService lawExecutionService;
 
     @MockBean
-    private ControllerPurposeInputSpringParser lawService;
+    private BuildingLawFormToFieldParser lawService;
 
     public FloorLawExecutionServiceTest(BuildingLawExecutionService lawExecutionService) {
         this.lawExecutionService = lawExecutionService;

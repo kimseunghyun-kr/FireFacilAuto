@@ -41,17 +41,6 @@ public class FloorLawForms {
         return dto;
     }
 
-    public FloorLawFields toEntity() {
-        FloorLawFields entity = new FloorLawFields();
-        // Map fields from dto to entity
-        this.setMajorCategoryCode(entity.getMajorCategoryCode());
-        this.setMinorCategoryCode(entity.getMinorCategoryCode());
-        this.setFloorClassification(entity.getFloorClassification());
-        this.setFloorSpecification(entity.getFloorSpecification());
-        this.setClauses(entity.getClauses());
-        return entity;
-    }
-
     public static List<String> allFloorFields() {
         return Arrays.asList("majorCategoryCode", "minorCategoryCode", "floorNo",
                 "isUnderGround", "floorPurpose" , "floorAreaSum", "floorAreaThreshold", "floorMaterial",

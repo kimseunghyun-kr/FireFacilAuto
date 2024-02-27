@@ -1,4 +1,4 @@
-package com.FireFacilAuto.service.lawService;
+package com.FireFacilAuto.service.lawService.buildinglaws;
 
 public class BuildingLawExecutionServiceDeprecatedMethodStore {
     /*
