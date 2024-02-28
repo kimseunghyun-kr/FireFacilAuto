@@ -12,6 +12,7 @@ import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.NonCo
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,45 +72,25 @@ public class BuildingLawExecutionService {
     private void buildingConditionComparator(BuildingLawFields blf, Building building, List<FloorResults> floorResultsList) {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
+        if(blf.buildingClassification != -1) {
+            Clause<Integer> classificationClause = new Clause<>("buildingClassification", ComparisonOperator.EQUAL, blf.buildingClassification, 1, Integer.class);
+            if (blf.buildingSpecification != -1) {
+                Clause<Integer> specificationClause = new Clause<>("buildingSpecification", ComparisonOperator.EQUAL, blf.buildingSpecification, 1, Integer.class);
+                blf.clauses.addFirst(specificationClause);
+            }
+            blf.clauses.addFirst(classificationClause);
+        }
+
+
 //        FOR A SINGLE(THE) BLF, IF ALL MATCH THEN LABEL ALL FLOORS TRUE
         boolean isTrue = true;
         for (Clause<?> clause : blf.clauses) {
-            isTrue &= compareField(clause, building);
+            isTrue &= ClauseEvaluator.buildingEvaluate(clause, building);
         }
         log.info("BLF PASSING ?= {} ", isTrue);
         if (isTrue) {
             floorResultListMajorCodeMapper(floorResultsList, target);
         }
     }
-
-
-    private <T extends Comparable<T>,U> boolean compareField(Clause<?> clause, Building building) {
-        Object lawValue = clause.getValue();
-        String lawField = clause.getFieldname();
-//        change this to actual mapping between building field and law
-        Field<?> field = BuildingUtils.getBuildingFieldByName(building, lawField);
-        Class<?> clazz = field.valueType();
-
-        log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
-                lawField, clazz.getSimpleName(), lawValue, lawValue.getClass().getSimpleName());
-
-        if (lawValue instanceof String && clazz.equals(String.class)) {
-            return lawValue.equals(field.value());
-        }
-        if (Comparable.class.isAssignableFrom(clazz) && lawValue.getClass().equals(clazz)) {
-            ComparableComparisonStrategy<T> strategy = new ComparableComparisonStrategy<>();
-            return evaluator.evaluate((Clause<T>)clause, (T) field.value());
-            // Compare using the strategy
-        }
-        else {
-            NonComparableComparisonStrategy<U> strategy = new NonComparableComparisonStrategy<>();
-            return evaluator.evaluate((Clause<U>)clause, (U)field.value());
-//            return strategy.compare((U)field.value(), (U)lawValue, clause.getComparisonOperator());
-        }
-    }
-
-
-
-
 
 }

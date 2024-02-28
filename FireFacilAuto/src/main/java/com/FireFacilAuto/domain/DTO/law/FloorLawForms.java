@@ -28,6 +28,9 @@ public class FloorLawForms {
     @Min(value = -1, message = "Value must be at least -1")
     private Integer floorSpecification;
 
+//    @Positive
+//    private Integer ClauseDepth;
+
     private List<Clause<?>> clauses;
 
     public static FloorLawForms fromEntity(FloorLawFields entity) {

@@ -1,11 +1,11 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
+import com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig.PossibleBuildingClauses;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 
-import static com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig.PossibleBuildingClauses.getBuildingLawClassToken;
 
 @Embeddable
 @Data
@@ -30,7 +30,7 @@ public class Clause<T>{
     }
 
     public static <T> Clause<T> clauseFactory(String fieldname, T input, ComparisonOperator co, int priority) {
-        return new Clause<>(fieldname,co,input,priority, getBuildingLawClassToken(fieldname));
+        return new Clause<>(fieldname,co,input,priority, PossibleBuildingClauses.getBuildingLawClassToken(fieldname));
     }
 
 

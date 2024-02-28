@@ -25,6 +25,9 @@ public class BuildingLawForms implements Serializable {
     @Min(value = -1, message = "Value must be at least -1")
     private Integer buildingSpecification;
 
+//    @Positive
+//    private Integer ClauseDepth;
+
     private List<Clause<?>> clauses;
 
     // Additional constructors or methods as needed

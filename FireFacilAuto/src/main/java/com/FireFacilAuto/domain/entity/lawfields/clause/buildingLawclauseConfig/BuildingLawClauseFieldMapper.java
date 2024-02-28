@@ -1,6 +1,5 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig;
 
-import java.time.LocalDate;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BuildingLawClauseFieldMapper {

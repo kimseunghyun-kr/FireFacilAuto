@@ -1,10 +1,5 @@
 package com.FireFacilAuto.service.WebClient.api;
 
-import com.FireFacilAuto.domain.DTO.api.baseapi.BaseApiResponse;
-import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponse;
-import com.FireFacilAuto.domain.DTO.api.baseapi.BaseResponseItem;
-import com.FireFacilAuto.domain.DTO.api.floorapi.FloorApiResponse;
-import com.FireFacilAuto.domain.DTO.api.floorapi.FloorResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 @Service
 @Slf4j

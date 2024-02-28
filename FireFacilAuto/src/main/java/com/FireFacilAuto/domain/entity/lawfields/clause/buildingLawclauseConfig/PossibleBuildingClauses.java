@@ -16,6 +16,8 @@ public class PossibleBuildingClauses {
         fieldMap.put("dateOfApproval", LocalDate.class);
         fieldMap.put("buildingHumanCapacity",Integer.class);
         fieldMap.put("extraFacility", String.class);
+        fieldMap.put("buildingClassification",Integer.class);
+        fieldMap.put("buildingSpecification", Integer.class);
     }
 
     public static Class<?> getBuildingLawClassToken(String field) {
