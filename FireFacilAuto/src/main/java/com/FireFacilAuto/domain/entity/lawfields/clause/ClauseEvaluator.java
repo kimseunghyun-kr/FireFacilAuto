@@ -18,28 +18,14 @@ import static com.FireFacilAuto.domain.entity.floors.PossibleFloorFields.getFloo
 
 @Slf4j
 public class ClauseEvaluator {
-    public <T extends Number & Comparable<T>, U extends Comparable<U>,V> Boolean evaluate(Clause<?> clause, Building building) {
+
+//    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
+    public Boolean evaluate(Clause<?> clause, Building building) {
 
         String lawField = clause.getFieldname();
 
         if(ClauseFieldComparatorConfig.isAggregationOperation(lawField)) {
-            String targetAggregationField = ClauseFieldComparatorConfig.getTargetField(lawField);
-            Class<?> lawFieldValueToken = clause.getToken();
-            Class<?> clazz = getFloorClass(targetAggregationField);
-
-            log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
-                    targetAggregationField, clazz.getSimpleName(), clause.getValue(), clause.getValue().getClass().getSimpleName());
-
-            if(!lawFieldValueToken.equals(clazz)) {
-                throw new UnsupportedOperationException("non matching token types of Building and target floor Field Types in aggregation");
-            }
-
-            List<Field<?>> aggregatedFloorFields = building.getCompositeFloors().stream().map(floor -> getFloorFieldByName(floor, targetAggregationField)).collect(Collectors.toList());
-            T lawValue = (T) clause.getValue();
-            T result = aggregate(aggregatedFloorFields);
-
-            ComparableComparisonStrategy<T> strategy = new ComparableComparisonStrategy<>();
-            return strategy.compare(result, lawValue, clause.getComparisonOperator());
+            return aggregationOperationEvaluation(clause, building.getCompositeFloors(), lawField);
         }
 
         Object lawValue = clause.getValue();
@@ -50,41 +36,35 @@ public class ClauseEvaluator {
         log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
                 field.fieldName(), clazz.getSimpleName(), clause.getValue(), clause.getValue().getClass().getSimpleName());
 
-        if (lawValue instanceof String && clazz.equals(String.class)) {
-            return lawValue.equals(field.value());
-        }
-        if (Comparable.class.isAssignableFrom(clazz) && lawValue.getClass().equals(clazz)) {
-            ComparableComparisonStrategy<U> strategy = new ComparableComparisonStrategy<>();
-            return strategy.compare((U) field.value(), (U) lawValue, clause.getComparisonOperator());
-            // Compare using the strategy
-        }
-        else {
-            NonComparableComparisonStrategy<V> strategy = new NonComparableComparisonStrategy<>();
-            return strategy.compare((V)field.value(), (V)lawValue, clause.getComparisonOperator());
-        }
+        return defaultComparisonStrategyApply(clause, lawValue, clazz, field);
     }
 
-    public <T extends Number & Comparable<T>, U extends Comparable<U>,V> Boolean evaluate(Clause<?> clause, Floor floor, List<Floor> survivingList) {
+    private <T extends Number & Comparable<T>> Boolean aggregationOperationEvaluation(Clause<?> clause, List<Floor> remainingFloors, String lawField) {
+        String targetAggregationField = ClauseFieldComparatorConfig.getTargetField(lawField);
+        Class<?> lawFieldValueToken = clause.getToken();
+        Class<?> clazz = getFloorClass(targetAggregationField);
+
+        log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
+                targetAggregationField, clazz.getSimpleName(), clause.getValue(), clause.getValue().getClass().getSimpleName());
+
+        if(!lawFieldValueToken.equals(clazz)) {
+            throw new UnsupportedOperationException("non matching token types of Building and target floor Field Types in aggregation");
+        }
+
+        List<Field<?>> aggregatedFloorFields = remainingFloors.stream().map(floor -> getFloorFieldByName(floor, targetAggregationField)).collect(Collectors.toList());
+        T lawValue = (T) clause.getValue();
+        T result = aggregate(aggregatedFloorFields);
+
+        ComparableComparisonStrategy<T> strategy = new ComparableComparisonStrategy<>();
+        return strategy.compare(result, lawValue, clause.getComparisonOperator());
+    }
+
+//    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
+    public Boolean evaluate(Clause<?> clause, Floor floor, List<Floor> survivingList) {
         String lawField = clause.getFieldname();
 
         if(ClauseFieldComparatorConfig.isAggregationOperation(lawField)) {
-            String targetAggregationField = ClauseFieldComparatorConfig.getTargetField(lawField);
-            Class<?> lawFieldValueToken = clause.getToken();
-            Class<?> clazz = getFloorClass(targetAggregationField);
-
-            log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
-                    targetAggregationField, clazz.getSimpleName(), clause.getValue(), clause.getValue().getClass().getSimpleName());
-
-            if(!lawFieldValueToken.equals(clazz)) {
-                throw new UnsupportedOperationException("non matching token types of Building and target floor Field Types in aggregation");
-            }
-
-            List<Field<?>> aggregatedFloorFields = survivingList.stream().map(survivingFloor -> getFloorFieldByName(survivingFloor, targetAggregationField)).collect(Collectors.toList());
-            T lawValue = (T) clause.getValue();
-            T result = aggregate(aggregatedFloorFields);
-
-            ComparableComparisonStrategy<T> strategy = new ComparableComparisonStrategy<>();
-            return strategy.compare(result, lawValue, clause.getComparisonOperator());
+            aggregationOperationEvaluation(clause, survivingList, lawField);
         }
 
         Object lawValue = clause.getValue();
@@ -95,6 +75,11 @@ public class ClauseEvaluator {
         log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
                 field.fieldName(), clazz.getSimpleName(), clause.getValue(), clause.getValue().getClass().getSimpleName());
 
+        return defaultComparisonStrategyApply(clause, lawValue, clazz, field);
+
+    }
+
+    private <U extends Comparable<U>, V> Boolean defaultComparisonStrategyApply(Clause<?> clause, Object lawValue, Class<?> clazz, Field<?> field) {
         if (lawValue instanceof String && clazz.equals(String.class)) {
             return lawValue.equals(field.value());
         }
@@ -105,12 +90,9 @@ public class ClauseEvaluator {
         }
         else {
             NonComparableComparisonStrategy<V> strategy = new NonComparableComparisonStrategy<>();
-            return strategy.compare((V)field.value(), (V)lawValue, clause.getComparisonOperator());
+            return strategy.compare((V) field.value(), (V) lawValue, clause.getComparisonOperator());
         }
-
     }
-
-
 
 
     private <U extends Number> U aggregate(List<Field<?>> aggregatedFields) {
