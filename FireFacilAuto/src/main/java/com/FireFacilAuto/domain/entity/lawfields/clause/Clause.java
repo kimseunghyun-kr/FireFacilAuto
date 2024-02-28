@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 
+import static com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig.PossibleBuildingClauses.getBuildingLawClassToken;
+
 @Embeddable
 @Data
 @Slf4j
@@ -14,19 +16,21 @@ public class Clause<T>{
     ComparisonOperator comparisonOperator;
     T value;
     int priority;
+    Class<?> token;
 
     public Clause (){
     }
 
-    public Clause(String fieldname, ComparisonOperator co, T input, int priority) {
+    public Clause(String fieldname, ComparisonOperator co, T input, int priority, Class<?> token) {
         this.fieldname = fieldname;
         this.comparisonOperator = co;
         this.value=input;
         this.priority=priority;
+        this.token = token;
     }
 
     public static <T> Clause<T> clauseFactory(String fieldname, T input, ComparisonOperator co, int priority) {
-        return new Clause<>(fieldname,co,input,priority);
+        return new Clause<>(fieldname,co,input,priority, getBuildingLawClassToken(fieldname));
     }
 
 

@@ -193,15 +193,6 @@ public class FloorLawExecutionService {
                 iterator.remove();
             }
         }
-//        for (FloorResults survivingResults : floorResultsList) {
-//            if (flf.floorClassification == -1 ||
-//                    (flf.floorClassification.equals(survivingResults.getFloor().getFloorClassification()) && flf.floorSpecification == -1) ||
-//                    (flf.floorClassification.equals(survivingResults.getFloor().getFloorClassification()) && flf.floorSpecification.equals(survivingResults.getFloor().getFloorSpecification()))) {
-//                floorAreaSum += survivingResults.getFloor().floorArea;
-//            } else {
-//                floorResultsList.remove(survivingResults);
-//            }
-//        }
         return floorAreaSum;
     }
 }

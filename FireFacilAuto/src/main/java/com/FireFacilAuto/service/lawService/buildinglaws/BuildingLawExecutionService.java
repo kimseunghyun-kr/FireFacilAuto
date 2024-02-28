@@ -98,13 +98,11 @@ public class BuildingLawExecutionService {
         }
         if (Comparable.class.isAssignableFrom(clazz) && lawValue.getClass().equals(clazz)) {
             ComparableComparisonStrategy<T> strategy = new ComparableComparisonStrategy<>();
-            ClauseEvaluator<T> evaluator = new ClauseEvaluator<>(strategy);
             return evaluator.evaluate((Clause<T>)clause, (T) field.value());
             // Compare using the strategy
         }
         else {
             NonComparableComparisonStrategy<U> strategy = new NonComparableComparisonStrategy<>();
-            ClauseEvaluator<U> evaluator = new ClauseEvaluator<>(strategy);
             return evaluator.evaluate((Clause<U>)clause, (U)field.value());
 //            return strategy.compare((U)field.value(), (U)lawValue, clause.getComparisonOperator());
         }
