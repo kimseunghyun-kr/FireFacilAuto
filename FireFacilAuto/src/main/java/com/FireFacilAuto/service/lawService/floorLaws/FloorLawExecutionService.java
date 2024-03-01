@@ -23,9 +23,9 @@ import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.
 @Service
 @Slf4j
 public class FloorLawExecutionService {
-    private final FloorLawService lawService;
+    private final FloorLawRepositoryService lawService;
 
-    public FloorLawExecutionService(FloorLawService lawService) {
+    public FloorLawExecutionService(FloorLawRepositoryService lawService) {
         this.lawService = lawService;
     }
 
@@ -69,7 +69,7 @@ public class FloorLawExecutionService {
 
 
     private void floorLawExecute(Building building, List<FloorResults> floorResultsList, List<FloorLawFields> candidateFloorLaw) {
-        List<Floor> floors = building.getCompositeFloors();
+        List<Floor> floors = building.getCompositeFloorsList();
         candidateFloorLaw.forEach(flf -> {
             log.info("----------------------------------------------------------------");
             floorConditionComparator(flf, new LinkedList<>(floorResultsList), building);
@@ -88,9 +88,9 @@ public class FloorLawExecutionService {
         int greatestEpoch = 1;
 
         if(flf.floorClassification != -1) {
-            Clause<Integer> classificationClause = new Clause<>("floorClassification", ComparisonOperator.EQUAL, flf.floorClassification, 1, Integer.class);
+            Clause<Integer> classificationClause = Clause.clauseFactory("floorClassification", ComparisonOperator.EQUAL, flf.floorClassification, 1);
             if (flf.floorSpecification != -1) {
-                Clause<Integer> specificationClause = new Clause<>("floorSpecification", ComparisonOperator.EQUAL, flf.floorSpecification, 1, Integer.class);
+                Clause<Integer> specificationClause = Clause.clauseFactory("floorSpecification", ComparisonOperator.EQUAL, flf.floorSpecification, 1);
                 flf.clauses.addFirst(specificationClause);
             }
             flf.clauses.addFirst(classificationClause);
@@ -111,7 +111,7 @@ public class FloorLawExecutionService {
             String lawfield = clause.getFieldname();
 
             if(ClauseFieldComparatorConfig.isAggregationOperation(lawfield)) {
-                Boolean result = ClauseEvaluator.floorAggregationOperationEvaluation(clause,floorResultsList,lawfield);
+                Boolean result = ClauseEvaluator.aggregationOperationEvaluation(clause,floorResultsList,lawfield);
                 if (!result) {
                     return;
                 }
@@ -119,7 +119,7 @@ public class FloorLawExecutionService {
             else {
 //                instead of eagerly deleting here -> mark as todelete
                 nextEpochSurvivor.addAll(floorResultsList.stream()
-                        .filter(floorResults -> ClauseEvaluator.singularFloorEvaluate(clause, floorResults.getFloor()))
+                        .filter(floorResults -> ClauseEvaluator.evaluateSingleFloor(clause, floorResults.getFloor()))
                         .toList());
             }
         }

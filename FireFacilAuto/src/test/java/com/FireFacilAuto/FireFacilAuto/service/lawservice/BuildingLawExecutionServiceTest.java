@@ -1,6 +1,5 @@
 package com.FireFacilAuto.FireFacilAuto.service.lawservice;
 
-import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building.BuildingAttributes;
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Building.TestBuildingObjectBuilder;
 import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.TestBuildingLawObjectBuilder;
 import com.FireFacilAuto.domain.Conditions;
@@ -9,10 +8,11 @@ import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 
 import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawExecutionService;
-import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawFormToFieldParser;
+import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawRepositoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,10 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.floorResultSheetBuilder;
+import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.resultSheetInitializr;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.mockito.Mockito.*;
@@ -38,7 +40,7 @@ public class BuildingLawExecutionServiceTest {
     private final BuildingLawExecutionService lawExecutionService;
 
     @MockBean
-    private BuildingLawFormToFieldParser lawService;
+    private BuildingLawRepositoryService buildingLawRepositoryService;
     private Building testBuilding1;
     private BuildingLawFields Blaw1;
     private FloorLawFields Flaw1;
@@ -66,14 +68,16 @@ public class BuildingLawExecutionServiceTest {
         MockitoAnnotations.openMocks(this);
 
         // Given
+        log.info("initializing result sheets");
+        ResultSheet resultSheet = resultSheetInitializr(testBuilding1);
+        List<FloorResults> floorResultsList = floorResultSheetBuilder(testBuilding1);
         List<BuildingLawFields> candidateBuildingLaw = new ArrayList<>(List.of(new BuildingLawFields[]{this.Blaw1}));
 
         // Mock the behavior of the lawService
-        when(lawService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
-        when(lawService.getLawsWithApplicablePurpose(any(Floor.class))).thenReturn(new LinkedList<>());
+        when(buildingLawRepositoryService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
 
         // Act
-        ResultSheet resultSheet = lawExecutionService.executeLaw(testBuilding1);
+        lawExecutionService.buildingLawExecute(testBuilding1, floorResultsList);
 
         log.info("resultSheet : {}", resultSheet);
         assertThat(resultSheet).isNotNull();
@@ -86,8 +90,7 @@ public class BuildingLawExecutionServiceTest {
 
     @Test
     public void RandomGeneratedBuildingTest() {
-        BuildingAttributes ba = BuildingAttributes.automatedBuild();
-        Building building = buildingGenerator.buildingObjectBuilder(ba);
+        Building building = buildingGenerator.autoBuildingObjectBuilder();
         log.info("Building {}, ", building);
     }
 
@@ -107,15 +110,20 @@ public class BuildingLawExecutionServiceTest {
         address.setJi("0011");
         address.setBun("0024");
 
-        this.testBuilding1 = new Building();
+        testBuilding1 = BuildingAttributes.builder()
+                .buildingMaterial(1)
+                .buildingClassification(1)
+                .buildingSpecification(1)
+                .buildingHumanCapacity(100)
+                .gfa(1000.0)
+                .approvalDate(LocalDate.now())
+                .undergroundFloors(1)
+                .overgroundFloors(1)
+                .build();
+
+
         testBuilding1.setJuso(address);
-        testBuilding1.setBuildingHumanCapacity(100);
-        testBuilding1.setBuildingClassification(1);
-        testBuilding1.setBuildingSpecification(1);
-        testBuilding1.setUndergroundFloors(1);
-        testBuilding1.setOvergroundFloors(1);
-        testBuilding1.setTotalFloors(2);
-        testBuilding1.setGFA(1000.0);
+
 
 
         Floor testBuilding1Composed1F = new Floor();
@@ -138,7 +146,7 @@ public class BuildingLawExecutionServiceTest {
         testBuilding1ComposedB1F.setFloorWindowAvailability(false);
         testBuilding1ComposedB1F.setFloorMaterial(1);
 
-        testBuilding1.setCompositeFloors(List.of(new Floor[]{testBuilding1Composed1F, testBuilding1ComposedB1F}));
+        testBuilding1.setCompositeFloorsList(List.of(new Floor[]{testBuilding1Composed1F, testBuilding1ComposedB1F}));
 
         this.Blaw1 = new BuildingLawFields();
         Blaw1.setBuildingClassification(-1);

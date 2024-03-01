@@ -11,8 +11,8 @@ public class PossibleFloorFields {
         fieldMap.put("floorNo", Integer.class);
         fieldMap.put("isUnderGround", Boolean.class);
         fieldMap.put("floorClassification", Integer.class);
-        fieldMap.put("floorSpecification", Double.class);
-        fieldMap.put("floorArea",Integer.class);
+        fieldMap.put("floorSpecification", Integer.class);
+        fieldMap.put("floorArea",Double.class);
         fieldMap.put("floorMaterial",Integer.class);
         fieldMap.put("floorWindowAvailability",Boolean.class);
     }

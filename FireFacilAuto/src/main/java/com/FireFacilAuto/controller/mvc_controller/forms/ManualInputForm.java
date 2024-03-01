@@ -165,7 +165,7 @@ public class ManualInputForm {
             return floor;
         }).toList();
         log.info("floors : {}", floors);
-        building.setCompositeFloors(floors);
+        building.setCompositeFloorsList(floors);
         ResultSheet resultSheet = buildingAndFloorLawExecutionFacadeService.executeLaw(building);
 
         log.info("resultsheet, {}", resultSheet);

@@ -6,14 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BuildingUtils {
     public static Field<?> getBuildingFieldByName(Building building, String name) {
-        return building.getBuildingFieldList().stream().filter(field -> field.fieldName().equals(name)).findFirst().orElseThrow();
+        return building.getBuildingFieldMap().get(name);
     }
 
     public static Integer getBuildingClassification(Building building) {
-        return (Integer)building.getBuildingFieldList().stream().filter(field -> field.fieldName().equals("buildingClassification")).findFirst().orElseThrow().value();
+        return (Integer)building.getBuildingFieldMap().get("buildingClassification").value();
     }
     public static Integer getBuildingSpecification(Building building) {
-        return (Integer)building.getBuildingFieldList().stream().filter(field -> field.fieldName().equals("buildingSpecification")).findFirst().orElseThrow().value();
+        return (Integer)building.getBuildingFieldMap().get("buildingSpecification").value();
     }
 
 

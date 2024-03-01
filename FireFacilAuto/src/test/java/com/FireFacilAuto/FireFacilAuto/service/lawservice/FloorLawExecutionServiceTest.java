@@ -44,7 +44,7 @@ public class FloorLawExecutionServiceTest {
 
         Building testBuilding1 = Mockito.mock(Building.class);
         List<Floor> floors = List.of(floorObjectBuilder.generateSingleFloor(testBuilding1, 1,1,1,false,100.0,1));
-        when(testBuilding1.getCompositeFloors()).thenReturn(floors);
+        when(testBuilding1.getCompositeFloorsList()).thenReturn(floors);
 
         FloorLawFields floorNo11Upand30Down = floorLawObjectBuilder.singularFloorLawBuilder(-1,-1,1,6,)
         // Given

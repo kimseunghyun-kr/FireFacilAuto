@@ -17,7 +17,7 @@ public class TestFloorObjectBuilder {
      */
     public Integer floorClassSpecBias(Building building, Integer flag) {
         Integer biasTo = switch (flag) {
-            case 1 -> building.getBuildingClassification();
+            case 1 -> getByFieldName(building.getBuildingClassification();
             case 2 -> building.getBuildingSpecification();
             case 3 -> building.getBuildingMaterial();
             default ->

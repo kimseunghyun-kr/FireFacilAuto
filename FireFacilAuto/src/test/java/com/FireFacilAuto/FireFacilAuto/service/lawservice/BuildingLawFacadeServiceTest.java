@@ -74,7 +74,7 @@ public class BuildingLawFacadeServiceTest {
                 floorObjectBuilder.generateSingleFloor(building,2,1,6,false,200,1)
         );
 
-        building.setCompositeFloors(floorList);
+        building.setCompositeFloorsList(floorList);
 
         MockitoAnnotations.openMocks(this);
 

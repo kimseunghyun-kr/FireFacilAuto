@@ -9,26 +9,6 @@ import java.time.LocalDateTime;
 
 @Slf4j
 public class ConditionalComparator {
-
-
-
-    public static <T extends Comparable<T>> boolean evaluate(T operand1, String operator, T operand2) {
-        log.info("operand1 : {} {} operand2: {}", operand1, operator, operand2);
-        return switch (operator) {
-            case "=" -> operand1.equals(operand2);
-            case "<>" -> !operand1.equals(operand2);
-            case ">" -> operand1.compareTo(operand2) > 0;
-            case "<" -> operand1.compareTo(operand2) < 0;
-            case ">=" -> operand1.compareTo(operand2) >= 0;
-            case "<=" -> operand1.compareTo(operand2) <= 0;
-            default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
-        };
-    }
-
-    public static <T extends Comparable<T>> boolean conditionParser(ComparisonOperator operator, T fieldValue, T appliedValue) {
-        return evaluate(appliedValue, operator.sqlText(), fieldValue) && isActivated(appliedValue);
-    }
-
     public static <T> boolean isActivated(T value) {
         // Customize this method based on your criteria for activated (non-default) values
         if(value != null) {

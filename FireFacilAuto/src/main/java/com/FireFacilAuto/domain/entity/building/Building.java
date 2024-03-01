@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a building entity in the system.
@@ -25,14 +26,15 @@ public class Building {
      * composite floors present within the building
      */
     @OneToMany(mappedBy = "building")
-    private List<Floor> compositeFloors;
+    private List<Floor> compositeFloorsList;
 
     /**
      * fields that are to be included to describe the building
      */
     @ElementCollection
-    @CollectionTable(name = "building_field_list", joinColumns = @JoinColumn(name = "building_UUID"))
-    private List<Field<?>> buildingFieldList;
+    @CollectionTable(name = "building_field_map", joinColumns = @JoinColumn(name = "building_UUID"))
+    @MapKeyColumn(name = "field_key")
+    private Map<String, Field<?>> buildingFieldMap;
 
     // Additional fields as needed
 }

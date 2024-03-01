@@ -35,7 +35,7 @@ public class BuildingAndFloorLawExecutionFacadeService {
         apiObjectConverter.buildingInitializr(address, titleResponseItem, building);
 
         List<Floor> floors = floorResponseItemListToFloorListConverter(titleResponseItem, floorResponseItems, building);
-        building.setCompositeFloors(floors);
+        building.setCompositeFloorsList(floors);
 
         return executeLaw(building);
     }
@@ -64,7 +64,7 @@ public class BuildingAndFloorLawExecutionFacadeService {
         apiObjectConverter.buildingInitializr(address, titleResponseItem, building);
         Floor floor = new Floor();
         apiObjectConverter.floorInitializr(titleResponseItem, exposInfoResponseItem, floorResponseItem, floor);
-        building.setCompositeFloors(List.of(floor));
+        building.setCompositeFloorsList(List.of(floor));
         return executeLaw(building);
     }
 
@@ -94,7 +94,7 @@ public class BuildingAndFloorLawExecutionFacadeService {
         return resultSheet;
     }
     private List<FloorResults> floorResultSheetBuilder(Building building) {
-        return building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
+        return building.getCompositeFloorsList().stream().map(FloorResults::floorFactory).toList();
     }
 
 

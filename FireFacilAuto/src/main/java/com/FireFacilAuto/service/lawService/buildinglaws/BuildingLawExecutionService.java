@@ -2,13 +2,9 @@ package com.FireFacilAuto.service.lawService.buildinglaws;
 
 import com.FireFacilAuto.domain.entity.building.Building;
 
-import com.FireFacilAuto.domain.entity.building.BuildingUtils;
-import com.FireFacilAuto.domain.entity.building.Field;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseEvaluator;
-import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.ComparableComparisonStrategy;
-import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.NonComparableComparisonStrategy;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import lombok.extern.slf4j.Slf4j;
@@ -31,24 +27,6 @@ public class BuildingLawExecutionService {
     @Autowired
     public BuildingLawExecutionService(BuildingLawRepositoryService lawService) {
         this.lawService = lawService;
-
-    }
-
-    public ResultSheet executeLaw(Building building) {
-        if (building == null) {
-            throw new IllegalArgumentException("Input parameters cannot be null");
-        }
-
-        log.info("initializing result sheets");
-        ResultSheet resultSheet = resultSheetInitializr(building);
-
-        List<FloorResults> floorResultsList = floorResultSheetBuilder(building);
-        log.info("executing building laws");
-        buildingLawExecute(building, floorResultsList);
-
-
-
-        return resultSheet;
     }
 
 
@@ -73,9 +51,9 @@ public class BuildingLawExecutionService {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
         if(blf.buildingClassification != -1) {
-            Clause<Integer> classificationClause = new Clause<>("buildingClassification", ComparisonOperator.EQUAL, blf.buildingClassification, 1, Integer.class);
+            Clause<Integer> classificationClause = Clause.clauseFactory("buildingClassification", ComparisonOperator.EQUAL, blf.buildingClassification, 1);
             if (blf.buildingSpecification != -1) {
-                Clause<Integer> specificationClause = new Clause<>("buildingSpecification", ComparisonOperator.EQUAL, blf.buildingSpecification, 1, Integer.class);
+                Clause<Integer> specificationClause = Clause.clauseFactory("buildingSpecification", ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
                 blf.clauses.addFirst(specificationClause);
             }
             blf.clauses.addFirst(classificationClause);
@@ -85,7 +63,7 @@ public class BuildingLawExecutionService {
 //        FOR A SINGLE(THE) BLF, IF ALL MATCH THEN LABEL ALL FLOORS TRUE
         boolean isTrue = true;
         for (Clause<?> clause : blf.clauses) {
-            isTrue &= ClauseEvaluator.buildingEvaluate(clause, building);
+            isTrue &= ClauseEvaluator.evaluateSingleBuilding(clause, building);
         }
         log.info("BLF PASSING ?= {} ", isTrue);
         if (isTrue) {

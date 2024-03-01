@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a floor within a building in the system.
@@ -30,7 +31,8 @@ public class Floor {
     public Building building;
 
     @ElementCollection
-    @CollectionTable(name = "floor_field_list", joinColumns = @JoinColumn(name = "floor_UUID"))
-    public List<Field<?>> floorFieldList;
+    @CollectionTable(name = "floor", joinColumns = @JoinColumn(name = "floor_UUID"))
+    @MapKeyColumn(name = "field_key")
+    private Map<String, Field<?>> floorFieldMap;
 }
 

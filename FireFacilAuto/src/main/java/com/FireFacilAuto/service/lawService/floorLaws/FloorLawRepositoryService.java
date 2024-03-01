@@ -11,12 +11,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.FireFacilAuto.domain.entity.floors.FloorUtils.getFloorClassification;
+import static com.FireFacilAuto.domain.entity.floors.FloorUtils.getFloorSpecification;
+
 @Service
-public class FloorLawService {
+public class FloorLawRepositoryService {
     private final FloorLawFieldsRepository flawFieldRepository;
 
     @Autowired
-    public FloorLawService(FloorLawFieldsRepository flawFieldRepository) {
+    public FloorLawRepositoryService(FloorLawFieldsRepository flawFieldRepository) {
         this.flawFieldRepository = flawFieldRepository;
     }
 
@@ -32,8 +35,8 @@ public class FloorLawService {
 
     public List<FloorLawFields> getLawsWithApplicablePurpose(Floor floor) {
         return flawFieldRepository.findMatchingPurpose(
-                (Integer)floor.getFloorFieldList().stream().filter(fields -> fields.fieldName().equals("classification")).findFirst().orElseThrow().value(),
-                (Integer)floor.getFloorFieldList().stream().filter(fields -> fields.fieldName().equals("specification")).findFirst().orElseThrow().value()
+                getFloorClassification(floor),
+                getFloorSpecification(floor)
         );
     }
 

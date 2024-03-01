@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.FireFacilAuto.domain.entity.building.BuildingUtils.getBuildingClassification;
+import static com.FireFacilAuto.domain.entity.building.BuildingUtils.getBuildingSpecification;
+
 @Service
 public class BuildingLawRepositoryService {
     private final BuildingLawFieldsRepository blawFieldRepository;
@@ -32,8 +35,8 @@ public class BuildingLawRepositoryService {
 
     public List<BuildingLawFields> getLawsWithApplicablePurpose(Building building) {
         return blawFieldRepository.findMatchingPurpose(
-                (Integer)building.getBuildingFieldList().stream().filter(fields -> fields.fieldName().equals("classification")).findFirst().orElseThrow().value(),
-                (Integer)building.getBuildingFieldList().stream().filter(fields -> fields.fieldName().equals("specification")).findFirst().orElseThrow().value()
+                getBuildingClassification(building),
+                getBuildingSpecification(building)
         );
     }
 

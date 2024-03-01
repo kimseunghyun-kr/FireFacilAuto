@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ResultSheetInitializingUtils {
     public static List<FloorResults> floorResultSheetBuilder(Building building) {
-        return building.getCompositeFloors().stream().map(FloorResults::floorFactory).toList();
+        return building.getCompositeFloorsList().stream().map(FloorResults::floorFactory).toList();
     }
 
     public static ResultSheet resultSheetInitializr(Building building) {
