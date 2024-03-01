@@ -2,10 +2,13 @@ package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Buildin
 
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
+import com.FireFacilAuto.domain.entity.floors.FloorAttributes;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static com.FireFacilAuto.domain.entity.building.BuildingUtils.*;
 
 public class TestFloorObjectBuilder {
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -17,9 +20,9 @@ public class TestFloorObjectBuilder {
      */
     public Integer floorClassSpecBias(Building building, Integer flag) {
         Integer biasTo = switch (flag) {
-            case 1 -> getByFieldName(building.getBuildingClassification();
-            case 2 -> building.getBuildingSpecification();
-            case 3 -> building.getBuildingMaterial();
+            case 1 -> getBuildingClassification(building);
+            case 2 -> getBuildingSpecification(building);
+            case 3 -> (Integer)getBuildingFieldByName(building, "buildingMaterial").value();
             default ->
                 // Handle default case or set biasTo to some default value
                     null; // or another default value
@@ -41,10 +44,10 @@ public class TestFloorObjectBuilder {
      */
     public List<Floor> RandomInputFloorObjectsBuilder(Building building) {
         List<Floor> floors = new LinkedList<>();
-        Integer totalToGenerate = building.totalFloors;
-        Integer undergroundFloors = building.getUndergroundFloors();
-        Integer overGroundFloors = building.getOvergroundFloors();
-        Double availableGroundLimit = building.getGFA();
+        Integer totalToGenerate = getBuildingFieldValueByName(building, "totalFloors");
+        Integer undergroundFloors = getBuildingFieldValueByName(building, "undergroundFloors");
+        Integer overGroundFloors = getBuildingFieldValueByName(building, "overgroundFloors");
+        Double availableGroundLimit = getBuildingFieldValueByName(building, "GFA");
 
         generateFloors(building, floors, undergroundFloors, true, availableGroundLimit);
         generateFloors(building, floors, overGroundFloors, false, availableGroundLimit);
@@ -63,41 +66,20 @@ public class TestFloorObjectBuilder {
      */
     private void generateFloors(Building building, List<Floor> floors, int floorCount, boolean isUnderGround, double availableGroundLimit) {
         for (int i = 1; i <= floorCount; i++) {
-            Floor floor = new Floor();
-            floor.setBuilding(building);
-            floor.setFloorNo(i);
-            floor.setIsUnderGround(isUnderGround);
-            floor.setFloorClassification(floorClassSpecBias(building, 1));
-            floor.setFloorSpecification(floorClassSpecBias(building, 2));
-            floor.setFloorArea(random.nextDouble(1, availableGroundLimit / 2));
-            availableGroundLimit -= floor.getFloorArea();
-            floor.setFloorWindowAvailability(!isUnderGround && random.nextBoolean());
-            floor.setFloorMaterial(floorClassSpecBias(building, 3));
+            FloorAttributes.FloorBuilder fb = new FloorAttributes.FloorBuilder();
+            Floor floor = fb
+                    .building(building)
+                    .floorNo(i)
+                    .floorClassification(floorClassSpecBias(building, 1))
+                    .floorSpecification(floorClassSpecBias(building, 2))
+                    .floorMaterial(floorClassSpecBias(building, 3))
+                    .floorArea(random.nextDouble(1, availableGroundLimit / 2))
+                    .isUnderGround(isUnderGround)
+                    .floorWindowAvailability(!isUnderGround && random.nextBoolean())
+                    .build();
 
             floors.add(floor);
         }
-    }
-
-
-    /**
-     * @param building           : building the floors are part of
-     * @param floorNo            : floor number
-     * @param isUnderGround      : flag to set if building is underground
-     * @param floorArea: available floor area limit
-     * @return: a single floor object with specified parameters
-     */
-    public Floor generateSingleFloor(Building building, int classification, int specification, int floorNo, boolean isUnderGround, double floorArea, int floorMaterial) {
-        Floor floor = new Floor();
-        floor.setBuilding(building);
-        floor.setFloorNo(floorNo);
-        floor.setIsUnderGround(isUnderGround);
-        floor.setFloorClassification(classification);
-        floor.setFloorSpecification(specification);
-        floor.setFloorArea(floorArea);
-        floor.setFloorWindowAvailability(!isUnderGround && random.nextBoolean());
-        floor.setFloorMaterial(floorMaterial);
-
-        return floor;
     }
 
 }
