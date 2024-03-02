@@ -8,7 +8,7 @@ import org.hibernate.query.sqm.ComparisonOperator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.LawObjectBuilderUtils.*;
+import static com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.LawObjectBuilderUtils.*;
 import static com.FireFacilAuto.util.conditions.ConditionalComparator.isActivated;
 
 public class TestFloorLawObjectBuilder {

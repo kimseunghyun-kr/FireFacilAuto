@@ -30,11 +30,11 @@ public class BuildingAndFloorLawExecutionFacadeService {
         this.apiObjectConverter = apiObjectConverter;
     }
 
-    public ResultSheet buildingBuildAndExecuteLaw(Address address, TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems) {
+    public ResultSheet BuildFromApiThenExecuteLaw(Address address, TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems) {
         Building building = new Building();
         apiObjectConverter.buildingInitializr(address, titleResponseItem, building);
 
-        List<Floor> floors = floorResponseItemListToFloorListConverter(titleResponseItem, floorResponseItems, building);
+        List<Floor> floors = convertFloorResponseItemToFloorEntity(titleResponseItem, floorResponseItems, building);
         building.setCompositeFloorsList(floors);
 
         return executeLaw(building);
@@ -42,7 +42,7 @@ public class BuildingAndFloorLawExecutionFacadeService {
 
 
 
-    private List<Floor> floorResponseItemListToFloorListConverter(TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems, Building building) {
+    private List<Floor> convertFloorResponseItemToFloorEntity(TitleResponseItem titleResponseItem, List<FloorResponseItem> floorResponseItems, Building building) {
         return floorResponseItems.stream().map(floorResponseItem -> {
             Floor floor = new Floor();
             floor.setBuilding(building);
@@ -57,9 +57,9 @@ public class BuildingAndFloorLawExecutionFacadeService {
 
 
 
-    public ResultSheet floorBuildAndExecuteLaw(Address address, TitleResponseItem titleResponseItem,
-                                               ExposedInfoResponseItem exposInfoResponseItem,
-                                               FloorResponseItem floorResponseItem) {
+    public ResultSheet BuildfromExposInfoItemThenExecute(Address address, TitleResponseItem titleResponseItem,
+                                                         ExposedInfoResponseItem exposInfoResponseItem,
+                                                         FloorResponseItem floorResponseItem) {
         Building building = new Building();
         apiObjectConverter.buildingInitializr(address, titleResponseItem, building);
         Floor floor = new Floor();

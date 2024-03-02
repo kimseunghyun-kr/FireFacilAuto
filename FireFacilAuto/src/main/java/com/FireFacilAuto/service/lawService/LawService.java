@@ -98,15 +98,15 @@ public  class LawService {
         List<Integer[]> resultList = new LinkedList<>();
         if (parsable != null && !parsable.replace(" ", "").isEmpty()) {
             log.info("stringparser activated, string : {}", parsable);
-            resultList.addAll(parser(parsable));
+            resultList.addAll(parsePurposeStringToInteger(parsable));
         }
-        resultList.addAll(parser(purposeClass, purposeSpec));
+        resultList.addAll(parseListPurposeInputToPurpose(purposeClass, purposeSpec));
         return resultList;
     }
 
 
     //    remember to change the Integer.parseInt into mapper class for purposeStringName -> IntegerCode;
-    private List<Integer[]> parser(List<String> purposeClass, List<String> purposeSpec) {
+    private List<Integer[]> parseListPurposeInputToPurpose (List<String> purposeClass, List<String> purposeSpec) {
         List<Integer[]> resultList = new LinkedList<>();
         if (purposeClass.isEmpty() || purposeSpec.isEmpty() || purposeClass.size() != purposeSpec.size()) {
             return resultList;
@@ -117,7 +117,7 @@ public  class LawService {
         return resultList;
     }
 
-    private List<Integer[]> parser(String parsable) {
+    private List<Integer[]> parsePurposeStringToInteger(String parsable) {
         List<Integer[]> result = new LinkedList<>();
         String[] conditions = parsable.split("&");
         for (String condition : conditions) {

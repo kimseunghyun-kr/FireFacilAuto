@@ -5,6 +5,7 @@ import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseEvaluator;
+import com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig.PossibleBuildingClauses;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import lombok.extern.slf4j.Slf4j;
@@ -51,9 +52,9 @@ public class BuildingLawExecutionService {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
         if(blf.buildingClassification != -1) {
-            Clause<Integer> classificationClause = Clause.clauseFactory("buildingClassification", ComparisonOperator.EQUAL, blf.buildingClassification, 1);
+            Clause<Integer> classificationClause = Clause.clauseFactory("buildingClassification", PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingClassification, 1);
             if (blf.buildingSpecification != -1) {
-                Clause<Integer> specificationClause = Clause.clauseFactory("buildingSpecification", ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
+                Clause<Integer> specificationClause = Clause.clauseFactory("buildingSpecification",PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
                 blf.clauses.addFirst(specificationClause);
             }
             blf.clauses.addFirst(classificationClause);

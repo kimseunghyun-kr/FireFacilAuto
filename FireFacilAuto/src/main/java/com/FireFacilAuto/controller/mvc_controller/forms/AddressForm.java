@@ -194,7 +194,7 @@ public class AddressForm {
         List<FloorResponseItem> floorResponseItems = (List<FloorResponseItem>) session.getAttribute("floorResponseItemList");
         Address address = (Address)session.getAttribute("address");
 
-        ResultSheet resultSheet = lawExecutionFacadeService.buildingBuildAndExecuteLaw(address, titleResponseItem, floorResponseItems);
+        ResultSheet resultSheet = lawExecutionFacadeService.BuildFromApiThenExecuteLaw(address, titleResponseItem, floorResponseItems);
         log.info("resultSheet, {}", resultSheet);
         // Populate model attributes if needed
         model.addAttribute("resultSheet", resultSheet);
@@ -209,7 +209,7 @@ public class AddressForm {
         ExposedInfoResponseItem exposInfoResponseItem = (ExposedInfoResponseItem) session.getAttribute("selectedExposItem");
         Address address = (Address)session.getAttribute("address");
         FloorResponseItem floorResponseItem = apiCollationService.getFloorItemFromTitleForExpos(exposInfoResponseItem, titleResponseItem, address);
-        ResultSheet resultSheet = lawExecutionFacadeService.floorBuildAndExecuteLaw(address, titleResponseItem, exposInfoResponseItem, floorResponseItem);
+        ResultSheet resultSheet = lawExecutionFacadeService.BuildfromExposInfoItemThenExecute(address, titleResponseItem, exposInfoResponseItem, floorResponseItem);
 
 
         log.info("resultSheet, {}", resultSheet);

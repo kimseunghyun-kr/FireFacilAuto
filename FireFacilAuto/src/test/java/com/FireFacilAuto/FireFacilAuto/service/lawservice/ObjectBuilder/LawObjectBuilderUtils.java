@@ -1,4 +1,4 @@
-package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law;
+package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder;
 
 import org.hibernate.query.sqm.ComparisonOperator;
 
@@ -6,32 +6,32 @@ import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LawObjectBuilderUtils {
-    static final ThreadLocalRandom random = ThreadLocalRandom.current();
+    public static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    static int randomPositiveIntWithDefault() {
+    public static int randomPositiveIntWithDefault() {
         return random.nextBoolean() ?
                 ThreadLocalRandom.current().nextInt(1, 50) :
                 -1;
     }
 
-    static Boolean randomthreeWayBooleanWithDefault() {
+    public static Boolean randomthreeWayBooleanWithDefault() {
         return random.nextInt(1,3) == 1 ?
                 ThreadLocalRandom.current().nextBoolean():
                 null;
     }
 
-    static double randomPositiveDoubleWithDefault() {
+    public static double randomPositiveDoubleWithDefault() {
         return random.nextBoolean() ?
                 ThreadLocalRandom.current().nextDouble(1, 10000.0) :
                 -1;
     }
 
-    static LocalDate randomLocalDateWithDefault() {
+    public static LocalDate randomLocalDateWithDefault() {
         return random.nextBoolean() ?
                 LocalDate.of(ThreadLocalRandom.current().nextInt(2000, 2023), 1, 1) :
                 LocalDate.now();
     }
-    static ComparisonOperator randomComparisonOperatorDie () {
+    public static ComparisonOperator randomComparisonOperatorDie () {
         int dice = random.nextInt(1, 7);  // Corrected to include 6
         ComparisonOperator CO;
 

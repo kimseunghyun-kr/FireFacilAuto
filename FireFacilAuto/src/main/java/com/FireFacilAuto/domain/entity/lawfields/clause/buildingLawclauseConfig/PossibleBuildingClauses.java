@@ -1,27 +1,38 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig;
 
+import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleLawField;
+import lombok.Getter;
+
 import java.time.LocalDate;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class PossibleBuildingClauses {
-    private static final ConcurrentHashMap<String, Class<?>> fieldMap = new ConcurrentHashMap<>();
+@Getter
+public enum PossibleBuildingClauses implements PossibleLawField {
+    TOTAL_FLOORS(Integer.class, "totalFloors"),
+    UNDERGROUND_FLOORS(Integer.class, "undergroundFloors"),
+    OVERGROUND_FLOORS(Integer.class, "overgroundFloors"),
+    GFA(Double.class, "GFA"),
+    BUILDING_MATERIAL(Integer.class, "buildingMaterial"),
+    LENGTH(Double.class, "length"),
+    DATE_OF_APPROVAL(LocalDate.class, "dateOfApproval"),
+    BUILDING_HUMAN_CAPACITY(Integer.class, "buildingHumanCapacity"),
+    EXTRA_FACILITY(String.class, "extraFacility"),
+    BUILDING_CLASSIFICATION(Integer.class, "buildingClassification"),
+    BUILDING_SPECIFICATION(Integer.class, "buildingSpecification");
 
-    static {
-        fieldMap.put("totalFloors", Integer.class);
-        fieldMap.put("undergroundFloors", Integer.class);
-        fieldMap.put("overgroundFloors", Integer.class);
-        fieldMap.put("GFA", Double.class);
-        fieldMap.put("buildingMaterial",Integer.class);
-        fieldMap.put("length",Double.class);
-        fieldMap.put("dateOfApproval", LocalDate.class);
-        fieldMap.put("buildingHumanCapacity",Integer.class);
-        fieldMap.put("extraFacility", String.class);
-        fieldMap.put("buildingClassification",Integer.class);
-        fieldMap.put("buildingSpecification", Integer.class);
+    private final Class<?> fieldType;
+    private final String targetField;
+    PossibleBuildingClauses(Class<?> fieldType, String targetField) {
+        this.fieldType = fieldType;
+        this.targetField = targetField;
     }
 
-    public static Class<?> getBuildingLawClassToken(String field) {
-        return fieldMap.get(field);
+    @Override
+    public String getLawFieldName() {
+        return this.name();
     }
 
+    @Override
+    public String getTargetFieldName() {
+        return this.targetField;
+    }
 }

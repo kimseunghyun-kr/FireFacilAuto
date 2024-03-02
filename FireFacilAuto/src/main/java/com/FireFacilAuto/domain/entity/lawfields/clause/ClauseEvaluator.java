@@ -5,9 +5,7 @@ import com.FireFacilAuto.domain.entity.building.BuildingUtils;
 import com.FireFacilAuto.domain.entity.building.Field;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.floors.FloorUtils;
-import com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig.BuildingLawClauseFieldMapper;
 import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.*;
-import com.FireFacilAuto.domain.entity.lawfields.clause.floorLawClauseConfig.FloorLawClauseFieldMapper;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,13 +22,13 @@ public class ClauseEvaluator {
 
 //    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
     public static Boolean evaluateSingleBuilding(Clause<?> clause, Building building) {
-        String targetField = BuildingLawClauseFieldMapper.getBuildingLawfieldTargetField(clause.getFieldname());
+        String targetField = clause.lawField.getTargetFieldName();
         Field<?> field = BuildingUtils.getBuildingFieldByName(building, targetField);
         return evaluateSingleFieldWithClause(field, clause);
     }
 
     public static Boolean evaluateSingleFloor(Clause<?> clause, Floor floor) {
-        String targetField = FloorLawClauseFieldMapper.getFloorLawfieldTargetField(clause.getFieldname());
+        String targetField = clause.lawField.getTargetFieldName();
         Field<?> field = FloorUtils.getFloorFieldByName(floor, targetField);
         return evaluateSingleFieldWithClause(field, clause);
     }
@@ -42,7 +40,7 @@ public class ClauseEvaluator {
                     "error at field : {}, clause {}, fields are intended to discard if null value present",field , clause);
             return true;
         }
-        String lawField = clause.getFieldname();
+        String lawField = clause.lawField.getLawFieldName();
         Object lawValue = clause.getValue();
         Class<?> clazz = field.valueType();
         log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
