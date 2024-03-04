@@ -6,6 +6,7 @@ import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseEvaluator;
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
+import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -21,10 +22,12 @@ import static com.FireFacilAuto.service.lawService.LawMappingUtils.floorResultLi
 @Slf4j
 public class BuildingLawExecutionService {
     private final BuildingLawRepositoryService lawService;
+    private final ClauseFactory clauseFactory;
 
     @Autowired
-    public BuildingLawExecutionService(BuildingLawRepositoryService lawService) {
+    public BuildingLawExecutionService(BuildingLawRepositoryService lawService, ClauseFactory clauseFactory) {
         this.lawService = lawService;
+        this.clauseFactory = clauseFactory;
     }
 
 
@@ -49,9 +52,9 @@ public class BuildingLawExecutionService {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
         if(blf.buildingClassification != -1) {
-            Clause<Integer> classificationClause = ClauseFactory.createClause("buildingClassification", PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingClassification, 1);
+            Clause<Integer> classificationClause = clauseFactory.createClause("buildingClassification", PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingClassification, 1);
             if (blf.buildingSpecification != -1) {
-                Clause<Integer> specificationClause = Clause.createClause("buildingSpecification",PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
+                Clause<Integer> specificationClause = clauseFactory.createClause("buildingSpecification",PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
                 blf.clauses.addFirst(specificationClause);
             }
             blf.clauses.addFirst(classificationClause);

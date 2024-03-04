@@ -2,23 +2,29 @@ package com.FireFacilAuto.domain.entity.lawfields.buildingLaw;
 
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
+import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
+@Component
 public class BuildingLawBuilder {
 
     private List<Clause<?>> clauses = new ArrayList<>();
+    private final ClauseFactory clauseFactory;
     private int priority = 1; // Default priority value
 
-    public BuildingLawBuilder() {
+    @Autowired
+    public BuildingLawBuilder(ClauseFactory clauseFactory) {
         // Initialize with default values if needed
+        this.clauseFactory = clauseFactory;
     }
 
     public BuildingLawBuilder addTotalFloors(int value, ComparisonOperator comparisonOperator) {
@@ -88,7 +94,7 @@ public class BuildingLawBuilder {
     }
 
     private <T> void addClause(PossibleBuildingClauses field, T value, ComparisonOperator comparisonOperator) {
-        Clause<T> clause = Clause.createClause(field.name(), PossibleBuildingClauses.class, comparisonOperator, value, priority);
+        Clause<T> clause = clauseFactory.createClause(field.name(), PossibleBuildingClauses.class, comparisonOperator, value, priority);
         clauses.add(clause);
     }
 }
