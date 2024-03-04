@@ -1,7 +1,7 @@
-package com.FireFacilAuto.domain.entity.lawfields;
+package com.FireFacilAuto.domain.entity.lawfields.buildingLaw;
 
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
-import com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig.PossibleBuildingClauses;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -88,7 +88,7 @@ public class BuildingLawBuilder {
     }
 
     private <T> void addClause(PossibleBuildingClauses field, T value, ComparisonOperator comparisonOperator) {
-        Clause<T> clause = Clause.clauseFactory(field.name(), PossibleBuildingClauses.class, comparisonOperator, value, priority);
+        Clause<T> clause = Clause.createClause(field.name(), PossibleBuildingClauses.class, comparisonOperator, value, priority);
         clauses.add(clause);
     }
 }

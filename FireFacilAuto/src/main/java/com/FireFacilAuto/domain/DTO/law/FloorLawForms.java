@@ -1,17 +1,13 @@
 package com.FireFacilAuto.domain.DTO.law;
 
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import org.hibernate.query.sqm.ComparisonOperator;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
 public class FloorLawForms {

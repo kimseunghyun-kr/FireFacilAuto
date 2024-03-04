@@ -1,7 +1,7 @@
 package com.FireFacilAuto.util.converters;
 
 import com.FireFacilAuto.domain.DTO.law.BuildingLawForms;
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

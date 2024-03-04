@@ -1,4 +1,4 @@
-package com.FireFacilAuto.domain.entity.lawfields;
+package com.FireFacilAuto.domain.entity.lawfields.floorLaw;
 
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import jakarta.persistence.*;
@@ -8,20 +8,21 @@ import lombok.Data;
 
 import java.util.List;
 
-
 /**
- * Represents the fields related to building laws and regulations.
+ * Represents the legal conditions applicable to individual floors within a building.
+ * Each field represents a condition, and these conditions have an AND relationship.
+ * For example, if floorClassification = 1 AND floorNo > 3 AND floorWindowAvailability = false,
+ * the law applies to floors with classification 1, higher than the 3rd floor, and without windows.
  */
 @Data
 @Entity
-public class BuildingLawFields {
+public class FloorLawFields {
 
     /**
-     * Internal system identification code for the building law fields.
+     * Internal system identification code for the floor law fields.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "building_law_field_id")
     private Long id;
 
     /**
@@ -39,21 +40,21 @@ public class BuildingLawFields {
     public Integer minorCategoryCode;
 
     /**
-     * Building classification code indicating the primary use of the building.
+     * Classification code for the primary purpose of the floor.
      */
     @Column(columnDefinition = "integer default -1")
     @Min(value = -1, message = "Value must be at least -1")
-    public Integer buildingClassification;
+    public Integer floorClassification;
 
     /**
-     * Building specification code indicating the detailed use of the building.
+     * Specification code for additional details about the floor.
      */
     @Column(columnDefinition = "integer default -1")
     @Min(value = -1, message = "Value must be at least -1")
-    public Integer buildingSpecification;
+    public Integer floorSpecification;
 
     @ElementCollection
-    @CollectionTable(name = "building_clauses", joinColumns = @JoinColumn(name = "building_law_field_id"))
+    @CollectionTable(name = "floor_clauses", joinColumns = @JoinColumn(name = "floor_id"))
     public List<Clause<?>> clauses;
 
 }

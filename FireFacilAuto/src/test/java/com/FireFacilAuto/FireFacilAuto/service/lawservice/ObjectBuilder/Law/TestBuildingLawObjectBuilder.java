@@ -2,7 +2,7 @@ package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law;
 
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.installation.*;
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 

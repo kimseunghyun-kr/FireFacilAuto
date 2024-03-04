@@ -2,8 +2,8 @@ package com.FireFacilAuto.service.lawService;
 
 import com.FireFacilAuto.domain.DTO.law.BuildingLawForms;
 import com.FireFacilAuto.domain.DTO.law.FloorLawForms;
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.repository.BuildingLawFieldsRepository;
 import com.FireFacilAuto.repository.FloorLawFieldsRepository;
 import lombok.extern.slf4j.Slf4j;

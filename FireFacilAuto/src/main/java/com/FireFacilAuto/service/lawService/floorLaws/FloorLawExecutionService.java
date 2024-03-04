@@ -2,11 +2,11 @@ package com.FireFacilAuto.service.lawService.floorLaws;
 
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseEvaluator;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFieldComparatorConfig;
-import com.FireFacilAuto.domain.entity.lawfields.clause.floorLawClauseConfig.PossibleFloorLawCauses;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig.PossibleFloorLawCauses;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.util.records.Pair;
@@ -89,9 +89,9 @@ public class FloorLawExecutionService {
         int greatestEpoch = 1;
 
         if(flf.floorClassification != -1) {
-            Clause<Integer> classificationClause = Clause.clauseFactory("floorClassification", PossibleFloorLawCauses.class, ComparisonOperator.EQUAL, flf.floorClassification, 1);
+            Clause<Integer> classificationClause = Clause.createClause("floorClassification", PossibleFloorLawCauses.class, ComparisonOperator.EQUAL, flf.floorClassification, 1);
             if (flf.floorSpecification != -1) {
-                Clause<Integer> specificationClause = Clause.clauseFactory("floorSpecification", PossibleFloorLawCauses.class, ComparisonOperator.EQUAL, flf.floorSpecification, 1);
+                Clause<Integer> specificationClause = Clause.createClause("floorSpecification", PossibleFloorLawCauses.class, ComparisonOperator.EQUAL, flf.floorSpecification, 1);
                 flf.clauses.addFirst(specificationClause);
             }
             flf.clauses.addFirst(classificationClause);

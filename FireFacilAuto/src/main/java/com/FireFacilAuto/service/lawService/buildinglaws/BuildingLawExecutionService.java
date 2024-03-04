@@ -2,12 +2,11 @@ package com.FireFacilAuto.service.lawService.buildinglaws;
 
 import com.FireFacilAuto.domain.entity.building.Building;
 
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseEvaluator;
-import com.FireFacilAuto.domain.entity.lawfields.clause.buildingLawclauseConfig.PossibleBuildingClauses;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
-import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ import java.util.*;
 
 import static com.FireFacilAuto.domain.entity.lawfields.LawUtils.clausePrioritysort;
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.floorResultListMajorCodeMapper;
-import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.floorResultSheetBuilder;
-import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.resultSheetInitializr;
 
 @Service
 @Slf4j
@@ -52,9 +49,9 @@ public class BuildingLawExecutionService {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
         if(blf.buildingClassification != -1) {
-            Clause<Integer> classificationClause = Clause.clauseFactory("buildingClassification", PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingClassification, 1);
+            Clause<Integer> classificationClause = ClauseFactory.createClause("buildingClassification", PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingClassification, 1);
             if (blf.buildingSpecification != -1) {
-                Clause<Integer> specificationClause = Clause.clauseFactory("buildingSpecification",PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
+                Clause<Integer> specificationClause = Clause.createClause("buildingSpecification",PossibleBuildingClauses.class, ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
                 blf.clauses.addFirst(specificationClause);
             }
             blf.clauses.addFirst(classificationClause);

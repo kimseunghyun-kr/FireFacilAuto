@@ -1,6 +1,5 @@
 package com.FireFacilAuto.domain.DTO.law;
 
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;

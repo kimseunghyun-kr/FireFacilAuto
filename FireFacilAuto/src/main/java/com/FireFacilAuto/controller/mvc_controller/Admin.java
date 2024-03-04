@@ -2,8 +2,8 @@ package com.FireFacilAuto.controller.mvc_controller;
 
 import com.FireFacilAuto.domain.DTO.law.BuildingLawForms;
 import com.FireFacilAuto.domain.DTO.law.FloorLawForms;
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.service.lawService.LawService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

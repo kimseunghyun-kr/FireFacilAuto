@@ -1,7 +1,7 @@
 package com.FireFacilAuto.service.lawService.buildinglaws;
 
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
 import com.FireFacilAuto.repository.BuildingLawFieldsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

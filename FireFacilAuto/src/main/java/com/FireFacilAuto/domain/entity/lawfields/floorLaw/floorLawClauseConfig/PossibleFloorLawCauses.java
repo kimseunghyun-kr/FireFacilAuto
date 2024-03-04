@@ -1,4 +1,4 @@
-package com.FireFacilAuto.domain.entity.lawfields.clause.floorLawClauseConfig;
+package com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig;
 
 import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleLawField;
 import lombok.Getter;

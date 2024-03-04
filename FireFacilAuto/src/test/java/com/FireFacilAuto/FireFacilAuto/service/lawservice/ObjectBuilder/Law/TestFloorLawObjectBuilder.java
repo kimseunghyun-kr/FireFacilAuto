@@ -2,7 +2,7 @@ package com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law;
 
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.installation.*;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import org.hibernate.query.sqm.ComparisonOperator;
 
 import java.util.LinkedList;

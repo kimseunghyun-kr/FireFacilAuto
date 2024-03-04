@@ -1,7 +1,7 @@
 package com.FireFacilAuto.domain;
 
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;

@@ -8,8 +8,8 @@ import com.FireFacilAuto.FireFacilAuto.service.lawservice.ObjectBuilder.Law.Test
 import com.FireFacilAuto.domain.Conditions;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
-import com.FireFacilAuto.domain.entity.lawfields.BuildingLawFields;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.service.lawService.BuildingAndFloorLawExecutionFacadeService;
 import com.FireFacilAuto.service.lawService.buildinglaws.BuildingLawFormToFieldParser;

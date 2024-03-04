@@ -1,7 +1,7 @@
 package com.FireFacilAuto.service.lawService.floorLaws;
 
 import com.FireFacilAuto.domain.entity.floors.Floor;
-import com.FireFacilAuto.domain.entity.lawfields.FloorLawFields;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.repository.FloorLawFieldsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
