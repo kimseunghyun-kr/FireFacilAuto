@@ -1,38 +1,49 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 
-
-@Embeddable
+@JsonDeserialize(using = ClauseDeserializer.class)
+@Entity
 @Data
 @Slf4j
 public class Clause<T>{
 
-    PossibleLawField lawField;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Embedded
+    PossibleClauses clauseField;
+    ClauseTypes clauseTypes;
     ComparisonOperator comparisonOperator;
-    T value;
+    @OneToOne(cascade = CascadeType.ALL)
+    @Convert(converter = ClauseValueConverter.class, attributeName = "value")
+    ClauseValueWrapper<T> value;
     int priority;
-    String valueType;
+
 
     public Clause (){
     }
 
-    protected Clause (PossibleLawField lawField, ComparisonOperator co, T input, int priority, String valueType) {
-
-        this.lawField = lawField;
+    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, ClauseValueWrapper<T> value, int priority) {
+        this.clauseField = clauseField;
+        this.clauseTypes = clauseTypes;
         this.comparisonOperator = co;
-        this.value=input;
+        this.value=value;
         this.priority=priority;
-        this.valueType = valueType;
     }
 
     // Get the valueType from the stored class name
     public Class<?> getToken() {
-        return lawField.getFieldType();
+        return clauseField.getFieldType();
     }
 
+    public T getValue() {
+        return value.getValue();
+    }
 
 }

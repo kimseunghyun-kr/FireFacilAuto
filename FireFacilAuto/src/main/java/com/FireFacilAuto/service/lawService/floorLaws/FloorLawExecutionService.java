@@ -2,12 +2,8 @@ package com.FireFacilAuto.service.lawService.floorLaws;
 
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
-import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
+import com.FireFacilAuto.domain.entity.lawfields.clause.*;
 import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
-import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
-import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseEvaluator;
-import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFieldComparatorConfig;
-import com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig.PossibleFloorLawCauses;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
 import com.FireFacilAuto.util.records.Pair;
@@ -92,9 +88,9 @@ public class FloorLawExecutionService {
         int greatestEpoch = 1;
 
         if(flf.floorClassification != -1) {
-            Clause<Integer> classificationClause = clauseFactory.createClause("floorClassification", PossibleFloorLawCauses.class, ComparisonOperator.EQUAL, flf.floorClassification, 1);
+            Clause<Integer> classificationClause = clauseFactory.createClause("floorClassification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, flf.floorClassification, 1);
             if (flf.floorSpecification != -1) {
-                Clause<Integer> specificationClause = clauseFactory.createClause("floorSpecification", PossibleFloorLawCauses.class, ComparisonOperator.EQUAL, flf.floorSpecification, 1);
+                Clause<Integer> specificationClause = clauseFactory.createClause("floorSpecification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, flf.floorSpecification, 1);
                 flf.clauses.addFirst(specificationClause);
             }
             flf.clauses.addFirst(classificationClause);
@@ -112,7 +108,7 @@ public class FloorLawExecutionService {
                 return;
             }
 
-            String lawfield = clause.getLawField().getLawFieldName();
+            String lawfield = clause.getClauseField().getLawFieldName();
 
             if(ClauseFieldComparatorConfig.isAggregationOperation(lawfield)) {
                 Boolean result = ClauseEvaluator.aggregationOperationEvaluation(clause,floorResultsList,lawfield);

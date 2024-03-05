@@ -22,13 +22,13 @@ public class ClauseEvaluator {
 
 //    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
     public static Boolean evaluateSingleBuilding(Clause<?> clause, Building building) {
-        String targetField = clause.lawField.getTargetFieldName();
+        String targetField = clause.clauseField.getTargetFieldName();
         Field<?> field = BuildingUtils.getBuildingFieldByName(building, targetField);
         return evaluateSingleFieldWithClause(field, clause);
     }
 
     public static Boolean evaluateSingleFloor(Clause<?> clause, Floor floor) {
-        String targetField = clause.lawField.getTargetFieldName();
+        String targetField = clause.clauseField.getTargetFieldName();
         Field<?> field = FloorUtils.getFloorFieldByName(floor, targetField);
         return evaluateSingleFieldWithClause(field, clause);
     }
@@ -40,7 +40,7 @@ public class ClauseEvaluator {
                     "error at field : {}, clause {}, fields are intended to discard if null value present",field , clause);
             return true;
         }
-        String lawField = clause.lawField.getLawFieldName();
+        String lawField = clause.clauseField.getLawFieldName();
         Object lawValue = clause.getValue();
         Class<?> clazz = field.valueType();
         log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",

@@ -1,11 +1,12 @@
 package com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig;
 
-import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleLawField;
+import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
+import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleClauses;
 import lombok.Getter;
 
 
 @Getter
-public enum PossibleFloorLawCauses implements PossibleLawField {
+public enum PossibleFloorLawCauses implements PossibleClauses {
     FLOOR_CLASSIFICATION(Integer.class, "floorClassification"),
     FLOOR_SPECIFICATION(Integer.class, "floorSpecification"),
     FLOOR_NO(Integer.class, "floorNo"),
@@ -31,5 +32,10 @@ public enum PossibleFloorLawCauses implements PossibleLawField {
     @Override
     public String getTargetFieldName() {
         return this.targetField;
+    }
+
+    @Override
+    public ClauseTypes LawType() {
+        return ClauseTypes.PossibleFloorClauses;
     }
 }

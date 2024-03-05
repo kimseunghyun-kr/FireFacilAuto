@@ -1,12 +1,13 @@
 package com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig;
 
-import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleLawField;
+import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
+import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleClauses;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
-public enum PossibleBuildingClauses implements PossibleLawField {
+public enum PossibleBuildingClauses implements PossibleClauses {
     TOTAL_FLOORS(Integer.class, "totalFloors"),
     UNDERGROUND_FLOORS(Integer.class, "undergroundFloors"),
     OVERGROUND_FLOORS(Integer.class, "overgroundFloors"),
@@ -34,5 +35,10 @@ public enum PossibleBuildingClauses implements PossibleLawField {
     @Override
     public String getTargetFieldName() {
         return this.targetField;
+    }
+
+    @Override
+    public ClauseTypes LawType() {
+        return ClauseTypes.PossibleBuildingClauses;
     }
 }
