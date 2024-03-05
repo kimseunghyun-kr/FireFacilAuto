@@ -1,5 +1,6 @@
 package com.FireFacilAuto.domain.entity.lawfields.floorLaw;
 
+import com.FireFacilAuto.domain.entity.lawfields.ClauseListConverter;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -53,8 +54,10 @@ public class FloorLawFields {
     @Min(value = -1, message = "Value must be at least -1")
     public Integer floorSpecification;
 
-    @ElementCollection
-    @CollectionTable(name = "floor_clauses", joinColumns = @JoinColumn(name = "floor_id"))
+
+    @Convert(converter = ClauseListConverter.class)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "floor_law_fields_id")  // Adjust the column name as needed
     public List<Clause<?>> clauses;
 
 }
