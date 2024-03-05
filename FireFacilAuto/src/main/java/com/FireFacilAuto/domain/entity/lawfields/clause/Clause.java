@@ -1,5 +1,6 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class Clause<T>{
     ClauseTypes clauseTypes;
     ComparisonOperator comparisonOperator;
     @OneToOne(cascade = CascadeType.ALL)
-    @Convert(converter = ClauseValueConverter.class, attributeName = "value")
+//    @Convert(converter = ClauseValueConverter.class, attributeName = "value")
     ClauseValueWrapper<T> value;
     int priority;
 

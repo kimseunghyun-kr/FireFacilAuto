@@ -1,5 +1,6 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ public class ClauseFactory {
         if (lawField == null) {
             throw new IllegalArgumentException("Invalid field name: " + field);
         }
-        ClauseValueWrapper<T> valueWrapper = new ClauseValueWrapper<>(input, lawField.getFieldType().getSimpleName());
+        ClauseValueWrapper<T> valueWrapper = ClauseValueWrapper.createValueWrapper(input, lawField.getClass(), lawField.getWrapper());
         return new Clause<>(lawField, lawtype, co, valueWrapper, priority);
     }
 }

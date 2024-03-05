@@ -2,6 +2,7 @@ package com.FireFacilAuto.domain.entity.lawfields.buildingLaw;
 
 import com.FireFacilAuto.domain.entity.lawfields.ClauseListConverter;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
