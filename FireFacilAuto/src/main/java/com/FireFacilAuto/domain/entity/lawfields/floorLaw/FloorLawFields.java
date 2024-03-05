@@ -59,7 +59,7 @@ public class FloorLawFields {
     @Convert(converter = ClauseListConverter.class)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "floor_law_fields_id")  // Adjust the column name as needed
-    public List<Clause<? extends ClauseValue>> clauses;
+    public List<Clause<?>> clauses;
 
 }
 

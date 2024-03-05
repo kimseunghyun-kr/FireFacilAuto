@@ -27,7 +27,7 @@ public class FloorLawForms {
 //    @Positive
 //    private Integer ClauseDepth;
 
-    private List<Clause> clauses;
+    private List<Clause<?>> clauses;
 
     public static FloorLawForms fromEntity(FloorLawFields entity) {
         FloorLawForms dto = new FloorLawForms();
