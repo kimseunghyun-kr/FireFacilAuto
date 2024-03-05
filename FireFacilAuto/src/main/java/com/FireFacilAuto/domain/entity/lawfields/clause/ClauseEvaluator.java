@@ -48,7 +48,7 @@ public class ClauseEvaluator {
         return defaultComparisonStrategyApply(clause, lawValue, clazz, field);
     }
 
-    public static <T extends Number & Comparable<T>> Boolean aggregationOperationEvaluation(Clause<?> clause, List<FloorResults> survivingFloors, String lawField) {
+    public static <T extends Number & Comparable<T>> Boolean evaluateAggregateFieldWithClause(Clause<?> clause, List<FloorResults> survivingFloors, String lawField) {
         String targetAggregationField = ClauseFieldComparatorConfig.getTargetField(lawField);
         Class<?> lawFieldValueToken = clause.getToken();
         Class<?> clazz = getFloorClass(targetAggregationField);

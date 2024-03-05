@@ -115,7 +115,7 @@ public class FloorLawExecutionService {
             String lawfield = clause.getLawField().getLawFieldName();
 
             if(ClauseFieldComparatorConfig.isAggregationOperation(lawfield)) {
-                Boolean result = ClauseEvaluator.aggregationOperationEvaluation(clause,floorResultsList,lawfield);
+                Boolean result = ClauseEvaluator.evaluateAggregateFieldWithClause(clause,floorResultsList,lawfield);
                 if (!result) {
                     return;
                 }
