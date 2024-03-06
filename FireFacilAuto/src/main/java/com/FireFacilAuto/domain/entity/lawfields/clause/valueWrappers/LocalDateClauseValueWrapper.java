@@ -1,5 +1,6 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@DiscriminatorValue("LocalDate")
 public class LocalDateClauseValueWrapper extends ClauseValueWrapper {
     LocalDate value;
     public LocalDateClauseValueWrapper(LocalDate value, ClauseValue typeToken) {

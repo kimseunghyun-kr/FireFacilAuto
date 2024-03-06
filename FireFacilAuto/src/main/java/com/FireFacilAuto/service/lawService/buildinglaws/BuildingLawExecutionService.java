@@ -57,10 +57,10 @@ public class BuildingLawExecutionService {
 
         if(blf.buildingClassification != -1) {
             IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(blf.buildingClassification, ClauseValue.INTEGER);
-            Clause<IntegerClauseValueWrapper> classificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingClassification", ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
+            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingClassification", ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (blf.buildingSpecification != -1) {
                 IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(blf.buildingSpecification, ClauseValue.INTEGER);
-                Clause<IntegerClauseValueWrapper> specificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingSpecification",ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
+                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingSpecification",ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 blf.clauses.addFirst(specificationClause);
             }
             blf.clauses.addFirst(classificationClause);
@@ -69,7 +69,7 @@ public class BuildingLawExecutionService {
 
 //        FOR A SINGLE(THE) BLF, IF ALL MATCH THEN LABEL ALL FLOORS TRUE
         boolean isTrue = true;
-        for (Clause<?> clause : blf.clauses) {
+        for (Clause clause : blf.clauses) {
             isTrue &= ClauseEvaluator.evaluateSingleBuilding(clause, building);
         }
         log.info("BLF PASSING ?= {} ", isTrue);

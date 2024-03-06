@@ -7,7 +7,8 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@MappedSuperclass
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "entity_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class ClauseValueWrapper {
 
     @Id

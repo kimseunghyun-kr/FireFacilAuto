@@ -56,10 +56,10 @@ public class FloorLawFields {
     public Integer floorSpecification;
 
 
-    @Convert(converter = ClauseListConverter.class)
+//    @Convert(converter = ClauseListConverter.class)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "floor_law_fields_id")  // Adjust the column name as needed
-    public List<Clause<?>> clauses;
+    public List<Clause> clauses;
 
 }
 

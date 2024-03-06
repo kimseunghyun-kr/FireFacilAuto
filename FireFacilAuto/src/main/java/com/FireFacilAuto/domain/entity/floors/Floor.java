@@ -1,12 +1,11 @@
 package com.FireFacilAuto.domain.entity.floors;
 
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.Field;
+import com.FireFacilAuto.domain.entity.building.field.Field;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,9 +29,9 @@ public class Floor {
     @ManyToOne
     public Building building;
 
-    @ElementCollection
-    @CollectionTable(name = "floor", joinColumns = @JoinColumn(name = "floor_UUID"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @MapKeyColumn(name = "field_key")
-    private Map<String, Field<?>> floorFieldMap;
+    @MapKeyClass(String.class)
+    private Map<String, Field> floorFieldMap;
 }
 

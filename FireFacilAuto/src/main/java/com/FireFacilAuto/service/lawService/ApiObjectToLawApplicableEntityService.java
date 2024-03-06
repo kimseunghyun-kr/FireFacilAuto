@@ -6,7 +6,7 @@ import com.FireFacilAuto.domain.DTO.api.titleresponseapi.TitleResponseItem;
 import com.FireFacilAuto.domain.entity.Address;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.BuildingAttributes;
-import com.FireFacilAuto.domain.entity.building.Field;
+import com.FireFacilAuto.domain.entity.building.field.Field;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.floors.FloorAttributes;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class ApiObjectToLawApplicableEntityService {
     public void buildingInitializr(Address address, TitleResponseItem titleResponseItem, Building building) {
         // TODO: allocate number for classification based on code
         log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem);
-        Map<String,Field<?>> fields = BuildingAttributes.builder()
+        Map<String,Field> fields = BuildingAttributes.builder()
                 .buildingClassification(classificationCodeMapper(titleResponseItem))
                 .buildingSpecification(specificationCodeMapper(titleResponseItem))
                 .gfa(Double.parseDouble(titleResponseItem.getTotArea()))
@@ -77,7 +77,7 @@ public class ApiObjectToLawApplicableEntityService {
                     .floorNo(Integer.valueOf(floorResponseItem.getFlrNo()));
         }
 
-        Map<String,Field<?>> fields = fb.build().getFloorFieldMap();
+        Map<String,Field> fields = fb.build().getFloorFieldMap();
         floor.setFloorFieldMap(fields);
     }
 

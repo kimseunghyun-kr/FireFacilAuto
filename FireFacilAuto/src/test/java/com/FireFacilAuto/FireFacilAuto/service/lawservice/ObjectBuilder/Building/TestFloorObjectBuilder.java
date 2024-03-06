@@ -22,7 +22,7 @@ public class TestFloorObjectBuilder {
         Integer biasTo = switch (flag) {
             case 1 -> getBuildingClassification(building);
             case 2 -> getBuildingSpecification(building);
-            case 3 -> (Integer)getBuildingFieldByName(building, "buildingMaterial").value();
+            case 3 -> (Integer)getBuildingFieldByName(building, "buildingMaterial").getValue();
             default ->
                 // Handle default case or set biasTo to some default value
                     null; // or another default value

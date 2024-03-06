@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class LawUtils {
-    public static void clausePrioritysort (List<Clause<?>> clauses) {
+    public static void clausePrioritysort (List<Clause> clauses) {
         clauses.sort(Comparator.comparingInt(Clause::getPriority));
     }
 }

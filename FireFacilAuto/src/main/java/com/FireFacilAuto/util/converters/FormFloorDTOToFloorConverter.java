@@ -1,7 +1,7 @@
 package com.FireFacilAuto.util.converters;
 
 import com.FireFacilAuto.domain.DTO.form.FormFloorDTO;
-import com.FireFacilAuto.domain.entity.building.Field;
+import com.FireFacilAuto.domain.entity.building.field.Field;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.floors.FloorAttributes;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ public class FormFloorDTOToFloorConverter implements Converter<FormFloorDTO, Flo
     public Floor convert(FormFloorDTO source) {
         Floor floor = new Floor();
         log.info("converting {}", source);
-        Map<String,Field<?>> fields = new FloorAttributes.FloorBuilder()
+        Map<String,Field> fields = new FloorAttributes.FloorBuilder()
                 .floorClassification(source.getFloorClassification())
                 .floorSpecification(source.getFloorSpecification())
                 .floorArea(source.getFloorArea())

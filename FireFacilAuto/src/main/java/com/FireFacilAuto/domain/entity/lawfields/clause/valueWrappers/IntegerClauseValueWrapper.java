@@ -1,5 +1,6 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@DiscriminatorValue("Integer")
 public class IntegerClauseValueWrapper extends ClauseValueWrapper{
     Integer value;
     public IntegerClauseValueWrapper(Integer value, ClauseValue typeToken) {

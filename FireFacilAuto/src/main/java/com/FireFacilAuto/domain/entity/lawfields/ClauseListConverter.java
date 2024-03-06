@@ -13,12 +13,12 @@ import java.util.List;
 
 @Converter
 @Slf4j
-public class ClauseListConverter implements AttributeConverter<List<Clause<?>>, String> {
+public class ClauseListConverter implements AttributeConverter<List<Clause>, String> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(List<Clause<?>> clauses) {
+    public String convertToDatabaseColumn(List<Clause> clauses) {
         try {
             String deserialisedJson = objectMapper.writeValueAsString(clauses);
             log.info("clause list deserialised into {}, ", deserialisedJson);
@@ -29,7 +29,7 @@ public class ClauseListConverter implements AttributeConverter<List<Clause<?>>, 
     }
 
     @Override
-    public List<Clause<?>> convertToEntityAttribute(String dbData) {
+    public List<Clause> convertToEntityAttribute(String dbData) {
         try {
             return objectMapper.readValue(dbData, new TypeReference<>() {
             });

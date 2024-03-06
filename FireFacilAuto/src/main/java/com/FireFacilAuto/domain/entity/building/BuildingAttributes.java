@@ -1,5 +1,9 @@
 package com.FireFacilAuto.domain.entity.building;
 
+import com.FireFacilAuto.domain.entity.building.field.DoubleField;
+import com.FireFacilAuto.domain.entity.building.field.Field;
+import com.FireFacilAuto.domain.entity.building.field.IntegerField;
+import com.FireFacilAuto.domain.entity.building.field.LocalDateField;
 import lombok.Builder;
 import lombok.Data;
 
@@ -53,18 +57,18 @@ public class BuildingAttributes {
             this.attributes = new BuildingAttributes();
         }
 
-        public Map<String, Field<?>> buildFields() {
-            Map<String, Field<?>> buildingFieldList = new ConcurrentHashMap<>();
+        public Map<String, Field> buildFields() {
+            Map<String, Field> buildingFieldList = new ConcurrentHashMap<>();
 
-            buildingFieldList.put("buildingHumanCapacity", new Field<>("bhc", attributes.buildingHumanCapacity, Integer.class));
-            buildingFieldList.put("buildingClassification", new Field<>("bc", attributes.buildingClassification, Integer.class));
-            buildingFieldList.put("buildingSpecification", new Field<>("bs", attributes.buildingSpecification, Integer.class));
-            buildingFieldList.put("buildingMaterial", new Field<>("bm", attributes.buildingMaterial, Integer.class));
-            buildingFieldList.put("undergroundFloors", new Field<>("ugf", attributes.undergroundFloors, Integer.class));
-            buildingFieldList.put("overgroundFloors", new Field<>("ogf", attributes.overgroundFloors, Integer.class));
-            buildingFieldList.put("totalFloors", new Field<>("tf", attributes.undergroundFloors + attributes.overgroundFloors, Integer.class));
-            buildingFieldList.put("GFA", new Field<>("gfa", attributes.gfa, Double.class));
-            buildingFieldList.put("dateOfApproval", new Field<>("approvalDate", attributes.approvalDate, LocalDate.class));
+            buildingFieldList.put("buildingHumanCapacity", new IntegerField("bhc", attributes.buildingHumanCapacity, Integer.class));
+            buildingFieldList.put("buildingClassification", new IntegerField("bc", attributes.buildingClassification, Integer.class));
+            buildingFieldList.put("buildingSpecification", new IntegerField("bs", attributes.buildingSpecification, Integer.class));
+            buildingFieldList.put("buildingMaterial", new IntegerField("bm", attributes.buildingMaterial, Integer.class));
+            buildingFieldList.put("undergroundFloors", new IntegerField("ugf", attributes.undergroundFloors, Integer.class));
+            buildingFieldList.put("overgroundFloors", new IntegerField("ogf", attributes.overgroundFloors, Integer.class));
+            buildingFieldList.put("totalFloors", new IntegerField("tf", attributes.undergroundFloors + attributes.overgroundFloors, Integer.class));
+            buildingFieldList.put("GFA", new DoubleField("gfa", attributes.gfa, Double.class));
+            buildingFieldList.put("dateOfApproval", new LocalDateField("approvalDate", attributes.approvalDate, LocalDate.class));
 
             return buildingFieldList;
         }

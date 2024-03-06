@@ -1,6 +1,7 @@
 package com.FireFacilAuto.domain.entity.building;
 
 import com.FireFacilAuto.domain.entity.Address;
+import com.FireFacilAuto.domain.entity.building.field.Field;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,10 +32,11 @@ public class Building {
     /**
      * fields that are to be included to describe the building
      */
-    @ElementCollection
-    @CollectionTable(name = "building_field_map", joinColumns = @JoinColumn(name = "building_UUID"))
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @MapKeyColumn(name = "field_key")
-    private Map<String, Field<?>> buildingFieldMap;
+    @MapKeyClass(String.class)  // Assuming field keys are of type String
+    private Map<String, Field> buildingFieldMap;
 
     // Additional fields as needed
 }

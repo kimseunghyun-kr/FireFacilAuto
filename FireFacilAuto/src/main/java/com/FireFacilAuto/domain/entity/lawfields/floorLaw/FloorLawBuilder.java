@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 public class FloorLawBuilder {
 
-    private List<Clause<?>> clauses = new ArrayList<>();
+    private List<Clause> clauses = new ArrayList<>();
     private final ClauseFactory clauseFactory;
     private int priority = 1; // Default priority value
 
@@ -75,12 +75,12 @@ public class FloorLawBuilder {
         return this;
     }
 
-    public List<Clause<?>> build() {
+    public List<Clause> build() {
         return clauses;
     }
 
     private <T> void addClause(PossibleFloorLawCauses field, T value, ComparisonOperator comparisonOperator) {
-        Clause<? extends ClauseValueWrapper> clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleFloorClauses, comparisonOperator, value, priority);
+        Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleFloorClauses, comparisonOperator, value, priority);
         clauses.add(clause);
     }
 

@@ -56,9 +56,9 @@ public class BuildingLawFields {
     public Integer buildingSpecification;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @Convert(converter = ClauseListConverter.class)
+//    @Convert(converter = ClauseListConverter.class)
     @JoinColumn(name = "building_law_fields_id")  // Adjust the column name as needed
-    public List<Clause<? extends ClauseValueWrapper>> clauses;
+    public List<Clause> clauses;
 
 }
 

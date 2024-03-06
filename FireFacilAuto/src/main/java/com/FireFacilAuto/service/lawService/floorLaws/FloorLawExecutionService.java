@@ -92,10 +92,10 @@ public class FloorLawExecutionService {
 
         if(flf.floorClassification != -1) {
             IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(flf.floorClassification, ClauseValue.INTEGER);
-            Clause<IntegerClauseValueWrapper> classificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorClassification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
+            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorClassification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (flf.floorSpecification != -1) {
                 IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(flf.floorSpecification, ClauseValue.INTEGER);
-                Clause<IntegerClauseValueWrapper> specificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorSpecification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
+                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorSpecification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 flf.clauses.addFirst(specificationClause);
             }
             flf.clauses.addFirst(classificationClause);
@@ -103,7 +103,7 @@ public class FloorLawExecutionService {
 
         List<FloorResults> nextEpochSurvivor = new LinkedList<>(); // Create a list to store elements to delete
 
-        for(Clause<?> clause : flf.getClauses()) {
+        for(Clause clause : flf.getClauses()) {
             if(clause.getPriority() > greatestEpoch) {
                 floorResultsList = nextEpochSurvivor;
                 nextEpochSurvivor = new LinkedList<>();

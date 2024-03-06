@@ -7,11 +7,11 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
 
-@JsonDeserialize(using = ClauseDeserializer.class)
+//@JsonDeserialize(using = ClauseDeserializer.class)
 @Entity
 @Data
 @Slf4j
-public class Clause<T extends ClauseValueWrapper>{
+public class Clause{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,15 +22,14 @@ public class Clause<T extends ClauseValueWrapper>{
     ClauseTypes clauseTypes;
     ComparisonOperator comparisonOperator;
     @OneToOne(cascade = CascadeType.ALL)
-//    @Convert(converter = ClauseValueConverter.class, attributeName = "value")
-    T value;
+    ClauseValueWrapper value;
     int priority;
 
 
     public Clause (){
     }
 
-    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, T value, int priority) {
+    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, ClauseValueWrapper value, int priority) {
         this.clauseField = clauseField;
         this.clauseTypes = clauseTypes;
         this.comparisonOperator = co;

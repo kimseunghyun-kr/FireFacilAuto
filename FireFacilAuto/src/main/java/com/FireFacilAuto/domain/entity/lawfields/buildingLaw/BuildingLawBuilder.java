@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class BuildingLawBuilder {
 
-    private List<Clause<?>> clauses = new ArrayList<>();
+    private List<Clause> clauses = new ArrayList<>();
     private final ClauseFactory clauseFactory;
     private int priority = 1; // Default priority value
 
@@ -91,12 +91,12 @@ public class BuildingLawBuilder {
         return this;
     }
 
-    public List<Clause<?>> build() {
+    public List<Clause> build() {
         return clauses;
     }
 
     private <T> void addClause(PossibleBuildingClauses field, T value, ComparisonOperator comparisonOperator) {
-        Clause<? extends ClauseValueWrapper> clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleBuildingClauses, comparisonOperator, value, priority);
+        Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleBuildingClauses, comparisonOperator, value, priority);
         clauses.add(clause);
     }
 }
