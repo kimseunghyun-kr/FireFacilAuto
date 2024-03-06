@@ -11,9 +11,11 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LocalDateClauseValueWrapper extends ClauseValueWrapper<LocalDate> {
-    public LocalDateClauseValueWrapper(LocalDate value, String valueType) {
-        super(value, valueType);
+public class LocalDateClauseValueWrapper extends ClauseValueWrapper {
+    LocalDate value;
+    public LocalDateClauseValueWrapper(LocalDate value, ClauseValue typeToken) {
+        super(typeToken);
+        this.value = value;
     }
 
 }

@@ -9,8 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BooleanClauseValueWrapper extends ClauseValueWrapper<Boolean>{
-    public BooleanClauseValueWrapper(Boolean value, String valueType) {
-        super(value, valueType);
+public class BooleanClauseValueWrapper extends ClauseValueWrapper {
+    Boolean value;
+    public BooleanClauseValueWrapper(Boolean value, ClauseValue typeToken) {
+        super(typeToken);
+        this.value = value;
     }
 }

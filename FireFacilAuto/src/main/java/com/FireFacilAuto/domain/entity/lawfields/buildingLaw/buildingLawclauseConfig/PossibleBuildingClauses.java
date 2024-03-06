@@ -5,26 +5,24 @@ import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleClauses;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.*;
 import lombok.Getter;
 
-import java.time.LocalDate;
-
 @Getter
 public enum PossibleBuildingClauses implements PossibleClauses {
-    TOTAL_FLOORS(Integer.class, "totalFloors", IntegerClauseValueWrapper.class),
-    UNDERGROUND_FLOORS(Integer.class, "undergroundFloors", IntegerClauseValueWrapper.class),
-    OVERGROUND_FLOORS(Integer.class, "overgroundFloors", IntegerClauseValueWrapper.class),
-    GFA(Double.class, "GFA", DoubleClauseValueWrapper.class),
-    BUILDING_MATERIAL(Integer.class, "buildingMaterial", IntegerClauseValueWrapper.class),
-    LENGTH(Double.class, "length", DoubleClauseValueWrapper.class),
-    DATE_OF_APPROVAL(LocalDate.class, "dateOfApproval", LocalDateClauseValueWrapper.class),
-    BUILDING_HUMAN_CAPACITY(Integer.class, "buildingHumanCapacity", IntegerClauseValueWrapper.class),
-    EXTRA_FACILITY(String.class, "extraFacility", StringClauseValueWrapper.class),
-    BUILDING_CLASSIFICATION(Integer.class, "buildingClassification", IntegerClauseValueWrapper.class),
-    BUILDING_SPECIFICATION(Integer.class, "buildingSpecification", IntegerClauseValueWrapper.class);
+    TOTAL_FLOORS(ClauseValue.INTEGER, "totalFloors", IntegerClauseValueWrapper.class),
+    UNDERGROUND_FLOORS(ClauseValue.INTEGER, "undergroundFloors", IntegerClauseValueWrapper.class),
+    OVERGROUND_FLOORS(ClauseValue.INTEGER, "overgroundFloors", IntegerClauseValueWrapper.class),
+    GFA(ClauseValue.DOUBLE, "GFA", DoubleClauseValueWrapper.class),
+    BUILDING_MATERIAL(ClauseValue.INTEGER, "buildingMaterial", IntegerClauseValueWrapper.class),
+    LENGTH(ClauseValue.DOUBLE, "length", DoubleClauseValueWrapper.class),
+    DATE_OF_APPROVAL(ClauseValue.LOCAL_DATE, "dateOfApproval", LocalDateClauseValueWrapper.class),
+    BUILDING_HUMAN_CAPACITY(ClauseValue.INTEGER, "buildingHumanCapacity", IntegerClauseValueWrapper.class),
+    EXTRA_FACILITY(ClauseValue.STRING, "extraFacility", StringClauseValueWrapper.class),
+    BUILDING_CLASSIFICATION(ClauseValue.INTEGER, "buildingClassification", IntegerClauseValueWrapper.class),
+    BUILDING_SPECIFICATION(ClauseValue.INTEGER, "buildingSpecification", IntegerClauseValueWrapper.class);
 
-    private final Class<?> fieldType;
+    private final ClauseValue fieldType;
     private final String targetField;
-    private final Class<? extends ClauseValueWrapper<?>> wrapperClass;
-    PossibleBuildingClauses(Class<?> fieldType, String targetField, Class<? extends ClauseValueWrapper<?>> wrapperClass) {
+    private final Class<? extends ClauseValueWrapper> wrapperClass;
+    PossibleBuildingClauses(ClauseValue fieldType, String targetField, Class<? extends ClauseValueWrapper> wrapperClass) {
         this.fieldType = fieldType;
         this.targetField = targetField;
         this.wrapperClass = wrapperClass;
@@ -46,7 +44,7 @@ public enum PossibleBuildingClauses implements PossibleClauses {
     }
 
     @Override
-    public Class<? extends ClauseValueWrapper<?>> getWrapper() {
+    public Class<? extends ClauseValueWrapper> getWrapper() {
         return this.wrapperClass;
     }
 }

@@ -3,6 +3,7 @@ package com.FireFacilAuto.domain.entity.lawfields.floorLaw;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
 import com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig.PossibleFloorLawCauses;
 import lombok.Builder;
 import lombok.Data;
@@ -79,7 +80,7 @@ public class FloorLawBuilder {
     }
 
     private <T> void addClause(PossibleFloorLawCauses field, T value, ComparisonOperator comparisonOperator) {
-        Clause<T> clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleFloorClauses, comparisonOperator, value, priority);
+        Clause<? extends ClauseValueWrapper> clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleFloorClauses, comparisonOperator, value, priority);
         clauses.add(clause);
     }
 

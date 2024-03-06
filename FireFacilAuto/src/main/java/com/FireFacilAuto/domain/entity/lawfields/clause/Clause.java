@@ -11,7 +11,7 @@ import org.hibernate.query.sqm.ComparisonOperator;
 @Entity
 @Data
 @Slf4j
-public class Clause<T>{
+public class Clause<T extends ClauseValueWrapper>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,14 +23,14 @@ public class Clause<T>{
     ComparisonOperator comparisonOperator;
     @OneToOne(cascade = CascadeType.ALL)
 //    @Convert(converter = ClauseValueConverter.class, attributeName = "value")
-    ClauseValueWrapper<T> value;
+    T value;
     int priority;
 
 
     public Clause (){
     }
 
-    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, ClauseValueWrapper<T> value, int priority) {
+    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, T value, int priority) {
         this.clauseField = clauseField;
         this.clauseTypes = clauseTypes;
         this.comparisonOperator = co;
@@ -40,10 +40,10 @@ public class Clause<T>{
 
     // Get the valueType from the stored class name
     public Class<?> getToken() {
-        return clauseField.getFieldType();
+        return clauseField.getFieldType().getCorrespondingClass();
     }
 
-    public T getValue() {
+    public Object getValue() {
         return value.getValue();
     }
 

@@ -8,38 +8,49 @@ import java.time.LocalDate;
 @Data
 @Entity
 @MappedSuperclass
-public abstract class ClauseValueWrapper<T> {
+public abstract class ClauseValueWrapper {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    T value;
-    String valueType;
+    @Enumerated(EnumType.STRING)
+    private ClauseValue valueType;
 
-
-    public ClauseValueWrapper(T value, String valueType) {
-        this.value = value;
+    public ClauseValueWrapper(ClauseValue valueType) {
         this.valueType = valueType;
     }
-
     public ClauseValueWrapper() {
 
     }
 
+    public abstract Object getValue();
 
-    public static <T> ClauseValueWrapper<T> createValueWrapper(T input, Class<?> inputTypeToken, Class<? extends ClauseValueWrapper<?>> wrapperClass) {
-        String typeTokenString = inputTypeToken.getSimpleName();
-        return switch (typeTokenString) {
-            case "Integer" -> (ClauseValueWrapper<T>) new IntegerClauseValueWrapper((Integer) input, typeTokenString);
-            case "Double" -> (ClauseValueWrapper<T>) new DoubleClauseValueWrapper((Double) input, typeTokenString);
-            case "LocalDate" -> (ClauseValueWrapper<T>) new LocalDateClauseValueWrapper((LocalDate) input, typeTokenString);
-            case "Boolean" -> (ClauseValueWrapper<T>) new BooleanClauseValueWrapper((Boolean) input, typeTokenString);
-            case "String" -> (ClauseValueWrapper<T>) new StringClauseValueWrapper((String) input, typeTokenString);
-            default ->
-                    throw new IllegalArgumentException("Unsupported inputTypeToken: " + inputTypeToken.getSimpleName());
-        };
+    public static <T> ClauseValueWrapper clauseValueWrapperfactory(ClauseValue cv, T value) {
+
+        if(!value.getClass().equals(cv.getCorrespondingClass())) {
+            throw new UnsupportedOperationException("the value provided does not match with the valuetype input provided, where valuetype :" + cv + "value :" + value);
+        }
+        if(cv.equals(ClauseValue.STRING)) {
+            return new StringClauseValueWrapper((String) value, cv);
+        }
+        if(cv.equals(ClauseValue.INTEGER)) {
+            return new IntegerClauseValueWrapper((Integer) value, cv);
+        }
+        if(cv.equals(ClauseValue.DOUBLE)) {
+            return new DoubleClauseValueWrapper((Double) value,cv);
+        }
+        if(cv.equals(ClauseValue.LOCAL_DATE)) {
+            return new LocalDateClauseValueWrapper((LocalDate) value, cv);
+        }
+        if(cv.equals(ClauseValue.BOOLEAN)) {
+            return new BooleanClauseValueWrapper((Boolean) value, cv);
+        }
+
+        throw new UnsupportedOperationException("no corresponding matching types were found, where valuetype :" + cv + "value :" + value);
+
     }
+
 
 
 }

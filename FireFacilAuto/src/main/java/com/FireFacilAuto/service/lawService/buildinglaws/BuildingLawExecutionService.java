@@ -8,6 +8,9 @@ import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseEvaluator;
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.IntegerClauseValueWrapper;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -53,9 +56,11 @@ public class BuildingLawExecutionService {
         Integer[] target = {blf.majorCategoryCode, blf.minorCategoryCode};
 
         if(blf.buildingClassification != -1) {
-            Clause<Integer> classificationClause = clauseFactory.createClause("buildingClassification", ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, blf.buildingClassification, 1);
+            IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(blf.buildingClassification, ClauseValue.INTEGER);
+            Clause<IntegerClauseValueWrapper> classificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingClassification", ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (blf.buildingSpecification != -1) {
-                Clause<Integer> specificationClause = clauseFactory.createClause("buildingSpecification",ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, blf.buildingSpecification, 1);
+                IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(blf.buildingSpecification, ClauseValue.INTEGER);
+                Clause<IntegerClauseValueWrapper> specificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingSpecification",ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 blf.clauses.addFirst(specificationClause);
             }
             blf.clauses.addFirst(classificationClause);

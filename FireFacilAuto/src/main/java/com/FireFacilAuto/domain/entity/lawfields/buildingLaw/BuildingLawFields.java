@@ -3,6 +3,7 @@ package com.FireFacilAuto.domain.entity.lawfields.buildingLaw;
 import com.FireFacilAuto.domain.entity.lawfields.ClauseListConverter;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
@@ -57,7 +58,7 @@ public class BuildingLawFields {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Convert(converter = ClauseListConverter.class)
     @JoinColumn(name = "building_law_fields_id")  // Adjust the column name as needed
-    public List<Clause<?>> clauses;
+    public List<Clause<? extends ClauseValueWrapper>> clauses;
 
 }
 

@@ -3,6 +3,9 @@ package com.FireFacilAuto.service.lawService.floorLaws;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.clause.*;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
+import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.IntegerClauseValueWrapper;
 import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
@@ -88,9 +91,11 @@ public class FloorLawExecutionService {
         int greatestEpoch = 1;
 
         if(flf.floorClassification != -1) {
-            Clause<Integer> classificationClause = clauseFactory.createClause("floorClassification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, flf.floorClassification, 1);
+            IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(flf.floorClassification, ClauseValue.INTEGER);
+            Clause<IntegerClauseValueWrapper> classificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorClassification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (flf.floorSpecification != -1) {
-                Clause<Integer> specificationClause = clauseFactory.createClause("floorSpecification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, flf.floorSpecification, 1);
+                IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(flf.floorSpecification, ClauseValue.INTEGER);
+                Clause<IntegerClauseValueWrapper> specificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorSpecification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 flf.clauses.addFirst(specificationClause);
             }
             flf.clauses.addFirst(classificationClause);

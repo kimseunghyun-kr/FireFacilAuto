@@ -9,9 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class StringClauseValueWrapper extends ClauseValueWrapper<String>{
-
-    public StringClauseValueWrapper(String value, String valueType) {
-        super(value, valueType);
+public class StringClauseValueWrapper extends ClauseValueWrapper {
+    String value;
+    public StringClauseValueWrapper(String value, ClauseValue typeToken) {
+        super(typeToken);
+        this.value = value;
     }
 }

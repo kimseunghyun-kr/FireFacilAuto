@@ -1,7 +1,12 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers;
 
-public class DoubleClauseValueWrapper extends ClauseValueWrapper<Double>{
-    public DoubleClauseValueWrapper(Double input, String typeToken) {
-        super(input, typeToken);
+import lombok.Getter;
+
+@Getter
+public class DoubleClauseValueWrapper extends ClauseValueWrapper{
+    Double value;
+    public DoubleClauseValueWrapper(Double value, ClauseValue typeToken) {
+        super(typeToken);
+        this.value = value;
     }
 }
