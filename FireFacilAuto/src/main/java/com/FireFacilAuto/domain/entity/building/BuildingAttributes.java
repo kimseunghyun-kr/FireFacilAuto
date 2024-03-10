@@ -44,20 +44,16 @@ public class BuildingAttributes {
         return buildingAttributes;
     }
 
-
-    public static BuildingAttributesBuilder builder() {
-        return new BuildingAttributesBuilder();
-    }
-
     public static class BuildingAttributesBuilder {
 
-        private BuildingAttributes attributes;
+        private final BuildingAttributes attributes;
 
         private BuildingAttributesBuilder() {
             this.attributes = new BuildingAttributes();
         }
 
         public Map<String, Field> buildFields() {
+
             Map<String, Field> buildingFieldList = new ConcurrentHashMap<>();
 
             buildingFieldList.put("buildingHumanCapacity", new IntegerField("bhc", attributes.buildingHumanCapacity, Integer.class));

@@ -4,21 +4,23 @@ import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
-import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
-import lombok.Builder;
 import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
 @Component
+@Scope("prototype")
 public class BuildingLawBuilder {
 
+    private BuildingLawFields buildingLawFields;
     private List<Clause> clauses = new ArrayList<>();
     private final ClauseFactory clauseFactory;
     private int priority = 1; // Default priority value
@@ -91,9 +93,27 @@ public class BuildingLawBuilder {
         return this;
     }
 
-    public List<Clause> build() {
+    public List<Clause> buildListNoReset() {
         return clauses;
     }
+    public BuildingLawBuilder setIdentity (Integer buildingClassification, Integer buildingSpecification) {
+        buildingLawFields.setBuildingClassification(buildingClassification);
+        buildingLawFields.setBuildingSpecification(buildingSpecification);
+        return this;
+    }
+    public BuildingLawFields buildThenReset () {
+        buildingLawFields.setClauses(this.clauses);
+        BuildingLawFields result = this.buildingLawFields;
+        reset();
+        return result;
+    }
+
+    public void reset() {
+        this.priority = 1;
+        this.buildingLawFields = new BuildingLawFields();
+        this.clauses = new LinkedList<>();
+    }
+
 
     private <T> void addClause(PossibleBuildingClauses field, T value, ComparisonOperator comparisonOperator) {
         Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleBuildingClauses, comparisonOperator, value, priority);

@@ -7,6 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClauseFactory {
 
+    public Clause createClauseWithDefinedEnumAndValueWrapper (PossibleClauses field, ClauseTypes lawtype, ComparisonOperator co, ClauseValueWrapper input, int priority) {
+        if (field == null) {
+            throw new IllegalArgumentException("PossibleClauses cannot be null. ");
+        }
+        return new Clause(field, lawtype, co, input, priority);
+    }
 
     public Clause createClauseWithClauseValueWrapper(String field, ClauseTypes lawtype, ComparisonOperator co, ClauseValueWrapper input, int priority) {
         PossibleClauses lawField = lawtype.getClauseByName(field);

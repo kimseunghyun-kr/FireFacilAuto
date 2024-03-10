@@ -4,7 +4,6 @@ import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.clause.*;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
-import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.IntegerClauseValueWrapper;
 import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;

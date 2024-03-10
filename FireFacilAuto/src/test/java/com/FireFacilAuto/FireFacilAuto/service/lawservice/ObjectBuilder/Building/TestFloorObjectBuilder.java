@@ -44,10 +44,10 @@ public class TestFloorObjectBuilder {
      */
     public List<Floor> RandomInputFloorObjectsBuilder(Building building) {
         List<Floor> floors = new LinkedList<>();
-        Integer totalToGenerate = getBuildingFieldValueByName(building, "totalFloors");
-        Integer undergroundFloors = getBuildingFieldValueByName(building, "undergroundFloors");
-        Integer overGroundFloors = getBuildingFieldValueByName(building, "overgroundFloors");
-        Double availableGroundLimit = getBuildingFieldValueByName(building, "GFA");
+        Integer totalToGenerate = (Integer) getBuildingFieldValueByName(building, "totalFloors");
+        Integer undergroundFloors = (Integer) getBuildingFieldValueByName(building, "undergroundFloors");
+        Integer overGroundFloors = (Integer) getBuildingFieldValueByName(building, "overgroundFloors");
+        Double availableGroundLimit = (Double) getBuildingFieldValueByName(building, "GFA");
 
         generateFloors(building, floors, undergroundFloors, true, availableGroundLimit);
         generateFloors(building, floors, overGroundFloors, false, availableGroundLimit);

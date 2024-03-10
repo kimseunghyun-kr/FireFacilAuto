@@ -23,7 +23,7 @@ public class BuildingLawBuilderTest {
 
     @Test
     void buildingLawSee() {
-        List<Clause<?>> blaw =buildingLawBuilder
+        List<Clause> blaw =buildingLawBuilder
                 .addBuildingClassification(1, ComparisonOperator.EQUAL)
                 .addBuildingSpecification(1, ComparisonOperator.EQUAL)
                 .addBuildingMaterial(1, ComparisonOperator.EQUAL)
@@ -31,8 +31,18 @@ public class BuildingLawBuilderTest {
                 .next()
                 .addDateOfApproval(LocalDate.now(), ComparisonOperator.LESS_THAN_OR_EQUAL)
                 .addGFA(33.0, ComparisonOperator.GREATER_THAN_OR_EQUAL)
-                .build();
+                .buildListNoReset();
 
-        log.info("BLAW AT {}", blaw);
+        buildingLawBuilder.reset();
+
+        int counter = 0;
+        for(Clause clause : blaw) {
+            log.info(" ============================================ ");
+            log.info("priority of clause is {}", clause.getPriority());
+            log.info("clause value is :   {}    : with class : {} :", clause.getValue(), clause.getValue().getClass());
+            log.info("expected clause type defined in clause is {}  with actual clause value wrapper type being {}", clause.getToken(), clause.getValueWrapper().getClass());
+            counter += 1;
+        }
+//        log.info("BLAW AT {}", blaw);
     }
 }

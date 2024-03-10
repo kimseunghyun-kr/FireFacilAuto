@@ -22,18 +22,18 @@ public class Clause{
     ClauseTypes clauseTypes;
     ComparisonOperator comparisonOperator;
     @OneToOne(cascade = CascadeType.ALL)
-    ClauseValueWrapper value;
+    ClauseValueWrapper valueWrapper;
     int priority;
 
 
     public Clause (){
     }
 
-    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, ClauseValueWrapper value, int priority) {
+    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, ClauseValueWrapper valueWrapper, int priority) {
         this.clauseField = clauseField;
         this.clauseTypes = clauseTypes;
         this.comparisonOperator = co;
-        this.value=value;
+        this.valueWrapper=valueWrapper;
         this.priority=priority;
     }
 
@@ -43,7 +43,7 @@ public class Clause{
     }
 
     public Object getValue() {
-        return value.getValue();
+        return valueWrapper.getValue();
     }
 
 }
