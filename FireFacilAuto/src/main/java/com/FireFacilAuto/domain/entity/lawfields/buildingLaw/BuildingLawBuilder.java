@@ -20,16 +20,10 @@ import java.util.List;
 @Scope("prototype")
 public class BuildingLawBuilder {
 
-    private BuildingLawFields buildingLawFields;
+    private BuildingLawFields buildingLawFields = new BuildingLawFields();
     private List<Clause> clauses = new ArrayList<>();
-    private final ClauseFactory clauseFactory;
+    private final ClauseFactory clauseFactory = new ClauseFactory();
     private int priority = 1; // Default priority value
-
-    @Autowired
-    public BuildingLawBuilder(ClauseFactory clauseFactory) {
-        // Initialize with default values if needed
-        this.clauseFactory = clauseFactory;
-    }
 
     public BuildingLawBuilder addTotalFloors(int value, ComparisonOperator comparisonOperator) {
         addClause(PossibleBuildingClauses.TOTAL_FLOORS, value, comparisonOperator);
@@ -96,11 +90,18 @@ public class BuildingLawBuilder {
     public List<Clause> buildListNoReset() {
         return clauses;
     }
-    public BuildingLawBuilder setIdentity (Integer buildingClassification, Integer buildingSpecification) {
+    public BuildingLawBuilder setTargetBuilding (Integer buildingClassification, Integer buildingSpecification) {
         buildingLawFields.setBuildingClassification(buildingClassification);
         buildingLawFields.setBuildingSpecification(buildingSpecification);
         return this;
     }
+
+    public BuildingLawBuilder setTargetlaw (Integer majorityCode, Integer minorityCode) {
+        buildingLawFields.setMajorCategoryCode(majorityCode);
+        buildingLawFields.setMinorCategoryCode(minorityCode);
+        return this;
+    }
+
     public BuildingLawFields buildThenReset () {
         buildingLawFields.setClauses(this.clauses);
         BuildingLawFields result = this.buildingLawFields;
