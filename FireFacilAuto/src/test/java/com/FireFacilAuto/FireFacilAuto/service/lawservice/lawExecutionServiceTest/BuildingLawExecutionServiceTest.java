@@ -20,8 +20,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.FireFacilAuto.domain.entity.building.BuildingUtils.*;
 import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.floorResultSheetBuilder;
 import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.resultSheetInitializr;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Slf4j
@@ -64,16 +67,25 @@ public class BuildingLawExecutionServiceTest {
     public void testExecution() {
         // Given
         Building testBuilding1 = BuildingAttributes.builder()
-                .buildingClassification()
-                .buildingSpecification()
-                .buildingMaterial()
-                .gfa()
+                .buildingClassification(1)
+                .buildingSpecification(1)
+                .buildingMaterial(1)
+                .gfa(2000)
                 .build();
 
         log.info("initializing result sheets");
         ResultSheet resultSheet = resultSheetInitializr(testBuilding1);
         List<FloorResults> floorResultsList = floorResultSheetBuilder(testBuilding1);
-        List<BuildingLawFields> candidateBuildingLaw = mockCandidateLawFilter((Integer)testBuilding1.getBuildingFieldMap().get("buildingClassification").getValue(),
-                (Integer) testBuilding1.getBuildingFieldMap().get("buildingSpecification").getValue());
+        List<BuildingLawFields> candidateBuildingLaw = mockCandidateLawFilter(getBuildingClassification(testBuilding1),
+                getBuildingSpecification(testBuilding1));
+
+        when(buildingLawRepositoryService.getLawsWithApplicablePurpose(testBuilding1)).thenReturn(candidateBuildingLaw);
+
+        // Act
+        blawService.buildingLawExecute(testBuilding1, floorResultsList);
+
+        log.info("resultSheet : {}", resultSheet);
+        assertThat(resultSheet).isNotNull();
+
     }
 }
