@@ -55,16 +55,12 @@ public class BuildingLawExecutionServiceTest {
                 .addGFA(33, ComparisonOperator.GREATER_THAN_OR_EQUAL)
                 .buildThenReset();
 
-        BuildingLawFields hospitalBedLaw = buildingLawBuilder.setTargetBuilding(2,3).setTargetlaw(2,1)
-                .addExtraFacility("HOSPITAL_BED", ComparisonOperator.EQUAL)
+        BuildingLawFields sprinklerLaw = buildingLawBuilder.setTargetBuilding(3,-1).setTargetlaw(2,1)
+                .addGFA(5000, ComparisonOperator.GREATER_THAN_OR_EQUAL)
                 .buildThenReset();
 
-        BuildingLawFields Blaw3 = buildingLawBuilder.setTargetBuilding(-1,-1).setTargetlaw(1,1)
-                .addGFA(33, ComparisonOperator.GREATER_THAN_OR_EQUAL)
-                .buildThenReset();
-
-        BuildingLawFields Blaw4 = buildingLawBuilder.setTargetBuilding(-1,-1).setTargetlaw(1,1)
-                .addGFA(33, ComparisonOperator.GREATER_THAN_OR_EQUAL)
+        BuildingLawFields sprinklerLaw2 = buildingLawBuilder.setTargetBuilding(4,-1).setTargetlaw(2,1)
+                .addGFA(5000, ComparisonOperator.GREATER_THAN_OR_EQUAL)
                 .buildThenReset();
 
         testBuildingLawList.add(fireExtinguisherLaw);

@@ -1,5 +1,7 @@
 package com.FireFacilAuto.domain.entity.lawfields.floorLaw;
 
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawBuilder;
+import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
@@ -12,21 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
-@Component
 public class FloorLawBuilder {
 
     private List<Clause> clauses = new ArrayList<>();
-    private final ClauseFactory clauseFactory;
+    private FloorLawFields floorlawfields = new FloorLawFields();
+    private final ClauseFactory clauseFactory = new ClauseFactory();
     private int priority = 1; // Default priority value
-
-    @Autowired
-    public FloorLawBuilder(ClauseFactory clauseFactory) {
-        // Initialize with default values if needed
-        this.clauseFactory = clauseFactory;
-    }
 
     public FloorLawBuilder addFloorClassification(int value, ComparisonOperator comparisonOperator) {
         addClause(PossibleFloorLawCauses.FLOOR_CLASSIFICATION, value, comparisonOperator);
@@ -68,6 +65,18 @@ public class FloorLawBuilder {
         return this;
     }
 
+    public FloorLawBuilder setTargetFloor (Integer buildingClassification, Integer buildingSpecification) {
+        floorlawfields.setFloorClassification(buildingClassification);
+        floorlawfields.setFloorSpecification(buildingSpecification);
+        return this;
+    }
+
+    public FloorLawBuilder setTargetlaw (Integer majorityCode, Integer minorityCode) {
+        floorlawfields.setMajorCategoryCode(majorityCode);
+        floorlawfields.setMinorCategoryCode(minorityCode);
+        return this;
+    }
+
     // Add methods for other PossibleFloorLawCauses fields
 
     public FloorLawBuilder next() {
@@ -75,7 +84,21 @@ public class FloorLawBuilder {
         return this;
     }
 
-    public List<Clause> build() {
+    public FloorLawFields buildThenReset () {
+        floorlawfields.setClauses(this.clauses);
+        FloorLawFields result = this.floorlawfields;
+        reset();
+        return result;
+    }
+
+    public void reset() {
+        this.priority = 1;
+        this.floorlawfields = new FloorLawFields();
+        this.clauses = new LinkedList<>();
+    }
+
+
+    public List<Clause> buildListNoReset() {
         return clauses;
     }
 
