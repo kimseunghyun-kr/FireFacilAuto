@@ -1,12 +1,13 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig.PossibleFloorLawCauses;
 import lombok.Getter;
 
 @Getter
 public enum ClauseTypes {
     PossibleBuildingClauses(PossibleBuildingClauses.class),
-    PossibleFloorClauses(PossibleClauses.class);
+    PossibleFloorClauses(PossibleFloorLawCauses.class);
 
     private final Class<? extends PossibleClauses> lawType;
 
