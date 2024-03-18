@@ -6,6 +6,7 @@ import com.FireFacilAuto.domain.entity.building.field.Field;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.floors.FloorUtils;
 import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.*;
+import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluationType;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +24,7 @@ public class ClauseEvaluator {
 //    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
     public static Boolean evaluateSingleBuilding(Clause clause, Building building) {
         String targetField = clause.clauseField.getTargetFieldName();
+        EvaluationType evaluationType = clause.getEvaluationType();
         Field field = BuildingUtils.getBuildingFieldByName(building, targetField);
         return evaluateSingleFieldWithClause(field, clause);
     }
@@ -75,7 +77,7 @@ public class ClauseEvaluator {
 
 
 
-    private static <U extends Comparable<U>, V> Boolean defaultComparisonStrategyApply(Clause clause, Object lawValue, Class<?> clazz, Field field) {
+    public static <U extends Comparable<U>, V> Boolean defaultComparisonStrategyApply(Clause clause, Object lawValue, Class<?> clazz, Field field) {
         if (lawValue instanceof String && clazz.equals(String.class)) {
             return lawValue.equals(field.getValue());
         }

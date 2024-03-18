@@ -14,7 +14,7 @@ import java.util.Map;
  */
 @Entity
 @Data
-public class Building {
+public class Building implements TargetEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

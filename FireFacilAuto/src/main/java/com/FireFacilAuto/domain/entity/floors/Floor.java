@@ -1,6 +1,7 @@
 package com.FireFacilAuto.domain.entity.floors;
 
 import com.FireFacilAuto.domain.entity.building.Building;
+import com.FireFacilAuto.domain.entity.building.TargetEntity;
 import com.FireFacilAuto.domain.entity.building.field.Field;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.Map;
 @Entity
 @Data
 @ToString(exclude = "building")
-public class Floor {
+public class Floor implements TargetEntity {
 
     /**
      * Internal system identification code for the floor.

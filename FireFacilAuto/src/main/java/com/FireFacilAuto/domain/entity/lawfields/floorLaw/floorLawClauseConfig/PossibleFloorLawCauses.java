@@ -1,7 +1,7 @@
 package com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig;
 
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
-import com.FireFacilAuto.domain.entity.lawfields.clause.EvaluationType;
+import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluationType;
 import com.FireFacilAuto.domain.entity.lawfields.clause.PossibleClauses;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.*;
 import lombok.Getter;

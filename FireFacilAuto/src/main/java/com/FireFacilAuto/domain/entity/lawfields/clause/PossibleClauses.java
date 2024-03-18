@@ -1,5 +1,6 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
+import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluationType;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValueWrapper;
 
