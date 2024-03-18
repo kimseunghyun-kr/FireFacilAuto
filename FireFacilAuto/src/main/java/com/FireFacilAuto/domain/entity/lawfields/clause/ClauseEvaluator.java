@@ -34,7 +34,7 @@ public class ClauseEvaluator {
     }
 
     private static Boolean evaluateSingleFieldWithClause(Field field, Clause clause) {
-        if(isActivated(field.getValue())){
+        if(!isActivated(field.getValue())){
             log.warn("null value detected when not supposed to. check if environment is test or not." +
                     "if this is in production setting then something critical went wrong" +
                     "error at field : {}, clause {}, fields are intended to discard if null value present",field , clause);

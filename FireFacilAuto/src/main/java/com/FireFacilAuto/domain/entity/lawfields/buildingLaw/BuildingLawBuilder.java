@@ -5,8 +5,8 @@ import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseCo
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +17,7 @@ import java.util.List;
 
 @Data
 @Component
+@Slf4j
 @Scope("prototype")
 public class BuildingLawBuilder {
 
@@ -118,6 +119,7 @@ public class BuildingLawBuilder {
 
     private <T> void addClause(PossibleBuildingClauses field, T value, ComparisonOperator comparisonOperator) {
         Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleBuildingClauses, comparisonOperator, value, priority);
+        log.info("clause with {} and valueof {}", clause, clause.getValue());
         clauses.add(clause);
     }
 }

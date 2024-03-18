@@ -24,18 +24,19 @@ public class TestBuildingObjectBuilder {
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         long randomDays = ThreadLocalRandom.current().nextLong(daysBetween + 1);
 
-    BuildingAttributes.BuildingAttributesBuilder ba = BuildingAttributes.builder()
+    Building building = BuildingAttributes.builder()
                 .buildingClassification(random.nextInt(1, 13))
                 .buildingSpecification(random.nextInt(1, 4))
                 .buildingHumanCapacity(random.nextInt(1000))
                 .buildingMaterial(random.nextInt(0, 4))
                 .undergroundFloors(random.nextInt(0, 4))
                 .overgroundFloors(random.nextInt(1, 10))
-                .gfa(random.nextDouble(1, 10000))
-                .approvalDate(startDate.plusDays(randomDays));
+                .GFA(random.nextDouble(1, 10000))
+                .approvalDate(startDate.plusDays(randomDays))
+                .build().toBuilding();
 
 
-        return ba.build();
+        return building;
     }
 
     /**

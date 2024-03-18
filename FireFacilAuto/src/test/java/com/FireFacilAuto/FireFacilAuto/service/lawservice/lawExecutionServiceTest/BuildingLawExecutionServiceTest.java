@@ -79,8 +79,10 @@ public class BuildingLawExecutionServiceTest {
                 .buildingClassification(1)
                 .buildingSpecification(1)
                 .buildingMaterial(1)
-                .gfa(2000)
-                .build();
+                .GFA(2000.0)
+                .build().toBuilding();
+
+        log.info("testBuilding1 : {}", testBuilding1);
 
         List<Floor> testFloor = new LinkedList<>();
         testFloor.add(new Floor());

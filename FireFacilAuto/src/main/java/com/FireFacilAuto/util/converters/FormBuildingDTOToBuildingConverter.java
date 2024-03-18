@@ -20,12 +20,12 @@ public class FormBuildingDTOToBuildingConverter implements Converter<FormBuildin
         Map<String,Field> fields = BuildingAttributes.builder()
                 .buildingClassification(source.classification)
                 .buildingSpecification(source.specification)
-                .gfa(source.GFA)
+                .GFA(source.GFA)
                 .approvalDate(source.dateOfApproval)
                 .buildingMaterial(source.buildingMaterial)
                 .overgroundFloors(source.overgroundFloors)
                 .undergroundFloors(source.undergroundFloors)
-                .buildFields();
+                .build().toFieldMap();
 
 
         buildTarget.setBuildingFieldMap(fields);

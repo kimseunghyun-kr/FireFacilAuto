@@ -40,8 +40,7 @@ public class FloorLawExecutionServiceTest {
 
     @BeforeAll
     public static void BuildingLawInitializr() {
-        FloorLawFields tempSprinklerLaw = floorLawBuilder.setTargetlaw(1,7).setTargetFloor(2, -1)
-
+        FloorLawFields tempSprinklerLaw = floorLawBuilder.setTargetlaw(1,7).setTargetFloor(2, -1).buildThenReset();
         testBuildingLawList.add(tempSprinklerLaw);
     }
 }

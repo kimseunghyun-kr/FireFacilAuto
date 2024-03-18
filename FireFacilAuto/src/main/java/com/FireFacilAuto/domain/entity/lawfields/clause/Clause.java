@@ -24,12 +24,17 @@ public class Clause{
     @OneToOne(cascade = CascadeType.ALL)
     ClauseValueWrapper valueWrapper;
     int priority;
+    EvaluationType evaluationType;
 
 
     public Clause (){
     }
 
-    protected Clause (PossibleClauses clauseField, ClauseTypes clauseTypes, ComparisonOperator co, ClauseValueWrapper valueWrapper, int priority) {
+    protected Clause (PossibleClauses clauseField,
+                      ClauseTypes clauseTypes,
+                      ComparisonOperator co,
+                      ClauseValueWrapper valueWrapper,
+                      int priority) {
         this.clauseField = clauseField;
         this.clauseTypes = clauseTypes;
         this.comparisonOperator = co;

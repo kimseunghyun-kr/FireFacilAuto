@@ -7,6 +7,8 @@ public interface PossibleClauses {
     String getLawFieldName();
     String getTargetFieldName();
     ClauseValue getFieldType();
+
+    EvaluationType getEvaluationType();
     ClauseTypes LawType();
     Class<? extends ClauseValueWrapper> getWrapper();
 

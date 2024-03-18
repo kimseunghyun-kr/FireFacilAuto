@@ -34,16 +34,18 @@ public class ApiObjectToLawApplicableEntityService {
     public void buildingInitializr(Address address, TitleResponseItem titleResponseItem, Building building) {
         // TODO: allocate number for classification based on code
         log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem);
+
+        BuildingAttributes.builder().build();
         Map<String,Field> fields = BuildingAttributes.builder()
                 .buildingClassification(classificationCodeMapper(titleResponseItem))
                 .buildingSpecification(specificationCodeMapper(titleResponseItem))
-                .gfa(Double.parseDouble(titleResponseItem.getTotArea()))
+                .GFA(Double.parseDouble(titleResponseItem.getTotArea()))
                 .approvalDate(titleResponseItem.getPmsDay().trim().isEmpty() ? LocalDate.now() : LocalDate.parse(titleResponseItem.getPmsDay(), formatter))
                 .buildingMaterial(Integer.parseInt(titleResponseItem.getStrctCd()))
                 .buildingHumanCapacity(getBuildingCapacity(titleResponseItem))
                 .overgroundFloors(Integer.parseInt(titleResponseItem.getGrndFlrCnt()))
                 .undergroundFloors(Integer.parseInt(titleResponseItem.getUgrndFlrCnt()))
-                .buildFields();
+                .build().toFieldMap();
 
 
         log.info("titleResponseItem permissionNoGbcd {}", titleResponseItem.getPmsDay());
