@@ -91,10 +91,10 @@ public class FloorLawExecutionService {
 
         if(flf.floorClassification != -1) {
             IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(flf.floorClassification, ClauseValue.INTEGER);
-            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorClassification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
+            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorClassification", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (flf.floorSpecification != -1) {
                 IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(flf.floorSpecification, ClauseValue.INTEGER);
-                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorSpecification", ClauseTypes.PossibleFloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
+                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorSpecification", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 flf.clauses.addFirst(specificationClause);
             }
             flf.clauses.addFirst(classificationClause);

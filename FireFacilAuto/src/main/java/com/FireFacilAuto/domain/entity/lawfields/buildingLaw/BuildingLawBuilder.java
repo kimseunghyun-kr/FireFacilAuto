@@ -118,7 +118,7 @@ public class BuildingLawBuilder {
 
 
     private <T> void addClause(PossibleBuildingClauses field, T value, ComparisonOperator comparisonOperator) {
-        Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleBuildingClauses, comparisonOperator, value, priority);
+        Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.BuildingClauses, comparisonOperator, value, priority);
         log.info("clause with {} and valueof {}", clause, clause.getValue());
         clauses.add(clause);
     }

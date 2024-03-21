@@ -8,17 +8,17 @@ import lombok.Getter;
 
 @Getter
 public enum PossibleBuildingClauses implements PossibleClauses {
-    TOTAL_FLOORS(ClauseValue.INTEGER, "totalFloors", IntegerClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    UNDERGROUND_FLOORS(ClauseValue.INTEGER, "undergroundFloors", IntegerClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    OVERGROUND_FLOORS(ClauseValue.INTEGER, "overgroundFloors", IntegerClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    GFA(ClauseValue.DOUBLE, "GFA", DoubleClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    BUILDING_MATERIAL(ClauseValue.INTEGER, "buildingMaterial", IntegerClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    LENGTH(ClauseValue.DOUBLE, "length", DoubleClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    DATE_OF_APPROVAL(ClauseValue.LOCAL_DATE, "dateOfApproval", LocalDateClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    BUILDING_HUMAN_CAPACITY(ClauseValue.INTEGER, "buildingHumanCapacity", IntegerClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    EXTRA_FACILITY(ClauseValue.STRING, "extraFacility", StringClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    BUILDING_CLASSIFICATION(ClauseValue.INTEGER, "buildingClassification", IntegerClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS),
-    BUILDING_SPECIFICATION(ClauseValue.INTEGER, "buildingSpecification", IntegerClauseValueWrapper.class, EvaluationType.EVALUATEONALLFIELDS);
+    TOTAL_FLOORS(ClauseValue.INTEGER, "totalFloors", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
+    UNDERGROUND_FLOORS(ClauseValue.INTEGER, "undergroundFloors", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
+    OVERGROUND_FLOORS(ClauseValue.INTEGER, "overgroundFloors", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
+    GFA(ClauseValue.DOUBLE, "GFA", DoubleClauseValueWrapper.class, EvaluationType.SINGLE),
+    BUILDING_MATERIAL(ClauseValue.INTEGER, "buildingMaterial", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
+    LENGTH(ClauseValue.DOUBLE, "length", DoubleClauseValueWrapper.class, EvaluationType.SINGLE),
+    DATE_OF_APPROVAL(ClauseValue.LOCAL_DATE, "dateOfApproval", LocalDateClauseValueWrapper.class, EvaluationType.SINGLE),
+    BUILDING_HUMAN_CAPACITY(ClauseValue.INTEGER, "buildingHumanCapacity", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
+    EXTRA_FACILITY(ClauseValue.STRING, "extraFacility", StringClauseValueWrapper.class, EvaluationType.SINGLE),
+    BUILDING_CLASSIFICATION(ClauseValue.INTEGER, "buildingClassification", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
+    BUILDING_SPECIFICATION(ClauseValue.INTEGER, "buildingSpecification", IntegerClauseValueWrapper.class, EvaluationType.SINGLE);
 
     private final ClauseValue fieldType;
     private final String targetField;
@@ -46,7 +46,7 @@ public enum PossibleBuildingClauses implements PossibleClauses {
 
     @Override
     public ClauseTypes LawType() {
-        return ClauseTypes.PossibleBuildingClauses;
+        return ClauseTypes.BuildingClauses;
     }
 
     @Override

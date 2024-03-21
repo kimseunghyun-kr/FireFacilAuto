@@ -1,12 +1,15 @@
 package com.FireFacilAuto.domain.entity.lawfields.clause;
 
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig.PossibleFloorClauses;
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 public enum ClauseTypes {
-    PossibleBuildingClauses(PossibleBuildingClauses.class),
-    PossibleFloorClauses(PossibleClauses.class);
+    BuildingClauses(PossibleBuildingClauses.class),
+    FloorClauses(PossibleFloorClauses.class);
 
     private final Class<? extends PossibleClauses> lawType;
 

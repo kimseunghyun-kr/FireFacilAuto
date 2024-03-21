@@ -25,6 +25,7 @@ public class Clause{
     ClauseValueWrapper valueWrapper;
     int priority;
     EvaluationType evaluationType;
+    ApplicationType applicationType;
 
 
     public Clause (){

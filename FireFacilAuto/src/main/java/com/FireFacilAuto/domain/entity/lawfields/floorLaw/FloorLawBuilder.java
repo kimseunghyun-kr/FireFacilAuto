@@ -4,7 +4,7 @@ package com.FireFacilAuto.domain.entity.lawfields.floorLaw;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
-import com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig.PossibleFloorLawCauses;
+import com.FireFacilAuto.domain.entity.lawfields.floorLaw.floorLawClauseConfig.PossibleFloorClauses;
 import lombok.Data;
 import org.hibernate.query.sqm.ComparisonOperator;
 
@@ -21,42 +21,42 @@ public class FloorLawBuilder {
     private int priority = 1; // Default priority value
 
     public FloorLawBuilder addFloorClassification(int value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.FLOOR_CLASSIFICATION, value, comparisonOperator);
+        addClause(PossibleFloorClauses.FLOOR_CLASSIFICATION, value, comparisonOperator);
         return this;
     }
 
     public FloorLawBuilder addFloorSpecification(int value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.FLOOR_SPECIFICATION, value, comparisonOperator);
+        addClause(PossibleFloorClauses.FLOOR_SPECIFICATION, value, comparisonOperator);
         return this;
     }
 
     public FloorLawBuilder addFloorNo(int value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.FLOOR_NO, value, comparisonOperator);
+        addClause(PossibleFloorClauses.FLOOR_NO, value, comparisonOperator);
         return this;
     }
 
     public FloorLawBuilder addIsUnderground(boolean value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.IS_UNDERGROUND, value, comparisonOperator);
+        addClause(PossibleFloorClauses.IS_UNDERGROUND, value, comparisonOperator);
         return this;
     }
 
     public FloorLawBuilder addFloorAreaSum(double value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.FLOOR_AREA_SUM, value, comparisonOperator);
+        addClause(PossibleFloorClauses.FLOOR_AREA_SUM, value, comparisonOperator);
         return this;
     }
 
     public FloorLawBuilder addFloorAreaThreshold(double value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.FLOOR_AREA_THRESHOLD, value, comparisonOperator);
+        addClause(PossibleFloorClauses.FLOOR_AREA_THRESHOLD, value, comparisonOperator);
         return this;
     }
 
     public FloorLawBuilder addFloorMaterial(int value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.FLOOR_MATERIAL, value, comparisonOperator);
+        addClause(PossibleFloorClauses.FLOOR_MATERIAL, value, comparisonOperator);
         return this;
     }
 
     public FloorLawBuilder addFloorWindowAvailability(boolean value, ComparisonOperator comparisonOperator) {
-        addClause(PossibleFloorLawCauses.FLOOR_WINDOW_AVAILABILITY, value, comparisonOperator);
+        addClause(PossibleFloorClauses.FLOOR_WINDOW_AVAILABILITY, value, comparisonOperator);
         return this;
     }
 
@@ -96,8 +96,8 @@ public class FloorLawBuilder {
         return clauses;
     }
 
-    private <T> void addClause(PossibleFloorLawCauses field, T value, ComparisonOperator comparisonOperator) {
-        Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.PossibleFloorClauses, comparisonOperator, value, priority);
+    private <T> void addClause(PossibleFloorClauses field, T value, ComparisonOperator comparisonOperator) {
+        Clause clause = clauseFactory.createClause(field.name(), ClauseTypes.FloorClauses, comparisonOperator, value, priority);
         clauses.add(clause);
     }
 

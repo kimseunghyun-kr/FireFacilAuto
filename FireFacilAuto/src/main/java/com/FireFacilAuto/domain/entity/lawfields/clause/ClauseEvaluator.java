@@ -18,6 +18,7 @@ import static com.FireFacilAuto.domain.entity.floors.PossibleFloorFields.getFloo
 import static com.FireFacilAuto.util.conditions.ConditionalComparator.isActivated;
 
 @Slf4j
+@Deprecated
 public class ClauseEvaluator {
 
 
@@ -34,45 +35,10 @@ public class ClauseEvaluator {
         Field field = FloorUtils.getFloorFieldByName(floor, targetField);
         return evaluateSingleFieldWithClause(field, clause);
     }
-
-    private static Boolean evaluateSingleFieldWithClause(Field field, Clause clause) {
-        if(!isActivated(field.getValue())){
-            log.warn("null value detected when not supposed to. check if environment is test or not." +
-                    "if this is in production setting then something critical went wrong" +
-                    "error at field : {}, clause {}, fields are intended to discard if null value present",field , clause);
-            return true;
-        }
-        String lawField = clause.clauseField.getLawFieldName();
-        Object lawValue = clause.getValue();
-        Class<?> clazz = field.getValueType();
-        log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
-                field.getFieldName(), clazz.getSimpleName(), clause.getValue(), clause.getValue().getClass().getSimpleName());
-        return defaultComparisonStrategyApply(clause, lawValue, clazz, field);
+    public static Boolean evaluate(Clause clause, Building building) {
+        String targetField = clause.clauseField.getTargetFieldName();
+        Field field = FloorUtils.getFloorFieldByName(floor, targetField);
     }
-
-    public static <T extends Number & Comparable<T>> Boolean evaluateAggregateFieldWithClause(Clause clause, List<FloorResults> survivingFloors, String lawField) {
-        String targetAggregationField = ClauseFieldComparatorConfig.getTargetField(lawField);
-        Class<?> lawFieldValueToken = clause.getToken();
-        Class<?> clazz = getFloorClass(targetAggregationField);
-
-        log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",
-                targetAggregationField, clazz.getSimpleName(), clause.getValue(), clause.getValue().getClass().getSimpleName());
-
-        if(!lawFieldValueToken.equals(clazz)) {
-            throw new UnsupportedOperationException("non matching token types of target floor Field Types in aggregation");
-        }
-
-        List<Field> aggregatedFloorFields = survivingFloors.stream()
-                .map(floorResults -> getFloorFieldByName(floorResults.getFloor(), targetAggregationField)).collect(Collectors.toList());
-
-        T lawValue = (T) clause.getValue();
-        T result = aggregate(aggregatedFloorFields);
-
-        ComparableComparisonStrategy<T> strategy = new ComparableComparisonStrategy<>();
-        return strategy.compare(result, lawValue, clause.getComparisonOperator());
-    }
-
-//    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
 
 
 
@@ -93,7 +59,7 @@ public class ClauseEvaluator {
     }
 
 
-    private static <U extends Number> U aggregate(List<Field> aggregatedFields) {
+    public static <U extends Number> U aggregate(List<Field> aggregatedFields) {
         if (aggregatedFields.isEmpty()) {
             return null;
         }

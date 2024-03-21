@@ -55,10 +55,10 @@ public class BuildingLawExecutionService {
 
         if(blf.buildingClassification != -1) {
             IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(blf.buildingClassification, ClauseValue.INTEGER);
-            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingClassification", ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
+            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingClassification", ClauseTypes.BuildingClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (blf.buildingSpecification != -1) {
                 IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(blf.buildingSpecification, ClauseValue.INTEGER);
-                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingSpecification",ClauseTypes.PossibleBuildingClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
+                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingSpecification", ClauseTypes.BuildingClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 blf.clauses.addFirst(specificationClause);
             }
             blf.clauses.addFirst(classificationClause);
