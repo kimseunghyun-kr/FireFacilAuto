@@ -6,40 +6,110 @@ import com.FireFacilAuto.domain.entity.building.field.Field;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.floors.FloorUtils;
 import com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy.*;
-import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluationType;
+import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.*;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-import static com.FireFacilAuto.domain.entity.floors.FloorUtils.getFloorFieldByName;
-import static com.FireFacilAuto.domain.entity.floors.PossibleFloorFields.getFloorClass;
-import static com.FireFacilAuto.util.conditions.ConditionalComparator.isActivated;
 
 @Slf4j
-@Deprecated
 public class ClauseEvaluator {
+    private static final List<FloorResults> EMPTYSENTINELLIST = new LinkedList<>();
 
 
 //    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
     public static Boolean evaluateSingleBuilding(Clause clause, Building building) {
         String targetField = clause.clauseField.getTargetFieldName();
         EvaluationType evaluationType = clause.getEvaluationType();
+        EvaluationStrategy strategyToUse = new SentinelEvaluationStrategy();
         Field field = BuildingUtils.getBuildingFieldByName(building, targetField);
-        return evaluateSingleFieldWithClause(field, clause);
+
+        if (Objects.requireNonNull(evaluationType) == EvaluationType.SINGLE) {
+            strategyToUse = new EvalutateOnSingleFieldStrategy();
+        }
+
+        // left this way as in the future Building may have aggregate? fields or other methods of evaluation. as of current,
+        // only valid way is singular
+
+        return strategyToUse.evaluate(clause, field);
     }
+
+    public static <T extends Number & Comparable<T>> List<FloorResults> evaluateFloor(Clause clause, Building building, List<FloorResults> survivingFloors) {
+        EvaluationType evaluationType = clause.getEvaluationType();
+        String targetField = clause.clauseField.getTargetFieldName();
+        if(evaluationType.equals(EvaluationType.SINGLE)) {
+            List<FloorResults> nextEpochSurvivor = new LinkedList<>(survivingFloors.stream()
+                    .filter(survivingFloor -> {
+                        Field field = FloorUtils.getFloorFieldByName(survivingFloor.getFloor(), targetField);
+                        return new EvalutateOnSingleFieldStrategy().evaluate(clause, field);
+                    })
+                    .toList());
+            return nextEpochSurvivor;
+        }
+
+        if(evaluationType.equals(EvaluationType.AGGREGATE_ALL)) {
+            Field[] field = building.getCompositeFloorsList().stream()
+                    .map(buildingFloor -> FloorUtils.getFloorFieldByName(buildingFloor, targetField))
+                    .toArray(Field[]::new);
+            if(new EvaluateByAggregateFieldStrategy<T>().evaluate(clause,field)) {
+                return survivingFloors;
+            } else {
+                return EMPTYSENTINELLIST;
+            }
+        }
+
+        if(evaluationType.equals(EvaluationType.AGGREGATE_REMAINING)) {
+            Field[] field = survivingFloors.stream()
+                    .map(survivingFloor -> FloorUtils.getFloorFieldByName(survivingFloor.getFloor(), targetField))
+                    .toArray(Field[]::new);
+            if(new EvaluateByAggregateFieldStrategy<T>().evaluate(clause,field)) {
+                return survivingFloors;
+            } else {
+                return EMPTYSENTINELLIST;
+            }
+        }
+
+        throw new UnsupportedOperationException("this is an unsupported evaluation option for Floors. please re-evaluate what is going on");
+    }
+
 
     public static Boolean evaluateSingleFloor(Clause clause, Floor floor) {
+        EvaluationType evaluationType = clause.getEvaluationType();
         String targetField = clause.clauseField.getTargetFieldName();
+        if(!evaluationType.equals(EvaluationType.SINGLE)) {
+            throw new UnsupportedOperationException("calling a evaluateSingleFloor on a non singular evaluation denoted clause");
+        }
         Field field = FloorUtils.getFloorFieldByName(floor, targetField);
-        return evaluateSingleFieldWithClause(field, clause);
-    }
-    public static Boolean evaluate(Clause clause, Building building) {
-        String targetField = clause.clauseField.getTargetFieldName();
-        Field field = FloorUtils.getFloorFieldByName(floor, targetField);
+        return new EvalutateOnSingleFieldStrategy().evaluate(clause,field);
     }
 
+    public static Boolean evaluateAggregateAll(Clause clause, Building building) {
+        EvaluationType evaluationType = clause.getEvaluationType();
+        String targetField = clause.clauseField.getTargetFieldName();
+        if(!evaluationType.equals(EvaluationType.AGGREGATE_ALL)) {
+            throw new UnsupportedOperationException("calling a evaluateAggregateRemaining on a non aggregateAll evaluation denoted clause");
+        }
+        Field[] field = building.getCompositeFloorsList().stream()
+                .map(floor -> FloorUtils.getFloorFieldByName(floor, targetField))
+                .toArray(Field[]::new);
+        return new EvalutateOnSingleFieldStrategy().evaluate(clause,field);
+    }
+
+
+    public static Boolean evaluateAggregateRemaining(Clause clause, List<FloorResults> survivingFloors) {
+        EvaluationType evaluationType = clause.getEvaluationType();
+        String targetField = clause.clauseField.getTargetFieldName();
+        if(!evaluationType.equals(EvaluationType.AGGREGATE_REMAINING)) {
+            throw new UnsupportedOperationException("calling a evaluateAggregateRemaining on a non aggregateRemaining evaluation denoted clause");
+        }
+        Field[] field = survivingFloors.stream()
+                .map(floorResults -> FloorUtils.getFloorFieldByName(floorResults.getFloor(), targetField))
+                .toArray(Field[]::new);
+        return new EvalutateOnSingleFieldStrategy().evaluate(clause,field);
+    }
 
 
 

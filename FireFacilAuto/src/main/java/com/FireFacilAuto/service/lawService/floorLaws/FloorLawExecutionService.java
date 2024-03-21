@@ -3,6 +3,7 @@ package com.FireFacilAuto.service.lawService.floorLaws;
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.floors.Floor;
 import com.FireFacilAuto.domain.entity.lawfields.clause.*;
+import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluationType;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.IntegerClauseValueWrapper;
 import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
@@ -100,7 +101,7 @@ public class FloorLawExecutionService {
             flf.clauses.addFirst(classificationClause);
         }
 
-        List<FloorResults> nextEpochSurvivor = new LinkedList<>(); // Create a list to store elements to delete
+        List<FloorResults> nextEpochSurvivor = new LinkedList<>(); // Create a list to store elements that survives
 
         for(Clause clause : flf.getClauses()) {
             if(clause.getPriority() > greatestEpoch) {
@@ -112,23 +113,9 @@ public class FloorLawExecutionService {
                 return;
             }
 
-            String lawfield = clause.getClauseField().getLawFieldName();
-
-            if(ClauseFieldComparatorConfig.isAggregationOperation(lawfield)) {
-                Boolean result = ClauseEvaluator.evaluateAggregateFieldWithClause(clause,floorResultsList,lawfield);
-                if (!result) {
-                    return;
-                }
-            }
-            else {
-//                instead of eagerly deleting here -> mark as todelete
-                nextEpochSurvivor.addAll(floorResultsList.stream()
-                        .filter(floorResults -> ClauseEvaluator.evaluateSingleFloor(clause, floorResults.getFloor()))
-                        .toList());
-            }
+            nextEpochSurvivor.addAll(ClauseEvaluator.evaluateFloor(clause,building,floorResultsList));
         }
 
-        // Remove remaining elements based on indexes
         floorResultsList = nextEpochSurvivor;
 
         floorResultListMajorCodeMapper(floorResultsList, target);
