@@ -3,6 +3,7 @@ package com.FireFacilAuto.FireFacilAuto.service.lawservice.lawExecutionServiceTe
 import com.FireFacilAuto.domain.entity.building.Building;
 import com.FireFacilAuto.domain.entity.building.BuildingAttributes;
 import com.FireFacilAuto.domain.entity.floors.Floor;
+import com.FireFacilAuto.domain.entity.lawfields.ApplicationMethod;
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawBuilder;
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.BuildingLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
@@ -52,18 +53,23 @@ public class BuildingLawExecutionServiceTest {
     @BeforeAll
     public static void BuildingLawInitializr() {
         BuildingLawFields fireExtinguisherLaw = buildingLawBuilder.setTargetBuilding(-1,-1).setTargetlaw(1,1)
+                .setApplicationMethod(ApplicationMethod.ALL)
                 .addGFA(33, ComparisonOperator.GREATER_THAN_OR_EQUAL)
                 .buildThenReset();
 
         BuildingLawFields sprinklerLaw = buildingLawBuilder.setTargetBuilding(3,-1).setTargetlaw(2,1)
+                .setApplicationMethod(ApplicationMethod.ALL)
                 .addGFA(5000, ComparisonOperator.GREATER_THAN_OR_EQUAL)
                 .buildThenReset();
 
         BuildingLawFields sprinklerLaw2 = buildingLawBuilder.setTargetBuilding(4,-1).setTargetlaw(2,1)
+                .setApplicationMethod(ApplicationMethod.ALL)
                 .addGFA(5000, ComparisonOperator.GREATER_THAN_OR_EQUAL)
                 .buildThenReset();
 
         testBuildingLawList.add(fireExtinguisherLaw);
+        testBuildingLawList.add(sprinklerLaw);
+        testBuildingLawList.add(sprinklerLaw2);
     }
 
     private List<BuildingLawFields> mockCandidateLawFilter(Integer buildingClassification, Integer buildingSpecification) {
@@ -90,7 +96,7 @@ public class BuildingLawExecutionServiceTest {
 
         log.info("initializing result sheets");
         ResultSheet resultSheet = resultSheetInitializr(testBuilding1);
-        List<FloorResults> floorResultsList = floorResultSheetBuilder(testBuilding1);
+        List<FloorResults> floorResultsList = resultSheet.getFloorResultsList();
         List<BuildingLawFields> candidateBuildingLaw = mockCandidateLawFilter(getBuildingClassification(testBuilding1),
                 getBuildingSpecification(testBuilding1));
 

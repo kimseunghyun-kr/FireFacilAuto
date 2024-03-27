@@ -13,7 +13,7 @@ public enum PossibleFloorClauses implements PossibleClauses {
     FLOOR_SPECIFICATION(ClauseValue.INTEGER, "floorSpecification", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
     FLOOR_NO(ClauseValue.INTEGER, "floorNo", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
     IS_UNDERGROUND(ClauseValue.BOOLEAN, "isUnderGround", BooleanClauseValueWrapper.class, EvaluationType.SINGLE),
-    FLOOR_AREA_SUM(ClauseValue.DOUBLE, "floorArea", DoubleClauseValueWrapper.class, EvaluationType.AGGREGATE),
+    FLOOR_AREA_SUM(ClauseValue.DOUBLE, "floorArea", DoubleClauseValueWrapper.class, EvaluationType.AGGREGATE_REMAINING),
     FLOOR_AREA_THRESHOLD(ClauseValue.DOUBLE, "floorArea", DoubleClauseValueWrapper.class, EvaluationType.SINGLE),
     FLOOR_MATERIAL(ClauseValue.INTEGER, "floorMaterial", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
     FLOOR_WINDOW_AVAILABILITY(ClauseValue.BOOLEAN, "floorWindowAvailability", BooleanClauseValueWrapper.class, EvaluationType.SINGLE);

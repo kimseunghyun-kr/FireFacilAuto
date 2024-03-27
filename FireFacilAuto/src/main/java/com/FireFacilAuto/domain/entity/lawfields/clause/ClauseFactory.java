@@ -11,7 +11,7 @@ public class ClauseFactory {
         if (field == null) {
             throw new IllegalArgumentException("PossibleClauses cannot be null. ");
         }
-        return new Clause(field, lawtype, co, input, priority);
+        return new Clause(field, lawtype, co, input, priority, field.getEvaluationType());
     }
 
     public Clause createClauseWithClauseValueWrapper(String field, ClauseTypes lawtype, ComparisonOperator co, ClauseValueWrapper input, int priority) {
@@ -19,7 +19,7 @@ public class ClauseFactory {
         if (lawField == null) {
             throw new IllegalArgumentException("Invalid field name: " + field);
         }
-        return new Clause(lawField, lawtype, co, input, priority);
+        return new Clause(lawField, lawtype, co, input, priority, lawField.getEvaluationType());
     }
 
     public <T> Clause createClause(String field, ClauseTypes lawtype, ComparisonOperator co, T input, int priority) {
@@ -29,7 +29,7 @@ public class ClauseFactory {
         }
         ClauseValueWrapper valueWrapper = ClauseValueWrapper.clauseValueWrapperfactory(lawField.getFieldType(), input);
         Class<? extends ClauseValueWrapper> castingClass = lawField.getWrapper();
-        return new Clause(lawField, lawtype, co, castingClass.cast(valueWrapper), priority);
+        return new Clause(lawField, lawtype, co, castingClass.cast(valueWrapper), priority, lawField.getEvaluationType());
     }
 
     public Clause createAbstractWrapperClause (String field, ClauseTypes lawtype, ComparisonOperator co, Object input, int priority) {
@@ -38,6 +38,6 @@ public class ClauseFactory {
             throw new IllegalArgumentException("Invalid field name: " + field);
         }
         ClauseValueWrapper valueWrapper = ClauseValueWrapper.clauseValueWrapperfactory(lawField.getFieldType(), input);
-        return new Clause(lawField, lawtype, co, valueWrapper, priority);
+        return new Clause(lawField, lawtype, co, valueWrapper, priority, lawField.getEvaluationType());
     }
 }

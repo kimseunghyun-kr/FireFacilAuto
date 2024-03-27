@@ -38,15 +38,15 @@ public class BuildingAttributes {
 
         Map<String, Field> buildingFieldList = new ConcurrentHashMap<>();
 
-        buildingFieldList.put("buildingHumanCapacity", new IntegerField("bhc", this.buildingHumanCapacity, Integer.class));
-        buildingFieldList.put("buildingClassification", new IntegerField("bc", this.buildingClassification, Integer.class));
-        buildingFieldList.put("buildingSpecification", new IntegerField("bs", this.buildingSpecification, Integer.class));
-        buildingFieldList.put("buildingMaterial", new IntegerField("bm", this.buildingMaterial, Integer.class));
-        buildingFieldList.put("undergroundFloors", new IntegerField("ugf", this.undergroundFloors, Integer.class));
-        buildingFieldList.put("overgroundFloors", new IntegerField("ogf", this.overgroundFloors, Integer.class));
-        buildingFieldList.put("totalFloors", new IntegerField("tf", this.totalFloors, Integer.class));
-        buildingFieldList.put("GFA", new DoubleField("gfa", this.GFA, Double.class));
-        buildingFieldList.put("dateOfApproval", new LocalDateField("approvalDate", this.approvalDate, LocalDate.class));
+        buildingFieldList.put("buildingHumanCapacity", new IntegerField("buildingHumanCapacity", this.buildingHumanCapacity, Integer.class));
+        buildingFieldList.put("buildingClassification", new IntegerField("buildingClassification", this.buildingClassification, Integer.class));
+        buildingFieldList.put("buildingSpecification", new IntegerField("buildingSpecification", this.buildingSpecification, Integer.class));
+        buildingFieldList.put("buildingMaterial", new IntegerField("buildingMaterial", this.buildingMaterial, Integer.class));
+        buildingFieldList.put("undergroundFloors", new IntegerField("undergroundFloors", this.undergroundFloors, Integer.class));
+        buildingFieldList.put("overgroundFloors", new IntegerField("overgroundFloors", this.overgroundFloors, Integer.class));
+        buildingFieldList.put("totalFloors", new IntegerField("totalFloors", this.totalFloors, Integer.class));
+        buildingFieldList.put("GFA", new DoubleField("GFA", this.GFA, Double.class));
+        buildingFieldList.put("dateOfApproval", new LocalDateField("dateOfApproval", this.approvalDate, LocalDate.class));
 
         return buildingFieldList;
     }

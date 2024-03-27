@@ -1,6 +1,7 @@
 package com.FireFacilAuto.domain.entity.lawfields.floorLaw;
 
 
+import com.FireFacilAuto.domain.entity.lawfields.ApplicationMethod;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
@@ -60,7 +61,7 @@ public class FloorLawBuilder {
         return this;
     }
 
-    public FloorLawBuilder setTargetFloor (Integer buildingClassification, Integer buildingSpecification) {
+    public FloorLawBuilder setTargetFloorPurpose(Integer buildingClassification, Integer buildingSpecification) {
         floorLawFields.setFloorClassification(buildingClassification);
         floorLawFields.setFloorSpecification(buildingSpecification);
         return this;
@@ -69,6 +70,11 @@ public class FloorLawBuilder {
     public FloorLawBuilder setTargetlaw (Integer majorityCode, Integer minorityCode) {
         floorLawFields.setMajorCategoryCode(majorityCode);
         floorLawFields.setMinorCategoryCode(minorityCode);
+        return this;
+    }
+
+    public FloorLawBuilder setApplicationMethod (ApplicationMethod applicationMethod) {
+        floorLawFields.setApplicationMethod(applicationMethod);
         return this;
     }
 

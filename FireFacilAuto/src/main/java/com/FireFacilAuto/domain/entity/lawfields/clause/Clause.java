@@ -18,14 +18,13 @@ public class Clause{
     private Long id;
 
     @Embedded
-    PossibleClauses clauseField;
-    ClauseTypes clauseTypes;
-    ComparisonOperator comparisonOperator;
+    public PossibleClauses clauseField;
+    public ClauseTypes clauseTypes;
+    public ComparisonOperator comparisonOperator;
     @OneToOne(cascade = CascadeType.ALL)
-    ClauseValueWrapper valueWrapper;
-    int priority;
-    EvaluationType evaluationType;
-    ApplicationType applicationType;
+    public ClauseValueWrapper valueWrapper;
+    public int priority;
+    public EvaluationType evaluationType;
 
 
     public Clause (){
@@ -35,12 +34,14 @@ public class Clause{
                       ClauseTypes clauseTypes,
                       ComparisonOperator co,
                       ClauseValueWrapper valueWrapper,
-                      int priority) {
+                      int priority,
+                      EvaluationType evaluationType) {
         this.clauseField = clauseField;
         this.clauseTypes = clauseTypes;
         this.comparisonOperator = co;
         this.valueWrapper=valueWrapper;
         this.priority=priority;
+        this.evaluationType = evaluationType;
     }
 
     // Get the valueType from the stored class name

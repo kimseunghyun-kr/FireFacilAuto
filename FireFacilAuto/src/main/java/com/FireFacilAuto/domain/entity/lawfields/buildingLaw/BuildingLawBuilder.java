@@ -1,9 +1,11 @@
 package com.FireFacilAuto.domain.entity.lawfields.buildingLaw;
 
+import com.FireFacilAuto.domain.entity.lawfields.ApplicationMethod;
 import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.buildingLaw.buildingLawclauseConfig.PossibleBuildingClauses;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
+import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluationType;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -80,6 +82,12 @@ public class BuildingLawBuilder {
         addClause(PossibleBuildingClauses.BUILDING_SPECIFICATION, value, comparisonOperator);
         return this;
     }
+    public BuildingLawBuilder popListThenResetEvaluationType(EvaluationType evaluationType) {
+        Clause toResetEVtype = clauses.removeLast();
+        toResetEVtype.setEvaluationType(evaluationType);
+        clauses.addLast(toResetEVtype);
+        return this;
+    }
 
     // Add methods for other PossibleBuildingClauses fields
 
@@ -100,6 +108,10 @@ public class BuildingLawBuilder {
     public BuildingLawBuilder setTargetlaw (Integer majorityCode, Integer minorityCode) {
         buildingLawFields.setMajorCategoryCode(majorityCode);
         buildingLawFields.setMinorCategoryCode(minorityCode);
+        return this;
+    }
+    public BuildingLawBuilder setApplicationMethod (ApplicationMethod applicationMethod) {
+        buildingLawFields.setApplicationMethod(applicationMethod);
         return this;
     }
 

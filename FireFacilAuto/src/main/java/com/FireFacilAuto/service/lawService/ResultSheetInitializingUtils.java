@@ -14,6 +14,7 @@ public class ResultSheetInitializingUtils {
     public static ResultSheet resultSheetInitializr(Building building) {
         ResultSheet resultSheet = new ResultSheet();
         resultSheet.setBuilding(building);
+        resultSheet.setFloorResultsList(floorResultSheetBuilder(building));
         return resultSheet;
     }
 

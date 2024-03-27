@@ -9,6 +9,8 @@ import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.IntegerCla
 import com.FireFacilAuto.domain.entity.lawfields.floorLaw.FloorLawFields;
 import com.FireFacilAuto.domain.entity.results.FloorResults;
 import com.FireFacilAuto.domain.entity.results.ResultSheet;
+import com.FireFacilAuto.service.lawService.evaluators.FloorLawEvaluator;
+import com.FireFacilAuto.service.lawService.evaluators.LawEvaluator;
 import com.FireFacilAuto.util.records.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.ComparisonOperator;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static com.FireFacilAuto.domain.entity.floors.FloorUtils.*;
+import static com.FireFacilAuto.domain.entity.lawfields.LawUtils.clausePrioritysort;
 import static com.FireFacilAuto.service.lawService.LawMappingUtils.floorResultListMajorCodeMapper;
 import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.floorResultSheetBuilder;
 import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.resultSheetInitializr;
@@ -25,13 +28,14 @@ import static com.FireFacilAuto.service.lawService.ResultSheetInitializingUtils.
 @Slf4j
 public class FloorLawExecutionService {
     private final FloorLawRepositoryService lawService;
-    private final ClauseFactory clauseFactory;
+    private final FloorLawEvaluator floorLawEvaluator;
 
-    public FloorLawExecutionService(FloorLawRepositoryService lawService, ClauseFactory clauseFactory) {
+    public FloorLawExecutionService(FloorLawRepositoryService lawService, FloorLawEvaluator floorLawEvaluator) {
         this.lawService = lawService;
-        this.clauseFactory = clauseFactory;
+        this.floorLawEvaluator = floorLawEvaluator;
     }
 
+    @Deprecated
     public ResultSheet executeLaw(Building building) {
         if (building == null) {
             throw new IllegalArgumentException("Input parameters cannot be null");
@@ -51,7 +55,7 @@ public class FloorLawExecutionService {
         Set<Pair> floorResultStore = new HashSet<>();
         List<FloorLawFields> candidateFloorLaw = new LinkedList<>();
 
-        log.info("receiving all appicable candidate for floor laws," +
+        log.info("receiving all applicable candidate for floor laws," +
                 " floors may have differing classification and specification from building");
         floorLawCandidacyResolver(floorResultsList, floorResultStore, candidateFloorLaw);
 
@@ -71,54 +75,15 @@ public class FloorLawExecutionService {
     }
 
 
-    private void floorLawExecute(Building building, List<FloorResults> floorResultsList, List<FloorLawFields> candidateFloorLaw) {
+    public void floorLawExecute(Building building, List<FloorResults> floorResultsList, List<FloorLawFields> candidateFloorLaw) {
         List<Floor> floors = building.getCompositeFloorsList();
         candidateFloorLaw.forEach(flf -> {
             log.info("----------------------------------------------------------------");
-            floorConditionComparator(flf, new LinkedList<>(floorResultsList), building);
-            log.info("floorResultList check at floorLawExecute {}", floorResultsList);
+            clausePrioritysort(flf.clauses);
+            List<FloorResults> checkedResults = floorLawEvaluator.evaluateLaw(flf, floorResultsList, building);
+            log.info("checkedResults is {}", checkedResults);
+            log.info("checking for mutated reference for floorResultList at floorLawExecute {}", floorResultsList);
         });
-    }
-
-    private void floorConditionComparator(FloorLawFields flf, List<FloorResults> floorResultsList, Building building) {
-        if (building == null || floorResultsList == null || floorResultsList.isEmpty()) {
-            return;
-        }
-
-        Integer[] target = {flf.majorCategoryCode, flf.minorCategoryCode};
-
-        log.info("surviving list beginning {}",floorResultsList);
-        int greatestEpoch = 1;
-
-        if(flf.floorClassification != -1) {
-            IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(flf.floorClassification, ClauseValue.INTEGER);
-            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorClassification", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
-            if (flf.floorSpecification != -1) {
-                IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(flf.floorSpecification, ClauseValue.INTEGER);
-                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorSpecification", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
-                flf.clauses.addFirst(specificationClause);
-            }
-            flf.clauses.addFirst(classificationClause);
-        }
-
-        List<FloorResults> nextEpochSurvivor = new LinkedList<>(); // Create a list to store elements that survives
-
-        for(Clause clause : flf.getClauses()) {
-            if(clause.getPriority() > greatestEpoch) {
-                floorResultsList = nextEpochSurvivor;
-                nextEpochSurvivor = new LinkedList<>();
-                greatestEpoch = clause.getPriority();
-            }
-            if(floorResultsList.isEmpty()) {
-                return;
-            }
-
-            nextEpochSurvivor.addAll(ClauseEvaluator.evaluateFloor(clause,building,floorResultsList));
-        }
-
-        floorResultsList = nextEpochSurvivor;
-
-        floorResultListMajorCodeMapper(floorResultsList, target);
     }
 
 }

@@ -24,10 +24,6 @@ public abstract class LawFields {
     @Positive
     public Integer majorCategoryCode;
 
-    @Column(nullable = false)
-    @Positive
-    public ApplicationMethod applicationMethod;
-
     /**
      * Minor category code representing the installation that the law is trying to enforce.
      */
@@ -35,6 +31,9 @@ public abstract class LawFields {
     @Positive
     public Integer minorCategoryCode;
 
+    @Column(nullable = false)
+    @Positive
+    public ApplicationMethod applicationMethod;
 
     //    @Convert(converter = ClauseListConverter.class)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
