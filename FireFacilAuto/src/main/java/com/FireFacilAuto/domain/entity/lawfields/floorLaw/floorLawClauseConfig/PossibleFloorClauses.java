@@ -16,7 +16,8 @@ public enum PossibleFloorClauses implements PossibleClauses {
     FLOOR_AREA_SUM(ClauseValue.DOUBLE, "floorArea", DoubleClauseValueWrapper.class, EvaluationType.AGGREGATE_REMAINING),
     FLOOR_AREA_THRESHOLD(ClauseValue.DOUBLE, "floorArea", DoubleClauseValueWrapper.class, EvaluationType.SINGLE),
     FLOOR_MATERIAL(ClauseValue.INTEGER, "floorMaterial", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
-    FLOOR_WINDOW_AVAILABILITY(ClauseValue.BOOLEAN, "floorWindowAvailability", BooleanClauseValueWrapper.class, EvaluationType.SINGLE);
+    FLOOR_WINDOW_AVAILABILITY(ClauseValue.BOOLEAN, "floorWindowAvailability", BooleanClauseValueWrapper.class, EvaluationType.SINGLE),
+    FACILITY_CONTAINED (ClauseValue.STRING, "extraFacility", StringClauseValueWrapper.class, EvaluationType.STRING_CONCATENATED);
 
     private final ClauseValue fieldType;
     private final String targetField;

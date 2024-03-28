@@ -1,15 +1,14 @@
 package com.FireFacilAuto.domain.entity.floors;
 
 import com.FireFacilAuto.domain.entity.building.Building;
-import com.FireFacilAuto.domain.entity.building.field.BooleanField;
-import com.FireFacilAuto.domain.entity.building.field.DoubleField;
-import com.FireFacilAuto.domain.entity.building.field.Field;
-import com.FireFacilAuto.domain.entity.building.field.IntegerField;
+import com.FireFacilAuto.domain.entity.building.field.*;
 import lombok.Data;
 
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.FireFacilAuto.util.FacilityStringParser.facilityStringParser;
 
 @Data
 public class FloorAttributes {
@@ -64,6 +63,13 @@ public class FloorAttributes {
 
         public FloorBuilder floorWindowAvailability(Boolean floorWindowAvailability) {
             fieldValues.put("floorWindowAvailability", new BooleanField("floorWindowAvailability", floorWindowAvailability, Boolean.class));
+            return this;
+        }
+
+        public FloorBuilder extraFacility(String extraFacility) {
+            Field MapExtraFacilityField = fieldValues.getOrDefault("extraFacility", new StringField("extraFacility", "", String.class));
+            String resultString = facilityStringParser(MapExtraFacilityField, extraFacility);
+            fieldValues.put("extraFacility", new StringField("extraFacility", resultString, String.class));
             return this;
         }
 

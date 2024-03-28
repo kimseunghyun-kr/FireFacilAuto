@@ -1,9 +1,6 @@
 package com.FireFacilAuto.domain.entity.building;
 
-import com.FireFacilAuto.domain.entity.building.field.DoubleField;
-import com.FireFacilAuto.domain.entity.building.field.Field;
-import com.FireFacilAuto.domain.entity.building.field.IntegerField;
-import com.FireFacilAuto.domain.entity.building.field.LocalDateField;
+import com.FireFacilAuto.domain.entity.building.field.*;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -11,6 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Builder;
 import lombok.Data;
+
+import static com.FireFacilAuto.util.FacilityStringParser.facilityStringParser;
 
 
 @Data
@@ -27,6 +26,7 @@ public class BuildingAttributes {
     public int totalFloors;
     public double GFA;
     public LocalDate approvalDate;
+    public String extraFacility;
 
     public BuildingAttributes totalFloors() {
         this.totalFloors = this.undergroundFloors + this.overgroundFloors;
@@ -47,6 +47,10 @@ public class BuildingAttributes {
         buildingFieldList.put("totalFloors", new IntegerField("totalFloors", this.totalFloors, Integer.class));
         buildingFieldList.put("GFA", new DoubleField("GFA", this.GFA, Double.class));
         buildingFieldList.put("dateOfApproval", new LocalDateField("dateOfApproval", this.approvalDate, LocalDate.class));
+        buildingFieldList.put("extraFacility", new StringField("extraFacility",
+                facilityStringParser(buildingFieldList.getOrDefault("extraFacility", new StringField("extraFacility", "", String.class)),this.extraFacility),
+                String.class));
+
 
         return buildingFieldList;
     }

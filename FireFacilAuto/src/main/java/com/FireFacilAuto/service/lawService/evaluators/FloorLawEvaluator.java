@@ -7,6 +7,7 @@ import com.FireFacilAuto.domain.entity.lawfields.clause.Clause;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseFactory;
 import com.FireFacilAuto.domain.entity.lawfields.clause.ClauseTypes;
 import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluateByAggregateFieldStrategy;
+import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluateConcatenatedStringStrategy;
 import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvaluationType;
 import com.FireFacilAuto.domain.entity.lawfields.clause.evaluationStrategy.EvalutateOnSingleFieldStrategy;
 import com.FireFacilAuto.domain.entity.lawfields.clause.valueWrappers.ClauseValue;
@@ -68,6 +69,16 @@ public class FloorLawEvaluator implements LawEvaluator<FloorLawFields, Building>
             } else {
                 return EMPTYSENTINELLIST;
             }
+        }
+
+        if(evaluationType.equals(EvaluationType.STRING_CONCATENATED)) {
+            List<FloorResults> nextEpochSurvivor = new LinkedList<>(survivingFloors.stream()
+                    .filter(survivingFloor -> {
+                        Field field = FloorUtils.getFloorFieldByName(survivingFloor.getFloor(), targetField);
+                        return new EvaluateConcatenatedStringStrategy().evaluate(clause, field);
+                    })
+                    .toList());
+            return nextEpochSurvivor;
         }
 
         throw new UnsupportedOperationException("this is an unsupported evaluation option for Floors. please re-evaluate what is going on");

@@ -22,12 +22,12 @@ public class EvalutateOnSingleFieldStrategy implements EvaluationStrategy{
         assert(field.getFieldName().equals(targetField));
 
         if(!isActivated(field.getValue())){
-            log.warn("null value detected when not supposed to. check if environment is test or not." +
+            log.warn("default or null value detected when not supposed to. check if environment is test or not." +
                     "if this is in production setting then something critical went wrong" +
-                    "error at field : {}, clause {}, fields are intended to discard if null value present",field , clause);
-            return true;
+                    "error at field : {}, clause {}, fields are intended to discard if null/default value present",field , clause);
+            return false;
         }
-        String lawField = clause.getClauseField().getLawFieldName();
+
         Object lawValue = clause.getValue();
         Class<?> clazz = field.getValueType();
         log.info("Comparing field '{}' of type '{}' with lawValue '{}' of type '{}'",

@@ -2,11 +2,9 @@ package com.FireFacilAuto.domain.entity.lawfields.clause.comparisonStrategy;
 
 import org.hibernate.query.sqm.ComparisonOperator;
 
-public class StringComparisonStrategy<Q> implements ComparisonStrategy<Q> {
+public class StringComparisonStrategy implements ComparisonStrategy<String> {
     @Override
-    public Boolean compare(Q input, Q value, ComparisonOperator comparisonOperator) {
-        String fieldInput = (String) input;
-        String valueToCompare = (String)value;
+    public Boolean compare(String input, String value, ComparisonOperator comparisonOperator) {
 
         switch (comparisonOperator) {
             case EQUAL -> {

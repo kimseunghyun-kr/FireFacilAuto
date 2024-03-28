@@ -15,6 +15,7 @@ public class PossibleFloorFields {
         fieldMap.put("floorArea",Double.class);
         fieldMap.put("floorMaterial",Integer.class);
         fieldMap.put("floorWindowAvailability",Boolean.class);
+        fieldMap.put("extraFacility", String.class);
     }
 
     public static Class<?> getFloorClass(String field) {

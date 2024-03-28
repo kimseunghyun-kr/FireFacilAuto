@@ -31,6 +31,8 @@ public class ConditionalComparator {
             return (T) Double.valueOf(-1); // Assuming -1 is the default value for Double
         } else if (clazz.equals(Boolean.class)) {
             return null;
+        } else if (clazz.equals(String.class)) {
+            return (T)"";
         } else {
             throw new IllegalArgumentException("Unsupported type: " + clazz);
         }

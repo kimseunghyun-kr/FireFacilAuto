@@ -16,7 +16,7 @@ public enum PossibleBuildingClauses implements PossibleClauses {
     LENGTH(ClauseValue.DOUBLE, "length", DoubleClauseValueWrapper.class, EvaluationType.SINGLE),
     DATE_OF_APPROVAL(ClauseValue.LOCAL_DATE, "dateOfApproval", LocalDateClauseValueWrapper.class, EvaluationType.SINGLE),
     BUILDING_HUMAN_CAPACITY(ClauseValue.INTEGER, "buildingHumanCapacity", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
-    EXTRA_FACILITY(ClauseValue.STRING, "extraFacility", StringClauseValueWrapper.class, EvaluationType.SINGLE),
+    EXTRA_FACILITY(ClauseValue.STRING, "extraFacility", StringClauseValueWrapper.class, EvaluationType.STRING_CONCATENATED),
     BUILDING_CLASSIFICATION(ClauseValue.INTEGER, "buildingClassification", IntegerClauseValueWrapper.class, EvaluationType.SINGLE),
     BUILDING_SPECIFICATION(ClauseValue.INTEGER, "buildingSpecification", IntegerClauseValueWrapper.class, EvaluationType.SINGLE);
 
