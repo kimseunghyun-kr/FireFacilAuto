@@ -81,18 +81,7 @@ public class BuildingLawExecutionServiceTest {
     @Test
     public void testExecution() {
         // Given
-        Building testBuilding1 = BuildingAttributes.builder()
-                .buildingClassification(1)
-                .buildingSpecification(1)
-                .buildingMaterial(1)
-                .GFA(2000.0)
-                .build().toBuilding();
-
-        log.info("testBuilding1 : {}", testBuilding1);
-
-        List<Floor> testFloor = new LinkedList<>();
-        testFloor.add(new Floor());
-        testBuilding1.setCompositeFloorsList(testFloor);
+        Building testBuilding1 = testBuilding1ConfigInitializr();
 
         log.info("initializing result sheets");
         ResultSheet resultSheet = resultSheetInitializr(testBuilding1);
@@ -112,5 +101,21 @@ public class BuildingLawExecutionServiceTest {
                 .extracting(floorResults -> floorResults.getExtinguisherInstallation().getExtinguisherApparatus())
                 .containsOnly(true);
 
+    }
+
+    private static Building testBuilding1ConfigInitializr() {
+        Building testBuilding1 = BuildingAttributes.builder()
+                .buildingClassification(1)
+                .buildingSpecification(1)
+                .buildingMaterial(1)
+                .GFA(2000.0)
+                .build().toBuilding();
+
+        log.info("testBuilding1 : {}", testBuilding1);
+
+        List<Floor> testFloor = new LinkedList<>();
+        testFloor.add(new Floor());
+        testBuilding1.setCompositeFloorsList(testFloor);
+        return testBuilding1;
     }
 }

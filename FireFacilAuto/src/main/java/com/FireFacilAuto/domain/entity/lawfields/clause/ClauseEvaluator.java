@@ -21,6 +21,7 @@ public class ClauseEvaluator {
 
 
 //    <T extends Number & Comparable<T>, U extends Comparable<U>,V>
+    @Deprecated
     public static Boolean evaluateSingleBuilding(Clause clause, Building building) {
         String targetField = clause.clauseField.getTargetFieldName();
         EvaluationType evaluationType = clause.getEvaluationType();
@@ -37,6 +38,7 @@ public class ClauseEvaluator {
         return strategyToUse.evaluate(clause, field);
     }
 
+    @Deprecated
     public static <T extends Number & Comparable<T>> List<FloorResults> evaluateFloor(Clause clause, Building building, List<FloorResults> survivingFloors) {
         EvaluationType evaluationType = clause.getEvaluationType();
         String targetField = clause.clauseField.getTargetFieldName();
@@ -75,7 +77,7 @@ public class ClauseEvaluator {
         throw new UnsupportedOperationException("this is an unsupported evaluation option for Floors. please re-evaluate what is going on");
     }
 
-
+    @Deprecated
     public static Boolean evaluateSingleFloor(Clause clause, Floor floor) {
         EvaluationType evaluationType = clause.getEvaluationType();
         String targetField = clause.clauseField.getTargetFieldName();
@@ -86,6 +88,7 @@ public class ClauseEvaluator {
         return new EvalutateOnSingleFieldStrategy().evaluate(clause,field);
     }
 
+    @Deprecated
     public static Boolean evaluateAggregateAll(Clause clause, Building building) {
         EvaluationType evaluationType = clause.getEvaluationType();
         String targetField = clause.clauseField.getTargetFieldName();
@@ -98,7 +101,7 @@ public class ClauseEvaluator {
         return new EvalutateOnSingleFieldStrategy().evaluate(clause,field);
     }
 
-
+    @Deprecated
     public static Boolean evaluateAggregateRemaining(Clause clause, List<FloorResults> survivingFloors) {
         EvaluationType evaluationType = clause.getEvaluationType();
         String targetField = clause.clauseField.getTargetFieldName();

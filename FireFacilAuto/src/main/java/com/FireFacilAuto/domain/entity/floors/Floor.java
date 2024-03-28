@@ -5,6 +5,7 @@ import com.FireFacilAuto.domain.entity.building.TargetEntity;
 import com.FireFacilAuto.domain.entity.building.field.Field;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
 @Entity
 @Data
 @ToString(exclude = "building")
+@EqualsAndHashCode(exclude = "building")
 public class Floor implements TargetEntity {
 
     /**

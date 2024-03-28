@@ -65,10 +65,10 @@ public class BuildingLawEvaluator implements LawEvaluator<BuildingLawFields, Bui
     public List<FloorResults> evaluateLaw(BuildingLawFields lawFields, List<FloorResults> resultsList, Building target) {
         if(lawFields.buildingClassification != -1) {
             IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(lawFields.buildingClassification, ClauseValue.INTEGER);
-            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingClassification", ClauseTypes.BuildingClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
+            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("BUILDING_CLASSIFICATION", ClauseTypes.BuildingClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (lawFields.buildingSpecification != -1) {
                 IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(lawFields.buildingSpecification, ClauseValue.INTEGER);
-                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("buildingSpecification", ClauseTypes.BuildingClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
+                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("BUILDING_SPECIFICATION", ClauseTypes.BuildingClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 lawFields.clauses.addFirst(specificationClause);
             }
             lawFields.clauses.addFirst(classificationClause);

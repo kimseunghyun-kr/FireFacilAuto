@@ -18,6 +18,7 @@ import org.hibernate.query.sqm.ComparisonOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -98,21 +99,22 @@ public class FloorLawEvaluator implements LawEvaluator<FloorLawFields, Building>
 
         if(lawFields.floorClassification != -1) {
             IntegerClauseValueWrapper classificationClauseValue = new IntegerClauseValueWrapper(lawFields.floorClassification, ClauseValue.INTEGER);
-            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorClassification", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
+            Clause classificationClause = clauseFactory.createClauseWithClauseValueWrapper("FLOOR_CLASSIFICATION", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, classificationClauseValue, 1);
             if (lawFields.floorSpecification != -1) {
                 IntegerClauseValueWrapper specificationClauseValue = new IntegerClauseValueWrapper(lawFields.floorSpecification, ClauseValue.INTEGER);
-                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("floorSpecification", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
+                Clause specificationClause = clauseFactory.createClauseWithClauseValueWrapper("FLOOR_SPECIFICATION", ClauseTypes.FloorClauses, ComparisonOperator.EQUAL, specificationClauseValue, 1);
                 lawFields.clauses.addFirst(specificationClause);
             }
             lawFields.clauses.addFirst(classificationClause);
         }
 
-        List<FloorResults> nextEpochSurvivor = new LinkedList<>(); // Create a list to store elements that survives
+//        List<FloorResults> nextEpochSurvivor = new LinkedList<>(); // Create a list to store elements that survives
+        HashSet<FloorResults> nextEpochSurvivor = new HashSet<>();
 
         for(Clause clause : lawFields.getClauses()) {
             if(clause.getPriority() > greatestEpoch) {
-                mutableResultListCopy = nextEpochSurvivor;
-                nextEpochSurvivor = new LinkedList<>();
+                mutableResultListCopy = new LinkedList<>(nextEpochSurvivor);
+                nextEpochSurvivor = new HashSet<>();
                 greatestEpoch = clause.getPriority();
             }
             if(mutableResultListCopy.isEmpty()) {
@@ -122,7 +124,7 @@ public class FloorLawEvaluator implements LawEvaluator<FloorLawFields, Building>
             nextEpochSurvivor.addAll(this.evaluateFloor(clause,target,mutableResultListCopy));
         }
 
-        mutableResultListCopy = nextEpochSurvivor;
+        mutableResultListCopy = new LinkedList<>(nextEpochSurvivor);
 
         return this.applicableMethodResolver(lawFields, mutableResultListCopy, target);
     }
